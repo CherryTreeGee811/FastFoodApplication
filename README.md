@@ -1,3 +1,3 @@
 # FastFoodApplication
-## Group 1 - CSCN73030
+## Group 1 - PROG73020
 ### Members: Salah Salame (TechNerd-019), Isaiah Andrews (SemiDoge), Jonathan Taylor (CherryTreeGee811), Andrew Gordon
