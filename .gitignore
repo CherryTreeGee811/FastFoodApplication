@@ -1,0 +1,37 @@
+# Visual Studio and Jetbrains Rider cache
+.vs/
+.idea/
+
+# User-specific files
+EmployeeManagementFiefdomAPI/*.user
+TrainingPromotionalContentFiefdomAPI/*.user
+ActionsEmissaryAPI/*.user
+ClientApplication/*.user
+
+# Generated with debug and execute
+EmployeeManagementFiefdomAPI/bin
+EmployeeManagementFiefdomAPI/obj
+
+TrainingPromotionalContentFiefdomAPI/bin
+TrainingPromotionalContentFiefdomAPI/obj
+
+ActionsEmissaryAPI/bin
+ActionsEmissaryAPI/obj
+
+ClientApplication/bin
+ClientApplication/obj
+
+
+# logging
+EmployeeManagementFiefdomAPI/logs
+TrainingPromotionalContentFiefdomAPI/logs
+ActionsEmissaryAPI/logs
+ClientApplication/logs
+
+# documentation
+docs/*
+!docs/mainpage.md
+
+/FastFoodApplication
+/bin
+/obj

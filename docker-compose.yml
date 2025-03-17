@@ -1,0 +1,103 @@
+services:
+    clientapplication:
+        container_name: clientapplication
+        image: ${DOCKER_REGISTRY-}clientapplication
+        hostname: localhost
+        ports:
+            - 9000:9000
+            - 9001:9001
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:9000
+        build:
+            context: .
+            dockerfile: ClientApplication/Dockerfile
+        depends_on:
+            - actionsemissaryapi
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:9000/health || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    actionsemissaryapi:
+        image: ${DOCKER_REGISTRY-}actionsemissaryapi
+        container_name: actionsemissaryapi
+        ports:
+            - "8000:8000"
+            - "8001:8001"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:8000
+        networks:
+            - fastfood-net
+        build:
+            context: .
+            dockerfile: ActionsEmissaryApi/Dockerfile
+        depends_on:
+            - employeemanagementfiefdomapi
+            - trainingpromotionalcontentfiefdomapi
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    employeemanagementfiefdomapi:
+        image: ${DOCKER_REGISTRY-}employeemanagementfiefdomapi
+        container_name: employeemanagementfiefdomapi
+        ports:
+            - "8060:8060"
+            - "8061:8061"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:8060
+        networks:
+            - fastfood-net
+        build:
+            context: .
+            dockerfile: EmployeeManagementFiefdomAPI/Dockerfile
+        depends_on:
+            - sqlpreview
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:8060/health || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    trainingpromotionalcontentfiefdomapi:
+        image: ${DOCKER_REGISTRY-}trainingpromotionalcontentfiefdomapi
+        container_name: trainingpromotionalcontentfiefdomapi
+        ports:
+            - "7000:7000"
+            - "7001:7001"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:7000
+        networks:
+            - fastfood-net
+        build:
+            context: .
+            dockerfile: TrainingPromotionalContentFiefdomAPI/Dockerfile
+        depends_on:
+            - sqlpreview
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f http://localhost:7000/health || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    sqlpreview:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: sqlpreview
+        networks:
+            - fastfood-net
+        ports:
+            - 1433:1433
+        environment:
+            ACCEPT_EULA: Y
+            MSSQL_SA_PASSWORD: SATestPassword10*
+
+networks:
+    fastfood-net:
+        driver: bridge
