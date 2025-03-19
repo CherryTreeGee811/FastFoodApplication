@@ -33,7 +33,7 @@ services:
             - fastfood-net
         build:
             context: .
-            dockerfile: ActionsEmissaryApi/Dockerfile
+            dockerfile: ActionsEmissaryAPI/Dockerfile
         depends_on:
             - employeemanagementfiefdomapi
             - trainingpromotionalcontentfiefdomapi
