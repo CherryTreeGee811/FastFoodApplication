@@ -19,7 +19,7 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
         /// </summary>
         /// <returns>A 200 OK response with a list of image URLs, or 404 if the directory is missing.</returns>
         [HttpGet("/carousel")]
-        public IActionResult Index() {
+        public IActionResult GetPromoCarouselImages() {
             // Get the path to the images directory
             string imagesDir = "carouselImages";
             string imagesPath = Path.Combine(_env.WebRootPath, imagesDir);
