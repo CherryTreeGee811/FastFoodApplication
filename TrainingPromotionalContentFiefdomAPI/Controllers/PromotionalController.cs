@@ -15,7 +15,7 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
         }
 
         /// <summary>
-        /// Returns a list of full URLs to all PNG images in the "carouselImages" directory under wwwroot.
+        /// Returns a list of full URLs to all JPEG or PNG images in the "carouselImages" directory under wwwroot.
         /// </summary>
         /// <returns>A 200 OK response with a list of image URLs, or 404 if the directory is missing.</returns>
         [HttpGet("/carousel")]
@@ -27,7 +27,8 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
             }
 
             List<string> imageFiles = Directory.GetFiles(imagesPath)
-                .Where(file => file.EndsWith(".png"))
+                .Where(file => _allowedCarouselExtensions.Any(ext =>
+                    file.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
                 .Select(file => Path.GetFileName(file))
                 .ToList();
 
@@ -81,6 +82,7 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
         }
 
         private string _imagesDir = "carouselImages";
+        private string[] _allowedCarouselExtensions = { ".png", ".jpg", ".jepg" };
         private readonly IWebHostEnvironment _env;
     }
 }
