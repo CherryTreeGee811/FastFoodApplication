@@ -6,6 +6,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+var connStr = builder.Configuration.GetConnectionString("FastFoodDB");
+//builder.Services.AddDbContext<TODO>(options => options.UseSqlServer(connStr));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
