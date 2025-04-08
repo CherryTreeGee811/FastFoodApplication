@@ -1,9 +1,18 @@
+using FastFoodAPI.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<FastFoodDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
+    .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
+);
 
 
 builder.Services.AddCors(options =>
