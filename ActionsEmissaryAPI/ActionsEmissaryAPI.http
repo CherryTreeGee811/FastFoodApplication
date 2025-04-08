@@ -1,6 +1,0 @@
-@ActionsEmissaryAPI_HostAddress = http://localhost:5186
-
-GET {{ActionsEmissaryAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace EmployeeManagementFiefdomAPI.Controllers;
+namespace FastFoodAPI.Controllers;
 
 
 [ApiController]

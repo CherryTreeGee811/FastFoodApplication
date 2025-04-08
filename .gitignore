@@ -3,29 +3,18 @@
 .idea/
 
 # User-specific files
-EmployeeManagementFiefdomAPI/*.user
-TrainingPromotionalContentFiefdomAPI/*.user
-ActionsEmissaryAPI/*.user
+FastFoodAPI/*.user
 ClientApplication/*.user
 
 # Generated with debug and execute
-EmployeeManagementFiefdomAPI/bin
-EmployeeManagementFiefdomAPI/obj
-
-TrainingPromotionalContentFiefdomAPI/bin
-TrainingPromotionalContentFiefdomAPI/obj
-
-ActionsEmissaryAPI/bin
-ActionsEmissaryAPI/obj
+FastFoodAPI/bin
+FastFoodAPI/obj
 
 ClientApplication/bin
 ClientApplication/obj
 
-
 # logging
-EmployeeManagementFiefdomAPI/logs
-TrainingPromotionalContentFiefdomAPI/logs
-ActionsEmissaryAPI/logs
+FastFoodAPI/logs
 ClientApplication/logs
 
 # documentation
