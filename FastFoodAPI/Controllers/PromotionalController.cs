@@ -34,7 +34,7 @@ namespace FastFoodAPI.Controllers {
                 .Select(file => Path.GetFileName(file))
                 .ToList();
 
-            string baseUrl = $"http://{Request.Host}";
+            string baseUrl = $"http://localhost:8000";
 
             List<string> carouselItems = imageFiles.Select(file => $"{baseUrl}/{_imagesDir}/{file}").ToList();
 
@@ -72,7 +72,7 @@ namespace FastFoodAPI.Controllers {
                 using FileStream stream = new FileStream(filePath, FileMode.Create);
                 await file.CopyToAsync(stream);
 
-                string baseUrl = $"http://{Request.Host}";
+                string baseUrl = $"http://localhost:8000";
                 string fileUrl = $"{baseUrl}/{_imagesDir}/{fileName}";
                 uploaded.Add(fileUrl);
             }
