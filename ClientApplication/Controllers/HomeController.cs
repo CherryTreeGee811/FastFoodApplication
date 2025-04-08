@@ -21,7 +21,7 @@ namespace ClientApplication.Controllers
         {
             try
             {
-                var response = await _httpClient.GetAsync("http://localhost:5202/carousel");
+                var response = await _httpClient.GetAsync("http://fastfoodapi:8000/api/carousel");
                 response.EnsureSuccessStatusCode();
 
                 // Replaced ReadAsAsync with JSON deserialization
@@ -64,7 +64,7 @@ namespace ClientApplication.Controllers
 
             try
             {
-                var response = await _httpClient.PostAsync("http://localhost:5202/carousel", formData);
+                var response = await _httpClient.PostAsync("http://fastfoodapi:8000/api/carousel/", formData);
                 response.EnsureSuccessStatusCode();
                 TempData["UploadSuccess"] = "Upload successful!";
             }
