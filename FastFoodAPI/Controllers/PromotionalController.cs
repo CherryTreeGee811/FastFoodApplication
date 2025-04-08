@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TrainingPromotionalContentFiefdomAPI.Controllers {
 
-    [ApiController()]
+namespace FastFoodAPI.Controllers { 
+
+    [ApiController]
+    [Route("/api")]
     public class PromotionalController : Controller {
 
         /// <summary>
@@ -18,7 +20,7 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
         /// Returns a list of full URLs to all JPEG or PNG images in the "carouselImages" directory under wwwroot.
         /// </summary>
         /// <returns>A 200 OK response with a list of image URLs, or 404 if the directory is missing.</returns>
-        [HttpGet("/carousel")]
+        [HttpGet("carousel")]
         public IActionResult GetPromoCarouselImages() {
             string imagesPath = Path.Combine(_env.WebRootPath, _imagesDir);
 
@@ -48,7 +50,7 @@ namespace TrainingPromotionalContentFiefdomAPI.Controllers {
         /// or a 400 Bad Request if no files are provided.
         /// </returns>
         //TODO: This function will need to be [Authorized(Roles = "?")]
-        [HttpPost("/carousel")]
+        [HttpPost("carousel")]
         public async Task<IActionResult> UploadPromoImages(List<IFormFile> files) {
 
             if (files == null || files.Count == 0) {

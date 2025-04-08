@@ -18,4 +18,17 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\carouselImages\baconCheeseburger.png" />
+    <None Include="wwwroot\carouselImages\chickenBucket.png" />
+    <None Include="wwwroot\carouselImages\chickenTendies.png" />
+    <None Include="wwwroot\carouselImages\fullSpread.png" />
+    <None Include="wwwroot\carouselImages\largePizza.png" />
+    <None Include="wwwroot\carouselImages\milkshakes.png" />
+    <None Include="wwwroot\carouselImages\mozzarellaSticks.png" />
+    <None Include="wwwroot\carouselImages\onionRings.png" />
+    <None Include="wwwroot\carouselImages\twoBurgerCombo.png" />
+    <None Include="wwwroot\carouselImages\veggieBurger.png" />
+  </ItemGroup>
+
 </Project>
