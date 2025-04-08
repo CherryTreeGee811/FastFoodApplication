@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Employee View";
+    var employeeID = ViewBag.EmployeeID;
+    var shifts = ViewBag.Shifts as List<(string Start, string End)>;
+    var training = ViewBag.Training as List<(int CourseId, string CourseName)>;
+}
+
+<div class="container mt-5">
+    <!-- Heading -->
+    <h1 class="text-center">Employee View</h1>
+
+    <!-- Employee ID -->
+    <div class="d-flex justify-content-end">
+        <label class="fw-bold me-2">Employee ID:</label>
+        <span>@employeeID</span>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Notify Schedule Button and Shifts Table -->
+        <div class="col-md-6">
+            <button class="btn btn-primary mb-3">Notify Schedule</button>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="text-center">Shifts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Start</td>
+                        <td class="fw-bold">End</td>
+                    </tr>
+                    @if (shifts != null)
+                    {
+                        foreach (var shift in shifts)
+                        {
+                            <tr>
+                                <td>@shift.Start</td>
+                                <td>@shift.End</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Training Table -->
+        <div class="col-md-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2" class="text-center">Training</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Course Name</td>
+                        <td class="fw-bold">Mark Complete</td>
+                    </tr>
+                    @if (training != null)
+                    {
+                        foreach (var course in training)
+                        {
+                            <tr>
+                                <td>@course.CourseName</td>
+                                <td>
+                                    <form method="post" action="/employees/complete-training">
+                                        <input type="hidden" name="courseId" value="@course.CourseId" />
+                                        <button type="submit" class="btn btn-success">Complete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
