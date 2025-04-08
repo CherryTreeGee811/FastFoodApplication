@@ -33,7 +33,7 @@ services:
             - fastfood-net
         build:
             context: .
-            dockerfile: FastFood/Dockerfile
+            dockerfile: FastFoodAPI/Dockerfile
         depends_on:
             - sqlpreview
         healthcheck:
