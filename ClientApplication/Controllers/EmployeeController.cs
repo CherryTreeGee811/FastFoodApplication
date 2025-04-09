@@ -6,7 +6,7 @@ namespace ClientApplication.Controllers
     public class EmployeeController : Controller
     {
         [HttpGet("/employees/{employeeID}")]
-        public IActionResult Index(int employeeID)
+        public IActionResult Details(int employeeID)
         {
             // Placeholder data for shifts
             ViewBag.Shifts = new List<(string Start, string End)>
