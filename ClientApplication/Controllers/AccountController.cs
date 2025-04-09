@@ -25,8 +25,8 @@ public class AccountController : Controller
             // Store the username in the session
             HttpContext.Session.SetString("LoggedInUser", username);
 
-            // Redirect to the Employee index page
-            return RedirectToAction("Index", "Employee", new { employeeID = 1 }); // Replace 1 with the actual employee ID
+            // Redirect to the Employee details page
+            return RedirectToAction("Details", "Employee", new { employeeID = 1 }); // Replace 1 with the actual employee ID
         }
 
         ViewBag.ErrorMessage = "Invalid username or password.";
