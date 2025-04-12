@@ -1,4 +1,5 @@
 using FastFoodAPI.Entities;
+using FastFoodAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+// Add Employee Manager Service
+builder.Services.AddScoped<IEmployeeManagerService, EmployeeManagerService>();
 
 builder.Services.AddDbContext<FastFoodDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
