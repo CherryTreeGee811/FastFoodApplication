@@ -17,22 +17,37 @@ namespace FastFoodAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FastFoodAPI.Entities.Employee", b =>
                 {
-                    b.Property<int>("EmployeeId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"), 23L);
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -45,218 +60,523 @@ namespace FastFoodAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("StationId")
                         .HasColumnType("int");
 
-                    b.HasKey("EmployeeId");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("EmailAddress")
                         .IsUnique();
 
                     b.HasIndex("JobTitleId");
 
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
                     b.HasIndex("StationId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
-                            EmployeeId = 1,
+                            Id = "27eed73a-1bd8-495e-970d-525459ec73f8",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1dd5e337-ffb1-4c33-82f3-2022133fd803",
+                            Email = "john.doe@onlybytes.com",
                             EmailAddress = "john.doe@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 1,
                             FirstName = "John",
                             JobTitleId = 1,
                             LastName = "Doe",
-                            StationId = 1
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JOHN.DOE@ONLYBYTES.COM",
+                            NormalizedUserName = "JOHN.DOE@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "892afd4a-7861-4b0c-83a4-6200dd5af3f4",
+                            StationId = 1,
+                            TwoFactorEnabled = false,
+                            UserName = "john.doe@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 2,
+                            Id = "1dfbdb80-44a2-4b69-bd10-dcff2f80764a",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a30aec09-2a4f-4b93-81ea-1d79a250379d",
+                            Email = "sarah.johnson@onlybytes.com",
                             EmailAddress = "sarah.johnson@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 2,
                             FirstName = "Sarah",
                             JobTitleId = 1,
                             LastName = "Johnson",
-                            StationId = 1
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SARAH.JOHNSON@ONLYBYTES.COM",
+                            NormalizedUserName = "SARAH.JOHNSON@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "89cc13d5-be43-4960-b59e-5cf37b9dd2ce",
+                            StationId = 1,
+                            TwoFactorEnabled = false,
+                            UserName = "sarah.johnson@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 11,
+                            Id = "40391d05-196e-42ca-80c3-621d809c3a99",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "040458b8-5ba5-412a-9f1a-4867e1680a42",
+                            Email = "richard.parker@onlybytes.com",
                             EmailAddress = "richard.parker@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 11,
                             FirstName = "Richard",
                             JobTitleId = 1,
                             LastName = "Parker",
-                            StationId = 1
+                            LockoutEnabled = false,
+                            NormalizedEmail = "RICHARD.PARKER@ONLYBYTES.COM",
+                            NormalizedUserName = "RICHARD.PARKER@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "5bb84938-3290-4192-9e0f-983aa36c30b7",
+                            StationId = 1,
+                            TwoFactorEnabled = false,
+                            UserName = "richard.parker@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 12,
+                            Id = "7d0b611d-d339-433a-b630-6eb5213498bb",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "9ad6d98c-2a1c-48d2-b759-1b4635a42466",
+                            Email = "amanda.williams@onlybytes.com",
                             EmailAddress = "amanda.williams@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 12,
                             FirstName = "Amanda",
                             JobTitleId = 1,
                             LastName = "Williams",
-                            StationId = 1
+                            LockoutEnabled = false,
+                            NormalizedEmail = "AMANDA.WILLIAMS@ONLYBYTES.COM",
+                            NormalizedUserName = "AMANDA.WILLIAMS@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7157752d-1133-4209-8685-a9a87b4acd65",
+                            StationId = 1,
+                            TwoFactorEnabled = false,
+                            UserName = "amanda.williams@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 3,
+                            Id = "e3ab6ce6-0aa6-4875-b7d6-48c0ed3ea37b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "39e4f355-9326-42b4-a800-475c484ed930",
+                            Email = "jane.smith@onlybytes.com",
                             EmailAddress = "jane.smith@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 3,
                             FirstName = "Jane",
                             JobTitleId = 2,
                             LastName = "Smith",
-                            StationId = 2
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JANE.SMITH@ONLYBYTES.COM",
+                            NormalizedUserName = "JANE.SMITH@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "07e8b43e-be3f-4227-aacf-9dd6ee8c8fc1",
+                            StationId = 2,
+                            TwoFactorEnabled = false,
+                            UserName = "jane.smith@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 4,
+                            Id = "26a29b25-037e-445a-9fe2-67bded3b72a4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3698c477-a8a8-4679-8361-2d8cd0fd5868",
+                            Email = "michael.brown@onlybytes.com",
                             EmailAddress = "michael.brown@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 4,
                             FirstName = "Michael",
                             JobTitleId = 2,
                             LastName = "Brown",
-                            StationId = 3
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MICHAEL.BROWN@ONLYBYTES.COM",
+                            NormalizedUserName = "MICHAEL.BROWN@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4a14c23d-c9c5-4412-b8bf-c2eda37a18b9",
+                            StationId = 3,
+                            TwoFactorEnabled = false,
+                            UserName = "michael.brown@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 5,
+                            Id = "ba1ce8b4-7d6c-452d-873e-8b683f4bbbef",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1c5e7b69-d549-4b33-a083-6988af8e780b",
+                            Email = "emily.davis@onlybytes.com",
                             EmailAddress = "emily.davis@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 5,
                             FirstName = "Emily",
                             JobTitleId = 2,
                             LastName = "Davis",
-                            StationId = 2
+                            LockoutEnabled = false,
+                            NormalizedEmail = "EMILY.DAVIS@ONLYBYTES.COM",
+                            NormalizedUserName = "EMILY.DAVIS@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d105be7e-4d05-43b9-bb8c-7b600521c799",
+                            StationId = 2,
+                            TwoFactorEnabled = false,
+                            UserName = "emily.davis@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 13,
+                            Id = "dfede861-27ca-47ed-96c1-ed54c670ce4d",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3666b496-6617-435c-a52c-697675fb44f2",
+                            Email = "daniel.thompson@onlybytes.com",
                             EmailAddress = "daniel.thompson@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 13,
                             FirstName = "Daniel",
                             JobTitleId = 2,
                             LastName = "Thompson",
-                            StationId = 3
+                            LockoutEnabled = false,
+                            NormalizedEmail = "DANIEL.THOMPSON@ONLYBYTES.COM",
+                            NormalizedUserName = "DANIEL.THOMPSON@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "eef6652b-06dd-4c0c-87f7-854b06f5c6f0",
+                            StationId = 3,
+                            TwoFactorEnabled = false,
+                            UserName = "daniel.thompson@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 14,
+                            Id = "34b910ef-276e-42d6-a3fb-8841e761133c",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e0da6738-d2c8-4b77-9c67-5862e9f85973",
+                            Email = "olivia.rodriguez@onlybytes.com",
                             EmailAddress = "olivia.rodriguez@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 14,
                             FirstName = "Olivia",
                             JobTitleId = 2,
                             LastName = "Rodriguez",
-                            StationId = 2
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
+                            NormalizedUserName = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "c47b7434-60da-4bcc-86e7-907d7e08e78f",
+                            StationId = 2,
+                            TwoFactorEnabled = false,
+                            UserName = "olivia.rodriguez@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 15,
+                            Id = "b862c298-0bb1-4fa6-88d3-68f41e7e5ce5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0ae43b11-adbd-4a32-9e92-edf0f6d4ed38",
+                            Email = "thomas.lee@onlybytes.com",
                             EmailAddress = "thomas.lee@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 15,
                             FirstName = "Thomas",
                             JobTitleId = 2,
                             LastName = "Lee",
-                            StationId = 3
+                            LockoutEnabled = false,
+                            NormalizedEmail = "THOMAS.LEE@ONLYBYTES.COM",
+                            NormalizedUserName = "THOMAS.LEE@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "21761950-feeb-4589-943d-8de7fda08cb0",
+                            StationId = 3,
+                            TwoFactorEnabled = false,
+                            UserName = "thomas.lee@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 16,
+                            Id = "a1a60395-7977-4c48-9505-995dd6c722fc",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "47b5c5a9-9372-47ce-99b3-98a5f401392e",
+                            Email = "sophia.patel@onlybytes.com",
                             EmailAddress = "sophia.patel@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 16,
                             FirstName = "Sophia",
                             JobTitleId = 2,
                             LastName = "Patel",
-                            StationId = 2
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SOPHIA.PATEL@ONLYBYTES.COM",
+                            NormalizedUserName = "SOPHIA.PATEL@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "cce3a867-717e-40aa-9da4-b01f64af265e",
+                            StationId = 2,
+                            TwoFactorEnabled = false,
+                            UserName = "sophia.patel@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 6,
+                            Id = "1633f9cf-b75b-43cd-8a45-be81bd60957f",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d8a7f67e-5b35-45c3-8c65-78916d2109ae",
+                            Email = "mike.wilson@onlybytes.com",
                             EmailAddress = "mike.wilson@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 6,
                             FirstName = "Mike",
                             JobTitleId = 3,
                             LastName = "Wilson",
-                            StationId = 4
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MIKE.WILSON@ONLYBYTES.COM",
+                            NormalizedUserName = "MIKE.WILSON@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7893671a-d5b2-4c75-8a69-1683cb357571",
+                            StationId = 4,
+                            TwoFactorEnabled = false,
+                            UserName = "mike.wilson@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 7,
+                            Id = "4dc38e9f-8776-4ff5-b62d-3edd1858738e",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f93f28d6-aa85-4e09-bdbd-b80d329c0b58",
+                            Email = "david.garcia@onlybytes.com",
                             EmailAddress = "david.garcia@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 7,
                             FirstName = "David",
                             JobTitleId = 3,
                             LastName = "Garcia",
-                            StationId = 5
+                            LockoutEnabled = false,
+                            NormalizedEmail = "DAVID.GARCIA@ONLYBYTES.COM",
+                            NormalizedUserName = "DAVID.GARCIA@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4307b406-175f-4656-ad76-d9e231442bb8",
+                            StationId = 5,
+                            TwoFactorEnabled = false,
+                            UserName = "david.garcia@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 8,
+                            Id = "b15c2746-3b78-46a4-84e8-67df11c9af17",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "bd016b33-c0c6-43a5-adec-af7a9cbb69a0",
+                            Email = "jessica.martinez@onlybytes.com",
                             EmailAddress = "jessica.martinez@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 8,
                             FirstName = "Jessica",
                             JobTitleId = 3,
                             LastName = "Martinez",
-                            StationId = 6
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JESSICA.MARTINEZ@ONLYBYTES.COM",
+                            NormalizedUserName = "JESSICA.MARTINEZ@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "252887b5-e2f0-4f7a-89aa-47a71dc17770",
+                            StationId = 6,
+                            TwoFactorEnabled = false,
+                            UserName = "jessica.martinez@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 17,
+                            Id = "62b6e34e-f377-4aef-941d-9ff36f67d845",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "630578cd-9264-4567-acf1-2ed3e891d152",
+                            Email = "james.wilson@onlybytes.com",
                             EmailAddress = "james.wilson@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 17,
                             FirstName = "James",
                             JobTitleId = 3,
                             LastName = "Wilson",
-                            StationId = 4
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JAMES.WILSON@ONLYBYTES.COM",
+                            NormalizedUserName = "JAMES.WILSON@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "30aa9a18-52f0-47a2-a623-6cb2f7fe56cc",
+                            StationId = 4,
+                            TwoFactorEnabled = false,
+                            UserName = "james.wilson@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 18,
+                            Id = "054966be-da7c-4b6e-a9a7-a6676e1eae10",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "630ad2ed-10fc-443c-90eb-3addb2e028bb",
+                            Email = "maria.hernandez@onlybytes.com",
                             EmailAddress = "maria.hernandez@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 18,
                             FirstName = "Maria",
                             JobTitleId = 3,
                             LastName = "Hernandez",
-                            StationId = 5
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MARIA.HERNANDEZ@ONLYBYTES.COM",
+                            NormalizedUserName = "MARIA.HERNANDEZ@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d56635e4-103c-4f63-a605-1cd1d8a934ee",
+                            StationId = 5,
+                            TwoFactorEnabled = false,
+                            UserName = "maria.hernandez@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 19,
+                            Id = "8a8c0dd0-dbbd-4913-a10b-33d680d96e3b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "cb8f507d-9eda-4301-bffc-f935d99ab09d",
+                            Email = "kevin.kim@onlybytes.com",
                             EmailAddress = "kevin.kim@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 19,
                             FirstName = "Kevin",
                             JobTitleId = 3,
                             LastName = "Kim",
-                            StationId = 6
+                            LockoutEnabled = false,
+                            NormalizedEmail = "KEVIN.KIM@ONLYBYTES.COM",
+                            NormalizedUserName = "KEVIN.KIM@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "94af3bf6-51ec-4744-ac53-ac0de99f6dd0",
+                            StationId = 6,
+                            TwoFactorEnabled = false,
+                            UserName = "kevin.kim@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 20,
+                            Id = "06565424-7337-46e2-ae34-02bbb74ecc05",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d2724146-0b9b-4cb8-ade3-f05bb92914a3",
+                            Email = "jennifer.chen@onlybytes.com",
                             EmailAddress = "jennifer.chen@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 20,
                             FirstName = "Jennifer",
                             JobTitleId = 3,
                             LastName = "Chen",
-                            StationId = 4
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JENNIFER.CHEN@ONLYBYTES.COM",
+                            NormalizedUserName = "JENNIFER.CHEN@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d0d4bcbe-431d-4e1f-9673-e7fed20efa75",
+                            StationId = 4,
+                            TwoFactorEnabled = false,
+                            UserName = "jennifer.chen@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 9,
+                            Id = "aa1849e0-71cb-4ee3-9618-9194581714b2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "eb28c8f7-8064-49d0-ad15-5827b341d482",
+                            Email = "robert.taylor@onlybytes.com",
                             EmailAddress = "robert.taylor@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 9,
                             FirstName = "Robert",
                             JobTitleId = 4,
                             LastName = "Taylor",
-                            StationId = 7
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ROBERT.TAYLOR@ONLYBYTES.COM",
+                            NormalizedUserName = "ROBERT.TAYLOR@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a30ac11e-8e17-48aa-9e46-8c71798d77df",
+                            StationId = 7,
+                            TwoFactorEnabled = false,
+                            UserName = "robert.taylor@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 10,
+                            Id = "5e34f77b-f7df-42c7-8901-261b5c95950b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e779b1e7-074b-4883-8c09-252979ce6130",
+                            Email = "lisa.anderson@onlybytes.com",
                             EmailAddress = "lisa.anderson@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 10,
                             FirstName = "Lisa",
                             JobTitleId = 4,
                             LastName = "Anderson",
-                            StationId = 7
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LISA.ANDERSON@ONLYBYTES.COM",
+                            NormalizedUserName = "LISA.ANDERSON@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e47dfb0a-c528-4d0b-a83c-bdd775b1c603",
+                            StationId = 7,
+                            TwoFactorEnabled = false,
+                            UserName = "lisa.anderson@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 21,
+                            Id = "2598c336-9217-4014-8a1d-3df2fdb2a7d0",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b334c22c-eee0-49b4-9e2d-afa4549775d4",
+                            Email = "carlos.gomez@onlybytes.com",
                             EmailAddress = "carlos.gomez@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 21,
                             FirstName = "Carlos",
                             JobTitleId = 4,
                             LastName = "Gomez",
-                            StationId = 7
+                            LockoutEnabled = false,
+                            NormalizedEmail = "CARLOS.GOMEZ@ONLYBYTES.COM",
+                            NormalizedUserName = "CARLOS.GOMEZ@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "69eac15f-61c0-4717-87e4-0c372688d28e",
+                            StationId = 7,
+                            TwoFactorEnabled = false,
+                            UserName = "carlos.gomez@onlybytes.com"
                         },
                         new
                         {
-                            EmployeeId = 22,
+                            Id = "67f3d131-b306-49b7-86fc-4b1745934aac",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f6abadce-8241-4f14-ac4a-88625fb98822",
+                            Email = "emma.wright@onlybytes.com",
                             EmailAddress = "emma.wright@onlybytes.com",
+                            EmailConfirmed = false,
+                            EmployeeId = 22,
                             FirstName = "Emma",
                             JobTitleId = 4,
                             LastName = "Wright",
-                            StationId = 7
+                            LockoutEnabled = false,
+                            NormalizedEmail = "EMMA.WRIGHT@ONLYBYTES.COM",
+                            NormalizedUserName = "EMMA.WRIGHT@ONLYBYTES.COM",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "22209a96-0f27-4283-993e-630ee0c60e43",
+                            StationId = 7,
+                            TwoFactorEnabled = false,
+                            UserName = "emma.wright@onlybytes.com"
                         });
                 });
 
@@ -6244,175 +6564,180 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 1,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
+
                         },
                         new
                         {
                             EmployeeId = 1,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
+
                         },
                         new
                         {
                             EmployeeId = 1,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
+
                         },
                         new
                         {
                             EmployeeId = 1,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
+
                         },
                         new
                         {
                             EmployeeId = 1,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
+
                         },
                         new
                         {
                             EmployeeId = 2,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 2,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 2,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 2,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 2,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 11,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 11,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 11,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 11,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 11,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 12,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 12,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 12,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 12,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 12,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 3,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 3,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 3,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 4,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 4,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6425,7 +6750,7 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 5,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6444,56 +6769,56 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 13,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 13,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 13,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 14,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 14,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 14,
                             TrainingId = 3,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 15,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 15,
                             TrainingId = 2,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6506,7 +6831,7 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 16,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6525,35 +6850,35 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 6,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 6,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 7,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 7,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 8,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6566,49 +6891,49 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 17,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 17,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 18,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 18,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 19,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 19,
                             TrainingId = 4,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 20,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6621,21 +6946,21 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 9,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 9,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 2, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 2, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 10,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 1, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 1, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6648,21 +6973,21 @@ namespace FastFoodAPI.Migrations
                             EmployeeId = 21,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 21,
                             TrainingId = 5,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
                             EmployeeId = 22,
                             TrainingId = 1,
                             CompletedTraining = true,
-                            DateCompleted = new DateTime(2025, 3, 12, 13, 49, 35, 184, DateTimeKind.Local).AddTicks(2964)
+                            DateCompleted = new DateTime(2025, 3, 12, 17, 0, 56, 517, DateTimeKind.Local).AddTicks(1215)
                         },
                         new
                         {
@@ -6670,6 +6995,139 @@ namespace FastFoodAPI.Migrations
                             TrainingId = 5,
                             CompletedTraining = false
                         });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("FastFoodAPI.Entities.Employee", b =>
@@ -6695,6 +7153,7 @@ namespace FastFoodAPI.Migrations
                     b.HasOne("FastFoodAPI.Entities.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
+                        .HasPrincipalKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -6714,6 +7173,7 @@ namespace FastFoodAPI.Migrations
                     b.HasOne("FastFoodAPI.Entities.Employee", "Employee")
                         .WithMany("TrainingAssignments")
                         .HasForeignKey("EmployeeId")
+                        .HasPrincipalKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -6726,6 +7186,57 @@ namespace FastFoodAPI.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("Training");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("FastFoodAPI.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("FastFoodAPI.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FastFoodAPI.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("FastFoodAPI.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FastFoodAPI.Entities.Employee", b =>
