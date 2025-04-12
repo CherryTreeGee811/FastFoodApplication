@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 
 using FastFoodAPI.Services;
 using FastFoodAPI.Extensions;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,9 +83,12 @@ builder.Services.AddAuthentication(options => {
        ValidIssuer = jwtSettings["validIssuer"],
        ValidAudience = jwtSettings["validAudience"],
        IssuerSigningKey = new SymmetricSecurityKey(
-           Encoding.UTF8.GetBytes(secretKey))
+           Encoding.UTF8.GetBytes(secretKey)),
+       RoleClaimType = ClaimTypes.Role // Ensure roles are properly mapped
    };
-});builder.Services.AddScoped<IAuthService, AuthService>();
+});
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -109,6 +113,7 @@ app.UseAuthorization();
 app.ApplyMigrations();
 app.MapControllers();
 
+await FastFoodDbContext.SeedRolesAsync(app.Services);
 await FastFoodDbContext.SeedUsersAsync(app.Services);
 
 app.Run();

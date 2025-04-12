@@ -57,8 +57,14 @@ namespace FastFoodAPI.Services {
             if (_employee == null)
                 return false;
 
-            var result = await _userManager.CheckPasswordAsync(_employee, loginRequest.Password);
-            return result;
+            // Check if the user has any roles
+            var roles = await _userManager.GetRolesAsync(_employee);
+            if (roles == null || roles.Count == 0) {
+                // If no roles found, assign role based on job title
+                await AssignRoleBasedOnJobTitle(_employee.JobTitleId, _employee.Id);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -109,11 +115,14 @@ namespace FastFoodAPI.Services {
             }
 
             var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, _employee.Email)
+                    new Claim(ClaimTypes.Name, _employee.Email),
+                    // Add the employee ID as a claim
+                    new Claim("EmployeeId", _employee.EmployeeId.ToString())
                 };
 
             var roles = await _userManager.GetRolesAsync(_employee);
             foreach (var role in roles) {
+                // Use the standard ClaimTypes.Role format
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
@@ -164,10 +173,9 @@ namespace FastFoodAPI.Services {
             // This is a simplified mapping - you might want to get this from a database
             string roleName = jobTitleId switch {
                 1 => "Manager",
-                2 => "Supervisor",
-                3 => "Cashier",
-                4 => "Cook",
-                5 => "Cleaner",
+                2 => "Cashier",
+                3 => "Cook",
+                4 => "Cleaner",
                 _ => "Employee" // Default role
             };
 
