@@ -29,6 +29,7 @@ namespace ClientApplication.Controllers
             return View();
         }
 
+
         [HttpPost("/employees/complete-training")]
         public IActionResult CompleteTraining(int courseId)
         {
@@ -40,6 +41,52 @@ namespace ClientApplication.Controllers
             Console.WriteLine($"Course {courseId} marked complete at {completionTime}");
 
             return Json(new { success = true, courseId, completionTime });
+        }
+
+
+        [HttpGet("/employees")]
+        public IActionResult List()
+        {
+            // Placeholder data for employees
+            var employees = new List<(int EmployeeId, string FirstName, string LastName, string Role, string Position)>
+            {
+                (1, "John", "Doe", "Manager", "#1243"),
+                (2, "Jane", "Smith", "Worker", "#4252"),
+                (3, "Michael", "Brown", "Cook", "#5678"),
+                (4, "Emily", "Davis", "Cashier", "#7890")
+            };
+
+            ViewBag.Employees = employees;
+
+            return View();
+        }
+
+
+        [HttpPost("/employees/notify-schedule")]
+        public IActionResult NotifySchedule()
+        {
+            // Placeholder logic for notifying staff
+            Console.WriteLine("Staff notified of schedule.");
+
+            return Json(new { success = true, message = "Staff notified of schedule." });
+        }
+
+
+        [HttpGet("/employees/hire")]
+        public IActionResult Hire()
+        {
+            return View();
+        }
+
+
+        [HttpPost("/employees/hire")]
+        public IActionResult Hire(string firstName, string lastName, string role, string password)
+        {
+            // Placeholder logic for hiring a new employee
+            Console.WriteLine($"New employee hired: {firstName} {lastName}, Role: {role}");
+
+            // Redirect to the employee list after successful submission
+            return RedirectToAction("List");
         }
     }
 }
