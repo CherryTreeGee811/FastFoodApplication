@@ -1,4 +1,5 @@
 using FastFoodAPI.Entities;
+using FastFoodAPI.Extensions;
 using FastFoodAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -40,6 +41,7 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.ApplyMigrations();
 app.UseAuthorization();
 
 app.MapControllers();
