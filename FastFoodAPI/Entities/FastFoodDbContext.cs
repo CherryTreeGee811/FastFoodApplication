@@ -473,6 +473,11 @@ namespace FastFoodAPI.Entities {
 
             modelBuilder.Entity<Employee>().HasData(employees);
 
+            // Add this line to set the proper identity seed value
+            modelBuilder.Entity<Employee>()
+                .Property(e => e.EmployeeId)
+                .UseIdentityColumn(23, 1); // Start from 23 (after your last seeded ID of 22)
+
             // Seed sample training assignments with completion status and date
             // Create a base date for completed trainings
             var now = DateTime.Now;

@@ -19,14 +19,26 @@ public class AccountController : Controller
             return View();
         }
 
-        // Replace this with your authentication logic
-        if (username == "admin" && password == "password")
+        // Use hardcoded credentials for demonstration:
+        if (username == "manager" && password == "manager123")
         {
-            // Store the username in the session
+            // For a manager:
+            HttpContext.Session.SetString("Role", "Manager");
+            HttpContext.Session.SetInt32("EmployeeID", 1); // example manager employeeID
             HttpContext.Session.SetString("LoggedInUser", username);
 
-            // Redirect to the Employee index page
-            return RedirectToAction("Index", "Employee", new { employeeID = 1 }); // Replace 1 with the actual employee ID
+            // Redirect to the employee list page ("/employees")
+            return RedirectToAction("List", "Employee");
+        }
+        else if (username == "worker" && password == "worker123")
+        {
+            // For a worker:
+            HttpContext.Session.SetString("Role", "Worker");
+            HttpContext.Session.SetInt32("EmployeeID", 2); // example worker employeeID
+            HttpContext.Session.SetString("LoggedInUser", username);
+
+            // Redirect to the specific employee details page ("/employees/{employeeID}")
+            return RedirectToAction("Details", "Employee", new { employeeID = 2 });
         }
 
         ViewBag.ErrorMessage = "Invalid username or password.";

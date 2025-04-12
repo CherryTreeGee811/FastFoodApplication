@@ -1,10 +1,13 @@
 using FastFoodAPI.Entities;
+using FastFoodAPI.Extensions;
+using FastFoodAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 using FastFoodAPI.Services;
 using FastFoodAPI.Extensions;
@@ -13,7 +16,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Add Swagger services
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FastFoodAPI",
+        Version = "v1",
+        Description = "API for managing employees and operations in a fast food application.",
+        Contact = new OpenApiContact
+        {
+            Name = "FastFoodAPI Team",
+            Email = "support@fastfoodapi.com"
+        }
+    });
+});
+
 builder.Services.AddOpenApi();
+
+// Add Employee Manager Service
+builder.Services.AddScoped<IEmployeeManagerService, EmployeeManagerService>();
 
 builder.Services.AddDbContext<FastFoodDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
@@ -67,6 +90,12 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastFoodAPI v1");
+        c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root
+    });
     app.MapOpenApi();
 }
 
