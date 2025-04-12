@@ -32,8 +32,8 @@
                         <td>@employee.Role</td>
                         <td>@employee.Position</td>
                         <td>
-                            <a href="/employees/manage/@employee.EmployeeId" class="btn btn-primary btn-sm">Manage</a>
-                            <form method="post" action="/employees/fire/@employee.EmployeeId" class="d-inline">
+                            <a asp-controller="Employee" asp-action="Manage" asp-route-employeeid="employee.EmployeeId" class="btn btn-primary btn-sm">Manage</a>
+                            <form method="post" action="/employees/@employee.EmployeeId/fire/" class="d-inline">
                                 <button type="submit" class="btn btn-danger btn-sm">Fire</button>
                             </form>
                         </td>
