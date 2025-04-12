@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -49,7 +50,7 @@ namespace FastFoodAPI.Controllers {
         /// A 201 Created response containing URLs of the uploaded images and a count,
         /// or a 400 Bad Request if no files are provided.
         /// </returns>
-        //TODO: This function will need to be [Authorized(Roles = "?")]
+        [Authorize(Roles = "Manager")]
         [HttpPost("carousel")]
         public async Task<IActionResult> UploadPromoImages(List<IFormFile> files) {
 

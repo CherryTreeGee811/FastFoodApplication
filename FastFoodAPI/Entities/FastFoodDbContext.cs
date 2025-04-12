@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
-namespace FastFoodAPI.Entities
-{
-    public class FastFoodDbContext : DbContext
-    {
+
+namespace FastFoodAPI.Entities {
+    //public class FastFoodDbContext : DbContext {
+    public class FastFoodDbContext : IdentityDbContext<Employee> {
         public FastFoodDbContext(DbContextOptions<FastFoodDbContext> options)
             : base(options) { }
 
@@ -49,6 +48,7 @@ namespace FastFoodAPI.Entities
                 .HasOne(ta => ta.Employee)  // training assignment has 1 employee
                 .WithMany(e => e.TrainingAssignments)  // employee has many training assignments
                 .HasForeignKey(ta => ta.EmployeeId)  // using EmployeeId as the foreign key
+                .HasPrincipalKey(e => e.EmployeeId)  // explicitly use EmployeeId as the principal key
                 .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their training assignments
 
             // TrainingAssignment to Training relationship
@@ -72,6 +72,7 @@ namespace FastFoodAPI.Entities
                 .HasOne(sa => sa.Employee)  // shift assignment has 1 employee
                 .WithMany()  // employee can have many shift assignments (no navigation property defined)
                 .HasForeignKey(sa => sa.EmployeeId)  // using EmployeeId as the foreign key
+                .HasPrincipalKey(e => e.EmployeeId)  // explicitly use EmployeeId as the principal key
                 .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their shift assignments
 
             // ShiftAssignment to Shift relationship
@@ -133,6 +134,12 @@ namespace FastFoodAPI.Entities
                 // Managers (4)
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "john.doe@onlybytes.com",
+                    NormalizedUserName = "JOHN.DOE@ONLYBYTES.COM",
+                    Email = "john.doe@onlybytes.com",
+                    NormalizedEmail = "JOHN.DOE@ONLYBYTES.COM",
+
                     EmployeeId = 1,
                     FirstName = "John",
                     LastName = "Doe",
@@ -142,6 +149,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "sarah.johnson@onlybytes.com",
+                    NormalizedUserName = "SARAH.JOHNSON@ONLYBYTES.COM",
+                    Email = "sarah.johnson@onlybytes.com",
+                    NormalizedEmail = "SARAH.JOHNSON@ONLYBYTES.COM",
+
                     EmployeeId = 2,
                     FirstName = "Sarah",
                     LastName = "Johnson",
@@ -151,6 +164,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "richard.parker@onlybytes.com",
+                    NormalizedUserName = "RICHARD.PARKER@ONLYBYTES.COM",
+                    Email = "richard.parker@onlybytes.com",
+                    NormalizedEmail = "RICHARD.PARKER@ONLYBYTES.COM",
+
                     EmployeeId = 11,
                     FirstName = "Richard",
                     LastName = "Parker",
@@ -160,6 +179,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName  = "amanda.williams@onlybytes.com",
+                    NormalizedUserName  = "AMANDA.WILLIAMS@ONLYBYTES.COM",
+                    Email = "amanda.williams@onlybytes.com",
+                    NormalizedEmail = "AMANDA.WILLIAMS@ONLYBYTES.COM",
+
                     EmployeeId = 12,
                     FirstName = "Amanda",
                     LastName = "Williams",
@@ -171,6 +196,12 @@ namespace FastFoodAPI.Entities
                 // Cashiers (7)
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName  = "jane.smith@onlybytes.com",
+                    NormalizedUserName  = "JANE.SMITH@ONLYBYTES.COM",
+                    Email = "jane.smith@onlybytes.com",
+                    NormalizedEmail = "JANE.SMITH@ONLYBYTES.COM",
+
                     EmployeeId = 3,
                     FirstName = "Jane",
                     LastName = "Smith",
@@ -180,6 +211,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "michael.brown@onlybytes.com",
+                    NormalizedUserName = "MICHAEL.BROWN@ONLYBYTES.COM",
+                    Email = "michael.brown@onlybytes.com",
+                    NormalizedEmail = "MICHAEL.BROWN@ONLYBYTES.COM",
+
                     EmployeeId = 4,
                     FirstName = "Michael",
                     LastName = "Brown",
@@ -189,6 +226,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName  = "emily.davis@onlybytes.com",
+                    NormalizedUserName  = "EMILY.DAVIS@ONLYBYTES.COM",
+                    Email = "emily.davis@onlybytes.com",
+                    NormalizedEmail = "EMILY.DAVIS@ONLYBYTES.COM",
+
                     EmployeeId = 5,
                     FirstName = "Emily",
                     LastName = "Davis",
@@ -198,6 +241,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "daniel.thompson@onlybytes.com",
+                    NormalizedUserName = "DANIEL.THOMPSON@ONLYBYTES.COM",
+                    Email = "daniel.thompson@onlybytes.com",
+                    NormalizedEmail = "DANIEL.THOMPSON@ONLYBYTES.COM",
+
                     EmployeeId = 13,
                     FirstName = "Daniel",
                     LastName = "Thompson",
@@ -207,6 +256,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName  = "olivia.rodriguez@onlybytes.com",
+                    NormalizedUserName  = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
+                    Email = "olivia.rodriguez@onlybytes.com",
+                    NormalizedEmail = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
+
                     EmployeeId = 14,
                     FirstName = "Olivia",
                     LastName = "Rodriguez",
@@ -216,6 +271,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "thomas.lee@onlybytes.com",
+                    NormalizedUserName = "THOMAS.LEE@ONLYBYTES.COM",
+                    Email = "thomas.lee@onlybytes.com",
+                    NormalizedEmail = "THOMAS.LEE@ONLYBYTES.COM",
+
                     EmployeeId = 15,
                     FirstName = "Thomas",
                     LastName = "Lee",
@@ -225,6 +286,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "sophia.patel@onlybytes.com",
+                    NormalizedUserName = "SOPHIA.PATEL@ONLYBYTES.COM",
+                    Email  = "sophia.patel@onlybytes.com",
+                    NormalizedEmail  = "SOPHIA.PATEL@ONLYBYTES.COM",
+
                     EmployeeId = 16,
                     FirstName = "Sophia",
                     LastName = "Patel",
@@ -236,6 +303,12 @@ namespace FastFoodAPI.Entities
                 // Cooks (7)
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "mike.wilson@onlybytes.com",
+                    NormalizedUserName = "MIKE.WILSON@ONLYBYTES.COM",
+                    Email = "mike.wilson@onlybytes.com",
+                    NormalizedEmail = "MIKE.WILSON@ONLYBYTES.COM",
+
                     EmployeeId = 6,
                     FirstName = "Mike",
                     LastName = "Wilson",
@@ -245,6 +318,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "david.garcia@onlybytes.com",
+                    NormalizedUserName = "DAVID.GARCIA@ONLYBYTES.COM",
+                    Email = "david.garcia@onlybytes.com",
+                    NormalizedEmail = "DAVID.GARCIA@ONLYBYTES.COM",
+
                     EmployeeId = 7,
                     FirstName = "David",
                     LastName = "Garcia",
@@ -254,6 +333,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "jessica.martinez@onlybytes.com",
+                    NormalizedUserName = "JESSICA.MARTINEZ@ONLYBYTES.COM",
+                    Email  = "jessica.martinez@onlybytes.com",
+                    NormalizedEmail = "JESSICA.MARTINEZ@ONLYBYTES.COM",
+
                     EmployeeId = 8,
                     FirstName = "Jessica",
                     LastName = "Martinez",
@@ -263,6 +348,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "james.wilson@onlybytes.com",
+                    NormalizedUserName = "JAMES.WILSON@ONLYBYTES.COM",
+                    Email  = "james.wilson@onlybytes.com",
+                    NormalizedEmail = "JAMES.WILSON@ONLYBYTES.COM",
+
                     EmployeeId = 17,
                     FirstName = "James",
                     LastName = "Wilson",
@@ -272,6 +363,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "maria.hernandez@onlybytes.com",
+                    NormalizedUserName = "MARIA.HERNANDEZ@ONLYBYTES.COM",
+                    Email = "maria.hernandez@onlybytes.com",
+                    NormalizedEmail = "MARIA.HERNANDEZ@ONLYBYTES.COM",
+
                     EmployeeId = 18,
                     FirstName = "Maria",
                     LastName = "Hernandez",
@@ -281,6 +378,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "kevin.kim@onlybytes.com",
+                    NormalizedUserName = "KEVIN.KIM@ONLYBYTES.COM",
+                    Email = "kevin.kim@onlybytes.com",
+                    NormalizedEmail= "KEVIN.KIM@ONLYBYTES.COM",
+
                     EmployeeId = 19,
                     FirstName = "Kevin",
                     LastName = "Kim",
@@ -290,6 +393,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "jennifer.chen@onlybytes.com",
+                    NormalizedUserName = "JENNIFER.CHEN@ONLYBYTES.COM",
+                    Email = "jennifer.chen@onlybytes.com",
+                    NormalizedEmail = "JENNIFER.CHEN@ONLYBYTES.COM",
+
                     EmployeeId = 20,
                     FirstName = "Jennifer",
                     LastName = "Chen",
@@ -301,6 +410,12 @@ namespace FastFoodAPI.Entities
                 // Cleaners (4)
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "robert.taylor@onlybytes.com",
+                    NormalizedUserName = "ROBERT.TAYLOR@ONLYBYTES.COM",
+                    Email = "robert.taylor@onlybytes.com",
+                    NormalizedEmail = "ROBERT.TAYLOR@ONLYBYTES.COM",
+
                     EmployeeId = 9,
                     FirstName = "Robert",
                     LastName = "Taylor",
@@ -310,6 +425,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "lisa.anderson@onlybytes.com",
+                    NormalizedUserName = "LISA.ANDERSON@ONLYBYTES.COM",
+                    Email = "lisa.anderson@onlybytes.com",
+                    NormalizedEmail = "LISA.ANDERSON@ONLYBYTES.COM",
+
                     EmployeeId = 10,
                     FirstName = "Lisa",
                     LastName = "Anderson",
@@ -319,6 +440,13 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "carlos.gomez@onlybytes.com",
+                    NormalizedUserName = "CARLOS.GOMEZ@ONLYBYTES.COM",
+                    Email  = "carlos.gomez@onlybytes.com",
+                    NormalizedEmail = "CARLOS.GOMEZ@ONLYBYTES.COM",
+
+
                     EmployeeId = 21,
                     FirstName = "Carlos",
                     LastName = "Gomez",
@@ -328,6 +456,12 @@ namespace FastFoodAPI.Entities
                 },
                 new Employee
                 {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = "emma.wright@onlybytes.com",
+                    NormalizedUserName = "EMMA.WRIGHT@ONLYBYTES.COM",
+                    Email  = "emma.wright@onlybytes.com",
+                    NormalizedEmail = "EMMA.WRIGHT@ONLYBYTES.COM",
+
                     EmployeeId = 22,
                     FirstName = "Emma",
                     LastName = "Wright",
@@ -421,8 +555,11 @@ namespace FastFoodAPI.Entities
             base.OnModelCreating(modelBuilder);
         }
 
-        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees)
-        {
+        /// <summary>
+        /// Generates a complete shift schedule from April 8, 2025 to May 31, 2025
+        /// by assigning employees to Day, Afternoon, and Night shifts. 
+        /// Employees are rotated and assigned based on job title and staffing needs.
+        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees) {
             var assignments = new List<ShiftAssignment>();
 
             // Start with April 8, 2025 (current day) and go until May 31, 2025
@@ -469,8 +606,15 @@ namespace FastFoodAPI.Entities
             return assignments;
         }
 
-        private List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date, int shiftId, List<Employee> employees, int count)
-        {
+        /// <summary>
+        /// Assigns a specified number of employees to a shift on a given date using a rotating strategy.
+        /// </summary>
+        /// <param name="date">The date of the shift.</param>
+        /// <param name="shiftId">The shift ID (1 = Day, 2 = Afternoon, 3 = Night).</param>
+        /// <param name="employees">List of available employees for the job type.</param>
+        /// <param name="count">Number of employees to assign.</param>
+        /// <returns>A list of shift assignments for the specified shift and date.</returns>
+        private List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date, int shiftId, List<Employee> employees, int count) {
             var assignments = new List<ShiftAssignment>();
             if (employees.Count == 0 || count == 0) return assignments;
 
@@ -492,6 +636,47 @@ namespace FastFoodAPI.Entities
             }
 
             return assignments;
+        }
+        
+        /// <summary>
+        /// Seeds password and role information for employees using the ASP.NET Identity system.
+        /// Employees without a password are assigned a default password and role based on their job title.
+        /// </summary>
+        /// <param name="serviceProvider">Used to retrieve required scoped services such as UserManager and DbContext.</param>
+        public static async Task SeedUsersAsync(IServiceProvider serviceProvider) {
+            using var scope = serviceProvider.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Employee>>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<FastFoodDbContext>();
+            
+            // Default password for seeded accounts
+            const string defaultPassword = "Password123!";
+            
+            // Get all seeded employees
+            var employees = await dbContext.Employees.ToListAsync();
+            
+            foreach (var employee in employees)
+            {
+                // Check if password has already been set
+                var passwordSet = await userManager.HasPasswordAsync(employee);
+                
+                if (!passwordSet)
+                {
+                    // Set password for the employee
+                    await userManager.AddPasswordAsync(employee, defaultPassword);
+                    
+                    // Optionally add to appropriate roles based on JobTitleId
+                    string roleName = employee.JobTitleId switch
+                    {
+                        1 => "Manager",
+                        2 => "Cashier",
+                        3 => "Cook",
+                        4 => "Cleaner",
+                        _ => "Employee"
+                    };
+                    
+                    await userManager.AddToRoleAsync(employee, roleName);
+                }
+            }
         }
     }
 }

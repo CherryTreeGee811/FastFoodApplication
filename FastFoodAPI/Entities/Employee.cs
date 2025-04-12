@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FastFoodAPI.Entities
-{
-    public class Employee
-    {
+namespace FastFoodAPI.Entities {
+    public class Employee : IdentityUser {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int EmployeeId { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
