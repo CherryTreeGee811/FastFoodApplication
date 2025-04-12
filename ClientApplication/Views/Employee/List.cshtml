@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Manage Employees";
+    var employees = ViewBag.Employees as List<(int EmployeeId, string FirstName, string LastName, string Role, string Position)>;
+}
+
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Employees</h1>
+        <a href="/employees/hire" class="btn btn-success">Hire New Employee</a>
+    </div>
+
+    <!-- Employee Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>First</th>
+                <th>Last</th>
+                <th>Role</th>
+                <th>Position</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (employees != null)
+            {
+                foreach (var employee in employees)
+                {
+                    <tr>
+                        <td>@employee.FirstName</td>
+                        <td>@employee.LastName</td>
+                        <td>@employee.Role</td>
+                        <td>@employee.Position</td>
+                        <td>
+                            <a href="/employees/manage/@employee.EmployeeId" class="btn btn-primary btn-sm">Manage</a>
+                            <form method="post" action="/employees/fire/@employee.EmployeeId" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Fire</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <!-- Notify Staff Button -->
+    <button class="btn btn-primary mt-3" onclick="notifySchedule()">Notify Staff of Schedule</button>
+</div>
+
+<script>
+    function notifySchedule() {
+        fetch('/employees/notify-schedule', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert('Failed to notify staff.');
+                }
+            });
+    }
+</script>
