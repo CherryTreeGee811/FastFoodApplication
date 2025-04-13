@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClientApplication.Messages;
 using ClientApplication.Models;
+using System.Text.Json;
+using System.Text;
 
 
 namespace ClientApplication.Controllers
@@ -23,19 +25,19 @@ namespace ClientApplication.Controllers
         {
             // Placeholder data for shifts
             ViewBag.Shifts = new List<(string Start, string End)>
-                {
-                    ("2025-04-12", "Morning"),
-                    ("2025-04-13", "Afternoon"),
-                    ("2025-04-15", "Night")
-                };
+            {
+                ("2025-04-12", "Morning"),
+                ("2025-04-13", "Afternoon"),
+                ("2025-04-15", "Night")
+            };
 
             // Placeholder data for training
             ViewBag.Training = new List<(int CourseId, string CourseName)>
-                {
-                    (1, "Food Safety"),
-                    (2, "Customer Service"),
-                    (3, "Equipment Maintenance")
-                };
+            {
+                (1, "Food Safety"),
+                (2, "Customer Service"),
+                (3, "Equipment Maintenance")
+            };
 
             ViewBag.EmployeeID = employeeID;
 
@@ -95,20 +97,53 @@ namespace ClientApplication.Controllers
 
 
         [HttpGet("/employees/hire")]
-        public IActionResult Hire()
+        public async Task<IActionResult> Hire()
         {
-            return View();
+            // Call the API endpoint
+            var roleResponse = await _client.GetAsync($"{_baseURL}/roles");
+
+            roleResponse.EnsureSuccessStatusCode();
+
+            var roles = await roleResponse.Content.ReadFromJsonAsync<List<RolesDTO>>();
+
+            var model = new HireEmployeeViewModel
+            {
+                Roles = roles
+            };
+
+            return View(model);
         }
 
 
         [HttpPost("/employees/hire")]
-        public IActionResult Hire(string firstName, string lastName, string role, string password)
+        public async Task<IActionResult> Hire(HireEmployeeViewModel hireEmployeeViewModel)
         {
-            // Placeholder logic for hiring a new employee
-            Console.WriteLine($"New employee hired: {firstName} {lastName}, Role: {role}");
+            try
+            {
+                var registerRequest = new EmployeeRegistrationRequest
+                {
+                    FirstName = hireEmployeeViewModel.FirstName,
+                    LastName = hireEmployeeViewModel.LastName,
+                    Email = hireEmployeeViewModel.Email,
+                    Password = hireEmployeeViewModel.Password,
+                    JobTitleId = hireEmployeeViewModel.SelectedRole
+                };
 
-            // Redirect to the employee list after successful submission
-            return RedirectToAction("List");
+                var jsonContent = JsonSerializer.Serialize(registerRequest);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var registerResponse = await _client.PostAsync($"{_baseURL}/register", content);
+
+                registerResponse.EnsureSuccessStatusCode();
+
+                // Redirect to the employee list after successful submission
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., network issues, serialization errors, etc.)
+                throw new Exception("An error occurred during login: " + ex.Message);
+            }
         }
 
 

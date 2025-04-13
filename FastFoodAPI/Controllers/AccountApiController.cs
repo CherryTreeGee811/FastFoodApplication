@@ -1,6 +1,8 @@
 ﻿using FastFoodAPI.Messages;
 using FastFoodAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+
+
 namespace FastFoodAPI.Controllers {
     [ApiController()]
     [Route("/api")]
@@ -26,7 +28,8 @@ namespace FastFoodAPI.Controllers {
             bool isSuccessful = await _authservice.LoginUser(loginRequest);
 
             if (isSuccessful) {
-                return Ok(new { Token = await _authservice.CreateToken() });
+                var token = new TokenDTO { Token = await _authservice.CreateToken() };
+                return Ok(token);
             } else {
                 return Unauthorized();
             }

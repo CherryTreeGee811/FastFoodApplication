@@ -21,6 +21,7 @@ namespace FastFoodAPI.Extensions {
             using FastFoodDbContext dbContext =
                 scope.ServiceProvider.GetRequiredService<FastFoodDbContext>();
 
+            
             dbContext.Database.Migrate();
         }
     }
