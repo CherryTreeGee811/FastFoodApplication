@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ClientApplication.Messages;
 using ClientApplication.Models;
 
 
@@ -112,9 +113,28 @@ namespace ClientApplication.Controllers
 
 
         [HttpGet("/employees/{employeeID}/manage")]
-        public IActionResult Manage(int employeeID)
+        public async Task <IActionResult> Manage(int employeeID)
         {
-            // Placeholder data for roles, positions, and training modules
+            // Call the API endpoint
+            var trainingResponse = await _client.GetAsync($"{_baseURL}/trainingmodules");
+            var stationResponse = await _client.GetAsync($"{_baseURL}/workstations");
+            var shiftsResponse = await _client.GetAsync($"{_baseURL}/workstations");
+
+            // Ensure the response is successful
+            trainingResponse.EnsureSuccessStatusCode();
+            stationResponse.EnsureSuccessStatusCode();
+
+            // Deserialize the response content into a list of employees
+            var trainingModules = await trainingResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
+            var stations = await stationResponse.Content.ReadFromJsonAsync<List<StationDTO>>();
+
+            var model = new ManageEmployeeViewModel
+            {
+                TrainingModulesDTO = trainingModules,
+                StationDTO = stations
+            };
+
+
             ViewBag.Roles = new List<string> { "Manager", "Worker" };
             ViewBag.Positions = new List<string> { "#1243", "#4252", "#5678", "#7890" }; // Replace with API data later
             ViewBag.TrainingModules = new List<string> { "Food Safety", "Customer Service", "Equipment Maintenance" }; // Replace with API data later

@@ -1,4 +1,5 @@
 using FastFoodAPI.Entities;
+using FastFoodAPI.Messages;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -27,10 +28,10 @@ namespace FastFoodAPI.Controllers
         [HttpGet("employees/workstations")]
         public IActionResult GetStations()
         {
-            var stations = _fastFoodDbContext.Stations.Select(station => new
+            var stations = _fastFoodDbContext.Stations.Select(station => new StationDTO
             {
-                station.StationId,
-                station.StationName
+                StationId = station.StationId,
+                StationName = station.StationName
             }).ToList();
             return Ok(stations);
         }
@@ -42,12 +43,12 @@ namespace FastFoodAPI.Controllers
         [HttpGet("employees/trainingmodules")]
         public IActionResult GetTrainingModules()
         {
-            var trainingModules = _fastFoodDbContext.Trainings.Select(training => new
+            var trainingModules = _fastFoodDbContext.Trainings.Select(training => new TrainingModuleDTO
             {
-                training.TrainingId,
-                training.TrainingName
+                TrainingId = training.TrainingId,
+                TrainingName = training.TrainingName
             }).ToList();
-           
+       
             return Ok(trainingModules);
         }
         
@@ -55,7 +56,7 @@ namespace FastFoodAPI.Controllers
         /// <summary>
         /// Retrieve role for specific employee.
         /// </summary>
-        [HttpGet("employees/role/{id}")]
+        [HttpGet("employees/roles/{id}")]
         public IActionResult GetEmployeeRole(int id)
         {
             var employeeRole = _fastFoodDbContext.Employees

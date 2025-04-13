@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
+
 namespace ClientApplication.Models
 {
     public class EmployeeListDTO
