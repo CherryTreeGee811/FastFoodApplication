@@ -1,8 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClientApplication.Messages;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Text;
 
 
 public class AccountController : Controller
 {
+    private readonly HttpClient _client;
+    private readonly string _baseURL;
+
+
+    public AccountController(HttpClient client)
+    {
+        _client = client;
+        _baseURL = "http://fastfoodapi:8000/api";
+    }
+
+
     [HttpGet]
     public IActionResult Login()
     {
@@ -11,26 +27,87 @@ public class AccountController : Controller
 
 
     [HttpPost]
-    public IActionResult Login(string username, string password)
+    public async Task<IActionResult> Login(string email, string password)
     {
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
-            ViewBag.ErrorMessage = "Username and password are required.";
+            ViewBag.ErrorMessage = "Email and password are required.";
             return View();
         }
 
-        // Replace this with your authentication logic
-        if (username == "admin" && password == "password")
+
+        try
         {
-            // Store the username in the session
-            HttpContext.Session.SetString("LoggedInUser", username);
+            var loginRequest = new EmployeeLoginRequest { Email = email, Password = password };
+            var jsonContent = JsonSerializer.Serialize(loginRequest);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            // Redirect to the Employee details page
-            return RedirectToAction("Details", "Employee", new { employeeID = 1 }); // Replace 1 with the actual employee ID
+            var loginResponse = await _client.PostAsync($"{_baseURL}/login", content);
+
+            if (loginResponse.IsSuccessStatusCode)
+            {
+                // Deserialize the response content into a list of employees
+                var tokenDto = await loginResponse.Content.ReadFromJsonAsync<TokenDTO>();
+
+
+                if (string.IsNullOrEmpty(tokenDto.Token))
+                {
+                    ViewBag.ErrorMessage = "Invalid Username or Password.";
+                    return View();
+                }
+
+
+                // Parse the token to extract claims
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(tokenDto.Token);
+
+                // Extract the role claim
+                var role = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                // Store the token and role in session
+                HttpContext.Session.SetString("AuthToken", tokenDto.Token);
+
+
+                if (string.IsNullOrEmpty(role))
+                {
+                    ViewBag.ErrorMessage = "Failed to retrieve role from token.";
+                    return View();
+                }
+
+
+                // Use hardcoded credentials for demonstration:
+                if (string.Equals(role, "Manager"))
+                {
+                    // For a manager:
+                    HttpContext.Session.SetString("Role", "Manager");
+                    HttpContext.Session.SetInt32("EmployeeID", 1);
+                    HttpContext.Session.SetString("LoggedInUser", email);
+
+                    // Redirect to the employee list page ("/employees")
+                    return RedirectToAction("List", "Employee");
+                }
+                else
+                {
+                    // For a worker:
+                    HttpContext.Session.SetString("Role", "Worker");
+                    HttpContext.Session.SetInt32("EmployeeID", 2); // example worker employeeID
+                    HttpContext.Session.SetString("LoggedInUser", email);
+
+                    // Redirect to the specific employee details page ("/employees/{employeeID}")
+                    return RedirectToAction("Details", "Employee", new { employeeID = 2 });
+                }
+            }
+            else
+            {
+                // Handle unsuccessful login (e.g., log error, throw exception, etc.)
+                throw new Exception("Login failed: " + loginResponse.ReasonPhrase);
+            }
         }
-
-        ViewBag.ErrorMessage = "Invalid username or password.";
-        return View();
+        catch (Exception ex)
+        {
+            // Handle exceptions (e.g., network issues, serialization errors, etc.)
+            throw new Exception("An error occurred during login: " + ex.Message);
+        }
     }
 
 
