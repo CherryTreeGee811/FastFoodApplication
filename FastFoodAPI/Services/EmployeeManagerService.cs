@@ -39,7 +39,7 @@ namespace FastFoodAPI.Services
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
         /// <returns>The details of the specified employee, or null if not found.</returns>
-        public async Task<object> GetEmployee(string id)
+        public async Task<EmployeeListDTO> GetEmployee(string id)
         {
             var employee = await _fastFoodDbContext.Employees
                 .Include(e => e.JobTitle)
@@ -51,16 +51,38 @@ namespace FastFoodAPI.Services
                 return null;
             }
 
-            return new
-            {
-                employee.Id,
-                employee.FirstName,
-                employee.LastName,
-                employee.Email,
-                employee.JobTitleId,
+            return new EmployeeListDTO { 
+                EmployeeId = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                EmailAddress = employee.Email,
                 JobTitle = employee.JobTitle.Title,
-                employee.StationId,
-                StationName = employee.Station?.StationName
+                StationName = employee.Station != null ? employee.Station.StationName : null
+            };
+        }
+
+        /// <summary>
+        /// Retrieves a specific employee by email.
+        /// </summary>
+        /// <param name="email">The email of the employee to retrieve.</param>
+        /// <returns>The details of the specified employee, or null if not found.</returns>
+        public async Task<EmployeeListDTO> GetEmployeeByEmail(string email) {
+            var employee = await _fastFoodDbContext.Employees
+                .Include(e => e.JobTitle)
+                .Include(e => e.Station)
+                .FirstOrDefaultAsync(e => e.Email == email);
+
+            if (employee == null) {
+                return null;
+            }
+
+            return new EmployeeListDTO { 
+                EmployeeId = employee.Id,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                EmailAddress = employee.Email,
+                JobTitle = employee.JobTitle.Title,
+                StationName = employee.Station != null ? employee.Station.StationName : null
             };
         }
 

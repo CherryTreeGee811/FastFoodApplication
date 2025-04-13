@@ -17,8 +17,15 @@ namespace FastFoodAPI.Services
         /// Retrieves a specific employee by ID.
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
-        /// <returns>The details of the specified employee, or null if not found.</returns>
-        Task<object> GetEmployee(string id);
+        /// <returns>The details of the specified employee packaged in a EmployeeListDTO, or null if not found.</returns>
+        Task<EmployeeListDTO> GetEmployee(string id);
+
+        /// <summary>
+        /// Retrieves a specific employee by email.
+        /// </summary>
+        /// <param name="email">The email of the employee to retrieve.</param>
+        /// <returns>The details of the specified employee packaged in a EmployeeListDTO, or null if not found.</returns>
+        Task<EmployeeListDTO> GetEmployeeByEmail(string email);
 
         /// <summary>
         /// Creates a new employee.

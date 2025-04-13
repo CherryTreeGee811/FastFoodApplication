@@ -13,8 +13,9 @@ namespace FastFoodAPI.Controllers {
         /// Initializes a new instance of the <see cref="AccountApiController"/> class.
         /// </summary>
         /// <param name="authService">The authentication service used for login and registration operations.</param>
-        public AccountApiController(IAuthService authService) {
+        public AccountApiController(IAuthService authService, IEmployeeManagerService employeeManagerService) {
             _authservice = authService;
+            _employeeManagerService = employeeManagerService;
         }
 
         /// <summary>
@@ -64,11 +65,21 @@ namespace FastFoodAPI.Controllers {
         /// An <see cref="IActionResult"/> indicating success or failure of the registration process.
         /// </returns>
         [HttpPost("register")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> RegisterUser(EmployeeRegistrationRequest registrationRequest) {
             var result = await _authservice.RegisterUser(registrationRequest);
 
             if (result.Success) {
-                return Ok(new { message = "Registration successful" });
+                var newEmployee = await _employeeManagerService.GetEmployeeByEmail(registrationRequest.Email);
+                var locationUri = Url.Action("GetUserByEmail", "AccountApi", new { email = registrationRequest.Email }, Request.Scheme);
+                return Created(locationUri, new EmployeeListDTO { 
+                    EmployeeId = newEmployee.EmployeeId,
+                    FirstName = newEmployee.FirstName,
+                    LastName = newEmployee.LastName,
+                    EmailAddress = newEmployee.EmailAddress,
+                    JobTitle = newEmployee.JobTitle,
+                    StationName = newEmployee.StationName
+                });
             }
             else {
                 return BadRequest(new { errors = result.Errors });
@@ -76,5 +87,6 @@ namespace FastFoodAPI.Controllers {
         }
 
         private IAuthService _authservice;
+        private IEmployeeManagerService _employeeManagerService;
     }
 }
