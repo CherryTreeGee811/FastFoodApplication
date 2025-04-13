@@ -7,7 +7,7 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Collections.Concurrent;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace FastFoodAPI.Services {
 
@@ -28,6 +28,7 @@ namespace FastFoodAPI.Services {
             _fastFoodDbContext = fastFoodDbContext;
         }
 
+
         /// <summary>
         /// Creates a JWT token for the authenticated user.
         /// </summary>
@@ -39,6 +40,7 @@ namespace FastFoodAPI.Services {
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
+
 
         /// <summary>
         /// Authenticates a user with the provided login credentials.
@@ -72,6 +74,7 @@ namespace FastFoodAPI.Services {
 
             return true;
         }
+
 
         /// <summary>
         /// Generates token options for the JWT.
@@ -111,6 +114,7 @@ namespace FastFoodAPI.Services {
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
+
         /// <summary>
         /// Retrieves the claims for the authenticated user.
         /// </summary>
@@ -132,6 +136,7 @@ namespace FastFoodAPI.Services {
 
             return claims;
         }
+
 
         /// <summary>
         /// Registers a new user with the provided registration details.
@@ -160,6 +165,7 @@ namespace FastFoodAPI.Services {
 
             return (false, result.Errors.Select(e => e.Description).ToArray());
         }
+
 
         /// <summary>
         /// Assigns a role to a user based on their job title.
@@ -201,6 +207,7 @@ namespace FastFoodAPI.Services {
             await _userManager.AddToRoleAsync(employee, roleName);
             return true;
         }
+
 
         /// <summary>
         /// Invalidates a JWT token by adding it to the blacklist.

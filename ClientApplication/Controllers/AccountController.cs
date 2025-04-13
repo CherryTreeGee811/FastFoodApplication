@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 
 public class AccountController : Controller
@@ -74,7 +75,6 @@ public class AccountController : Controller
                     return View();
                 }
 
-
                 // Use hardcoded credentials for demonstration:
                 if (string.Equals(role, "Manager"))
                 {
@@ -112,8 +112,20 @@ public class AccountController : Controller
 
 
     [HttpPost]
-    public IActionResult Logout()
+    public async Task <IActionResult> Logout()
     {
+        // Create the HttpRequestMessage
+        var logoutRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/logout");
+
+        var token = HttpContext.Session.GetString("AuthToken");
+
+        // Add headers to the request
+        logoutRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        // Send the request
+        var logoutResponse = await _client.SendAsync(logoutRequest);
+        logoutResponse.EnsureSuccessStatusCode();
+
         // Clear the session
         HttpContext.Session.Clear();
 

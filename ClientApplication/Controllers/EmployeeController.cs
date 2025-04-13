@@ -16,7 +16,7 @@ namespace ClientApplication.Controllers
         public EmployeeController(HttpClient client)
         {
             _client = client;
-            _baseURL = "http://fastfoodapi:8000/api/employees";
+            _baseURL = "http://fastfoodapi:8000/api";
         }
 
 
@@ -65,7 +65,7 @@ namespace ClientApplication.Controllers
             try
             {
                 // Call the API endpoint
-                var response = await _client.GetAsync(_baseURL);
+                var response = await _client.GetAsync($"{_baseURL}/employees");
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -100,7 +100,7 @@ namespace ClientApplication.Controllers
         public async Task<IActionResult> Hire()
         {
             // Call the API endpoint
-            var roleResponse = await _client.GetAsync($"{_baseURL}/roles");
+            var roleResponse = await _client.GetAsync($"{_baseURL}/employees/roles");
 
             roleResponse.EnsureSuccessStatusCode();
 
@@ -151,10 +151,10 @@ namespace ClientApplication.Controllers
         public async Task <IActionResult> Manage(int employeeID)
         {
             // Call the API endpoint
-            var trainingResponse = await _client.GetAsync($"{_baseURL}/trainingmodules");
-            var stationResponse = await _client.GetAsync($"{_baseURL}/workstations");
-            var roleResponse = await _client.GetAsync($"{_baseURL}/roles");
-            var shiftResponse = await _client.GetAsync($"{_baseURL}/shifts");
+            var trainingResponse = await _client.GetAsync($"{_baseURL}/employees/trainingmodules");
+            var stationResponse = await _client.GetAsync($"{_baseURL}/employees/workstations");
+            var roleResponse = await _client.GetAsync($"{_baseURL}/employees/roles");
+            var shiftResponse = await _client.GetAsync($"{_baseURL}/employees/shifts");
 
             // Ensure the response is successful
             trainingResponse.EnsureSuccessStatusCode();
