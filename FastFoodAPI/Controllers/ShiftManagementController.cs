@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using FastFoodAPI.Entities;
+using FastFoodAPI.Messages;
 
 
 namespace FastFoodAPI.Controllers
@@ -41,6 +42,34 @@ namespace FastFoodAPI.Controllers
             _fastFoodDbContext.SaveChanges();
 
             return Ok();
+        }
+        
+        /// <summary>
+        /// This method retrieves all available roles to the client.
+        /// </summary>
+        [HttpGet("employees/roles")]
+        public IActionResult GetRoles()
+        {
+            var roles = _fastFoodDbContext.JobTitles.Select(role => new RolesDTO
+            {
+                JobTitleId = role.JobTitleId,
+                Title = role.Title
+            }).ToList();
+            return Ok(roles);
+        }
+        
+        /// <summary>
+        /// This method retrieves all available shifts to the client.
+        /// </summary>
+        [HttpGet("employees/shifts")]
+        public IActionResult GetShifts()
+        {
+            var shifts = _fastFoodDbContext.Shifts.Select(shift => new ShiftsDTO
+            {
+                ShiftId = shift.ShiftId,
+                ShiftPosition = shift.ShiftPosition.ToString()
+            }).ToList();
+            return Ok(shifts);
         }
     }
 }
