@@ -6,7 +6,7 @@ namespace FastFoodAPI.Messages
     {
         [JsonPropertyName("stationId")]
         public int StationId { get; set; }
-
+    
 
         [JsonPropertyName("stationName")]
         public string StationName { get; set; } = string.Empty;
