@@ -24,12 +24,12 @@ namespace FastFoodAPI.Controllers
         /// This method updates the current training module boolean
         /// to indicate it has been completed.
         /// </summary>
-        [HttpPatch("employees/completedtrainings/{employeeId}/{trainingModuleId}")]
-        public IActionResult UpdateTrainingModule(int employeeId, int trainingModuleId)
+        [HttpPatch("employees/completedtrainings/{employeeId}/{trainingModuleId:int}")]
+        public IActionResult UpdateTrainingModule(string employeeId, int trainingModuleId)
         {
             // First step is to find the employee.
             var employee = _fastFoodDbContext.Employees
-                .FirstOrDefault(e => e.EmployeeId == employeeId);
+                .FirstOrDefault(e => e.Id == employeeId);
             // The next step is to check for the training module that is being completed.
             var trainingModule = _fastFoodDbContext.TrainingAssignments
                 .FirstOrDefault(tm => tm.TrainingId == trainingModuleId);

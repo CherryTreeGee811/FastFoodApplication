@@ -2,7 +2,7 @@
 {
     public class TrainingAssignment
     {
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
 
         public Employee Employee { get; set; }
 

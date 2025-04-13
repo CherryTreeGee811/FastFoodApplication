@@ -8,6 +8,7 @@ namespace ClientApplication.Messages
         [JsonPropertyName("jobTitleId")]
         public int JobTitleId { get; set; }
         
+
         [JsonPropertyName("jobTitle")]
         public string? Title { get; set; } = string.Empty;
     }

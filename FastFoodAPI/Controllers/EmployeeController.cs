@@ -42,8 +42,8 @@ namespace FastFoodAPI.Controllers
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
         /// <returns>The details of the specified employee.</returns>
-        [HttpGet("employees/{id:int}")]
-        public async Task<IActionResult> GetEmployee(int id)
+        [HttpGet("employees/{id}")]
+        public async Task<IActionResult> GetEmployee(string id)
         {
             var employee = await _employeeManagerService.GetEmployee(id);
 
@@ -71,7 +71,7 @@ namespace FastFoodAPI.Controllers
                 return BadRequest(errorMessage);
             }
 
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.EmployeeId }, employee);
+            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
         }
 
 
@@ -81,8 +81,8 @@ namespace FastFoodAPI.Controllers
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="updateEmployeeDto">The updated employee details.</param>
         /// <returns>The updated employee if successful.</returns>
-        [HttpPut("employees/{id:int}")]
-        public async Task<IActionResult> UpdateEmployee(int id, UpdateEmployeeDto updateEmployeeDto)
+        [HttpPut("employees/{id}")]
+        public async Task<IActionResult> UpdateEmployee(string id, UpdateEmployeeDto updateEmployeeDto)
         {
             var (employee, success, errorMessage) = await _employeeManagerService.UpdateEmployee(id, updateEmployeeDto);
 
@@ -105,8 +105,8 @@ namespace FastFoodAPI.Controllers
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="patchEmployeeDto">The field to update.</param>
         /// <returns>The updated employee if successful.</returns>
-        [HttpPatch("employees/{id:int}")]
-        public async Task<IActionResult> PatchEmployee(int id, UpdateEmployeeDto patchEmployeeDto)
+        [HttpPatch("employees/{id}")]
+        public async Task<IActionResult> PatchEmployee(string id, UpdateEmployeeDto patchEmployeeDto)
         {
             var (employee, success, errorMessage) = await _employeeManagerService.PatchEmployee(id, patchEmployeeDto);
 
@@ -128,8 +128,8 @@ namespace FastFoodAPI.Controllers
         /// </summary>
         /// <param name="id">The ID of the employee to delete.</param>
         /// <returns>A success message if the deletion is successful.</returns>
-        [HttpDelete("employees/{id:int}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        [HttpDelete("employees/{id}")]
+        public async Task<IActionResult> DeleteEmployee(string id)
         {
             var (success, errorMessage) = await _employeeManagerService.DeleteEmployee(id);
 

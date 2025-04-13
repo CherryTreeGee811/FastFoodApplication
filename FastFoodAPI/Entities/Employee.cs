@@ -1,22 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace FastFoodAPI.Entities {
     public class Employee : IdentityUser {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int EmployeeId { get; set; }
-
         [Required(ErrorMessage = "First name is required.")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Last name is required.")]
         public string LastName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email address format.")]
-        public string EmailAddress { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Job title is required.")]
         public int JobTitleId { get; set; }
@@ -26,6 +18,8 @@ namespace FastFoodAPI.Entities {
         public int? StationId { get; set; }
 
         public Station? Station { get; set; }
+
+        public ICollection<ShiftAssignment> ShiftAssignments { get; set; } = new List<ShiftAssignment>();
 
         public ICollection<TrainingAssignment> TrainingAssignments { get; set; } = new List<TrainingAssignment>();
     }

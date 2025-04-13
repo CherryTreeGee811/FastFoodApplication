@@ -116,8 +116,6 @@ namespace FastFoodAPI.Services {
 
             var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, _employee.Email),
-                    // Add the employee ID as a claim
-                    new Claim("EmployeeId", _employee.EmployeeId.ToString())
                 };
 
             var roles = await _userManager.GetRolesAsync(_employee);
@@ -138,7 +136,6 @@ namespace FastFoodAPI.Services {
             var employee = new Employee {
                 UserName = registrationRequest.Email,
                 Email = registrationRequest.Email,
-                EmailAddress = registrationRequest.Email,
                 FirstName = registrationRequest.FirstName,
                 LastName = registrationRequest.LastName,
                 JobTitleId = registrationRequest.JobTitleId,
