@@ -1,0 +1,99 @@
+﻿@model ManageEmployeeViewModel
+
+@{
+    ViewData["Title"] = "Manage Employee";
+    var employeeID = ViewBag.EmployeeID;
+}
+
+<div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Employee</h1>
+        <span>Employee ID @employeeID</span>
+    </div>
+
+    <div class="row">
+        <!-- Promote/Demote Form -->
+        <div class="col-md-6">
+            <form method="post" action="/employees/@employeeID/promote-demote">
+                <h3>Promote/Demote</h3>
+                <div class="mb-3">
+                    <label asp-for="SelectedRole" class="form-label">Role</label>
+                    <select class="form-select" asp-for="SelectedRole" required>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <option value="@role.JobTitleId">@role.Title</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+
+            <!-- Relocate Form -->
+            <form method="post" action="/employees/@employeeID/relocate" class="mt-4">
+                <h3>Relocate</h3>
+                <div class="mb-3">
+                    <label asp-for="SelectedStation" class="form-label">Position</label>
+                    <select class="form-select" asp-for="SelectedStation" required>
+                        @foreach (var position in Model.Stations)
+                        {
+                            <option value="@position.StationId">@position.StationName</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+
+        <!-- Schedule Form -->
+        <div class="col-md-6">
+            <form method="post" action="/employees/@employeeID/schedule">
+                <h3>Schedule Employee</h3>
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" required />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="SelectedShift" class="form-label">Shift</label>
+                    <select class="form-select" asp-for="SelectedShift" required>
+                        @foreach (var position in Model.Shifts)
+                        {
+                            <!-- Swap with ShiftsNames -->
+                            <option value="@position.ShiftId">@position.ShiftPosition</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Schedule</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="notifySchedule()">Notify Schedule</button>
+            </form>
+
+            <!-- Train Employee Form -->
+            <form method="post" action="/employees/@employeeID/train" class="mt-4">
+                <h3>Train Employee</h3>
+                <div class="mb-3">
+                    <label asp-for="SelectedTrainingModule" class="form-label">Training</label>
+                    <select class="form-select" asp-for="SelectedTrainingModule" required>
+                        @foreach (var module in Model.TrainingModules)
+                        {
+                            <option value="@module.TrainingId">@module.TrainingName</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Assign</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function notifySchedule() {
+        fetch(`/employees/@employeeID/notify-schedule`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    alert("Schedule notification sent.");
+                } else {
+                    alert("Failed to send schedule notification.");
+                }
+            });
+    }
+</script>
