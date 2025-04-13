@@ -40,6 +40,9 @@ builder.Services.AddOpenApi();
 // Add Employee Manager Service
 builder.Services.AddScoped<IEmployeeManagerService, EmployeeManagerService>();
 
+// Register the Training service
+builder.Services.AddScoped<ITrainingService, TrainingService>();
+
 builder.Services.AddDbContext<FastFoodDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
     .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
