@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace FastFoodAPI.Controllers { 
+namespace FastFoodAPI.Controllers {
 
     [ApiController]
     [Route("/api")]
