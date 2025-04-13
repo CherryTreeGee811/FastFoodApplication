@@ -1,4 +1,5 @@
 ﻿using FastFoodAPI.Entities;
+using FastFoodAPI.Messages;
 using FastFoodAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace FastFoodAPI.Services
         /// Retrieves all employees.
         /// </summary>
         /// <returns>A list of all employees with their details.</returns>
-        Task<IEnumerable<object>> GetAllEmployees();
+        Task<IEnumerable<EmployeeListDTO>> GetAllEmployees();
 
         /// <summary>
         /// Retrieves a specific employee by ID.

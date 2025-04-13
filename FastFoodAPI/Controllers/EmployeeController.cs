@@ -1,7 +1,7 @@
-﻿using FastFoodAPI.Entities;
-using FastFoodAPI.Models;
+﻿using FastFoodAPI.Models;
 using FastFoodAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace FastFoodAPI.Controllers
 {
@@ -14,6 +14,7 @@ namespace FastFoodAPI.Controllers
     {
         private readonly IEmployeeManagerService _employeeManagerService;
 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EmployeeController"/> class.
         /// </summary>
@@ -22,6 +23,7 @@ namespace FastFoodAPI.Controllers
         {
             _employeeManagerService = employeeManagerService;
         }
+
 
         /// <summary>
         /// Retrieves all employees.
@@ -34,12 +36,13 @@ namespace FastFoodAPI.Controllers
             return Ok(employees);
         }
 
+
         /// <summary>
         /// Retrieves a specific employee by ID.
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
         /// <returns>The details of the specified employee.</returns>
-        [HttpGet("employees/{id}")]
+        [HttpGet("employees/{id:int}")]
         public async Task<IActionResult> GetEmployee(int id)
         {
             var employee = await _employeeManagerService.GetEmployee(id);
@@ -51,6 +54,7 @@ namespace FastFoodAPI.Controllers
 
             return Ok(employee);
         }
+
 
         /// <summary>
         /// Creates a new employee.
@@ -70,13 +74,14 @@ namespace FastFoodAPI.Controllers
             return CreatedAtAction(nameof(GetEmployee), new { id = employee.EmployeeId }, employee);
         }
 
+
         /// <summary>
         /// Updates an existing employee.
         /// </summary>
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="updateEmployeeDto">The updated employee details.</param>
         /// <returns>The updated employee if successful.</returns>
-        [HttpPut("employees/{id}")]
+        [HttpPut("employees/{id:int}")]
         public async Task<IActionResult> UpdateEmployee(int id, UpdateEmployeeDto updateEmployeeDto)
         {
             var (employee, success, errorMessage) = await _employeeManagerService.UpdateEmployee(id, updateEmployeeDto);
@@ -93,13 +98,14 @@ namespace FastFoodAPI.Controllers
             return Ok(employee);
         }
 
+
         /// <summary>
         /// Updates a single field of an employee.
         /// </summary>
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="patchEmployeeDto">The field to update.</param>
         /// <returns>The updated employee if successful.</returns>
-        [HttpPatch("employees/{id}")]
+        [HttpPatch("employees/{id:int}")]
         public async Task<IActionResult> PatchEmployee(int id, UpdateEmployeeDto patchEmployeeDto)
         {
             var (employee, success, errorMessage) = await _employeeManagerService.PatchEmployee(id, patchEmployeeDto);
@@ -122,7 +128,7 @@ namespace FastFoodAPI.Controllers
         /// </summary>
         /// <param name="id">The ID of the employee to delete.</param>
         /// <returns>A success message if the deletion is successful.</returns>
-        [HttpDelete("employees/{id}")]
+        [HttpDelete("employees/{id:int}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             var (success, errorMessage) = await _employeeManagerService.DeleteEmployee(id);

@@ -1,4 +1,5 @@
 ﻿using FastFoodAPI.Entities;
+using FastFoodAPI.Messages;
 using FastFoodAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +19,15 @@ namespace FastFoodAPI.Services
         /// Retrieves all employees.
         /// </summary>
         /// <returns>A list of all employees with their details.</returns>
-        public async Task<IEnumerable<object>> GetAllEmployees()
+        public async Task<IEnumerable<EmployeeListDTO>> GetAllEmployees()
         {
             return await _fastFoodDbContext.Employees
-                .Select(e => new
+                .Select(e => new EmployeeListDTO
                 {
-                    e.EmployeeId,
-                    e.FirstName,
-                    e.LastName,
-                    e.EmailAddress,
+                    EmployeeId = e.EmployeeId,
+                    FirstName = e.FirstName,
+                    LastName = e.LastName,
+                    EmailAddress = e.EmailAddress,
                     JobTitle = e.JobTitle.Title,
                     StationName = e.Station != null ? e.Station.StationName : null
                 })
@@ -258,7 +259,8 @@ namespace FastFoodAPI.Services
         /// <returns>A tuple indicating success or failure with error message.</returns>
         public async Task<(bool Success, string ErrorMessage)> DeleteEmployee(int id)
         {
-            var employee = await _fastFoodDbContext.Employees.FindAsync(id);
+            var employee = await _fastFoodDbContext.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+
             if (employee == null)
             {
                 return (false, $"Employee with ID {id} not found");

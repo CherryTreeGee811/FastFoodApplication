@@ -1,19 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ClientApplication.Models;
 
 
 namespace ClientApplication.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly HttpClient _client;
+        private readonly string _baseURL;
+
+
+        public EmployeeController(HttpClient client)
+        {
+            _client = client;
+            _baseURL = "http://fastfoodapi:8000/api/employees";
+        }
+
+
         [HttpGet("/employees/{employeeID}")]
         public IActionResult Details(int employeeID)
         {
             // Placeholder data for shifts
             ViewBag.Shifts = new List<(string Start, string End)>
                 {
-                    ("9:00 AM", "5:00 PM"),
-                    ("10:00 AM", "6:00 PM"),
-                    ("11:00 AM", "7:00 PM")
+                    ("2025-04-12", "Morning"),
+                    ("2025-04-13", "Afternoon"),
+                    ("2025-04-15", "Night")
                 };
 
             // Placeholder data for training
@@ -45,21 +57,30 @@ namespace ClientApplication.Controllers
 
 
         [HttpGet("/employees")]
-        public IActionResult List()
+        public async Task<IActionResult> List()
         {
-            // Placeholder data for employees
-            var employees = new List<(int EmployeeId, string FirstName, string LastName, string Role, string Position)>
+            try
             {
-                (1, "John", "Doe", "Manager", "#1243"),
-                (2, "Jane", "Smith", "Worker", "#4252"),
-                (3, "Michael", "Brown", "Cook", "#5678"),
-                (4, "Emily", "Davis", "Cashier", "#7890")
-            };
+                // Call the API endpoint
+                var response = await _client.GetAsync(_baseURL);
 
-            ViewBag.Employees = employees;
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
 
-            return View();
+                // Deserialize the response content into a list of employees
+                var employees =  await response.Content.ReadFromJsonAsync<List<EmployeeListDTO>>();
+
+
+                return View(employees);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                return View("Error", new { message = "Unable to fetch employees at this time." });
+            }
         }
+
 
 
         [HttpPost("/employees/notify-schedule")]
@@ -100,6 +121,28 @@ namespace ClientApplication.Controllers
             ViewBag.EmployeeID = employeeID;
 
             return View();
+        }
+
+
+        [HttpPost("/employees/{employeeID:int}/fire")]
+        public async Task<IActionResult> Fire(int employeeID)
+        {
+            try
+            {
+                // Call the API endpoint
+                var response = await _client.DeleteAsync($"{_baseURL}/{employeeID}");
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                return View("Error", new { message = "Unable to fire this employee." });
+            }
         }
 
 
