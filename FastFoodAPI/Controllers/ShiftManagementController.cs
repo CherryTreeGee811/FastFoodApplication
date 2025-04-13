@@ -43,6 +43,7 @@ namespace FastFoodAPI.Controllers
 
             return Ok();
         }
+
         
         /// <summary>
         /// This method retrieves all available roles to the client.
