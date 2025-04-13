@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodAPI.Controllers
 {
+
+    [ApiController()]
+    [Route("/api")]
     public class WorkstationController : Controller
     {
         public ILogger<WorkstationController> _logger;
