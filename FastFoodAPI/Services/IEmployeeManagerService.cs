@@ -1,7 +1,7 @@
 ﻿using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
 using FastFoodAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace FastFoodAPI.Services
 {
@@ -18,7 +18,7 @@ namespace FastFoodAPI.Services
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
         /// <returns>The details of the specified employee, or null if not found.</returns>
-        Task<object> GetEmployee(int id);
+        Task<object> GetEmployee(string id);
 
         /// <summary>
         /// Creates a new employee.
@@ -33,7 +33,7 @@ namespace FastFoodAPI.Services
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="updateEmployeeDto">The updated employee details.</param>
         /// <returns>A tuple with the updated employee and success status.</returns>
-        Task<(Employee Employee, bool Success, string ErrorMessage)> UpdateEmployee(int id, UpdateEmployeeDto updateEmployeeDto);
+        Task<(Employee Employee, bool Success, string ErrorMessage)> UpdateEmployee(string id, UpdateEmployeeDto updateEmployeeDto);
 
         // Add to IEmployeeManagerService
         /// <summary>
@@ -42,20 +42,20 @@ namespace FastFoodAPI.Services
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="patchEmployeeDto">The field to update.</param>
         /// <returns>A tuple with the updated employee and success status.</returns>
-        Task<(Employee Employee, bool Success, string ErrorMessage)> PatchEmployee(int id, UpdateEmployeeDto patchEmployeeDto);
+        Task<(Employee Employee, bool Success, string ErrorMessage)> PatchEmployee(string id, UpdateEmployeeDto patchEmployeeDto);
 
         /// <summary>
         /// Deletes an employee by ID.
         /// </summary>
         /// <param name="id">The ID of the employee to delete.</param>
         /// <returns>A tuple indicating success or failure with error message.</returns>
-        Task<(bool Success, string ErrorMessage)> DeleteEmployee(int id);
+        Task<(bool Success, string ErrorMessage)> DeleteEmployee(string id);
 
         /// <summary>
         /// Checks if an employee exists by ID.
         /// </summary>
         /// <param name="id">The ID of the employee to check.</param>
         /// <returns>True if the employee exists, otherwise false.</returns>
-        bool EmployeeExists(int id);
+        bool EmployeeExists(string id);
     }
 }

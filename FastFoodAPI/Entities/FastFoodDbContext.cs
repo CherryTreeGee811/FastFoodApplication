@@ -19,6 +19,8 @@ namespace FastFoodAPI.Entities {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // JobTitle to Employee relationship
             modelBuilder.Entity<Employee>()
                 .HasOne(e => e.JobTitle)    // employee has 1 job title
@@ -35,21 +37,17 @@ namespace FastFoodAPI.Entities {
                 .OnDelete(DeleteBehavior.SetNull); // if station is deleted, set employee's StationId to null
 
             // Configure Email in Employee to be unique
-            modelBuilder.Entity<Employee>()
-                .HasIndex(e => e.EmailAddress)
-                .IsUnique();
-
-            // Configure TrainingAssignment composite key
             modelBuilder.Entity<TrainingAssignment>()
-                .HasKey(ta => new { ta.EmployeeId, ta.TrainingId });  // composite primary key
+                .HasKey(ta => new { ta.EmployeeId, ta.TrainingId });
+
 
             // TrainingAssignment to Employee relationship
             modelBuilder.Entity<TrainingAssignment>()
-                .HasOne(ta => ta.Employee)  // training assignment has 1 employee
-                .WithMany(e => e.TrainingAssignments)  // employee has many training assignments
-                .HasForeignKey(ta => ta.EmployeeId)  // using EmployeeId as the foreign key
-                .HasPrincipalKey(e => e.EmployeeId)  // explicitly use EmployeeId as the principal key
-                .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their training assignments
+                .HasOne(ta => ta.Employee)
+                .WithMany(e => e.TrainingAssignments)
+                .HasForeignKey(ta => ta.EmployeeId)
+                .HasPrincipalKey(e => e.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // TrainingAssignment to Training relationship
             modelBuilder.Entity<TrainingAssignment>()
@@ -63,24 +61,24 @@ namespace FastFoodAPI.Entities {
                 .Property(ta => ta.CompletedTraining)
                 .HasDefaultValue(false);
 
-            // Configure ShiftAssignment composite key
+            // Configure composite key for ShiftAssignment
             modelBuilder.Entity<ShiftAssignment>()
-                .HasKey(sa => new { sa.EmployeeId, sa.ShiftId, sa.ShiftDate });  // composite primary key including date
+                .HasKey(sa => new { sa.EmployeeId, sa.ShiftId });
 
             // ShiftAssignment to Employee relationship
             modelBuilder.Entity<ShiftAssignment>()
-                .HasOne(sa => sa.Employee)  // shift assignment has 1 employee
-                .WithMany()  // employee can have many shift assignments (no navigation property defined)
-                .HasForeignKey(sa => sa.EmployeeId)  // using EmployeeId as the foreign key
-                .HasPrincipalKey(e => e.EmployeeId)  // explicitly use EmployeeId as the principal key
-                .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their shift assignments
+                 .HasOne(sa => sa.Employee)
+                 .WithMany(e => e.ShiftAssignments) // Adjust if Employee has a collection for ShiftAssignments
+                 .HasForeignKey(sa => sa.EmployeeId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
             // ShiftAssignment to Shift relationship
             modelBuilder.Entity<ShiftAssignment>()
-                .HasOne(sa => sa.Shift)  // shift assignment has 1 shift
-                .WithMany()  // shift can have many assignments (no navigation property defined)
-                .HasForeignKey(sa => sa.ShiftId)  // using ShiftId as the foreign key
-                .OnDelete(DeleteBehavior.Cascade);  // if shift is deleted, delete the assignments
+                .HasOne(sa => sa.Shift)
+                .WithMany() // Adjust if Shift has a collection for ShiftAssignments
+                .HasForeignKey(sa => sa.ShiftId)
+                .OnDelete(DeleteBehavior.Cascade);
+
 
             // Configure default value for Shift.ShiftPosition
             modelBuilder.Entity<Shift>()
@@ -92,6 +90,7 @@ namespace FastFoodAPI.Entities {
                 .Property(e => e.ShiftPosition)
                 .HasConversion<string>()
                 .HasMaxLength(50);
+
 
             // Seed JobTitle data
             modelBuilder.Entity<JobTitle>().HasData(
@@ -139,11 +138,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "JOHN.DOE@ONLYBYTES.COM",
                     Email = "john.doe@onlybytes.com",
                     NormalizedEmail = "JOHN.DOE@ONLYBYTES.COM",
-
-                    EmployeeId = 1,
                     FirstName = "John",
                     LastName = "Doe",
-                    EmailAddress = "john.doe@onlybytes.com",
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
@@ -154,11 +150,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "SARAH.JOHNSON@ONLYBYTES.COM",
                     Email = "sarah.johnson@onlybytes.com",
                     NormalizedEmail = "SARAH.JOHNSON@ONLYBYTES.COM",
-
-                    EmployeeId = 2,
                     FirstName = "Sarah",
                     LastName = "Johnson",
-                    EmailAddress = "sarah.johnson@onlybytes.com",
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
@@ -169,11 +162,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "RICHARD.PARKER@ONLYBYTES.COM",
                     Email = "richard.parker@onlybytes.com",
                     NormalizedEmail = "RICHARD.PARKER@ONLYBYTES.COM",
-
-                    EmployeeId = 11,
                     FirstName = "Richard",
                     LastName = "Parker",
-                    EmailAddress = "richard.parker@onlybytes.com",
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
@@ -184,11 +174,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName  = "AMANDA.WILLIAMS@ONLYBYTES.COM",
                     Email = "amanda.williams@onlybytes.com",
                     NormalizedEmail = "AMANDA.WILLIAMS@ONLYBYTES.COM",
-
-                    EmployeeId = 12,
                     FirstName = "Amanda",
                     LastName = "Williams",
-                    EmailAddress = "amanda.williams@onlybytes.com",
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
@@ -201,11 +188,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName  = "JANE.SMITH@ONLYBYTES.COM",
                     Email = "jane.smith@onlybytes.com",
                     NormalizedEmail = "JANE.SMITH@ONLYBYTES.COM",
-
-                    EmployeeId = 3,
                     FirstName = "Jane",
                     LastName = "Smith",
-                    EmailAddress = "jane.smith@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
@@ -216,11 +200,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "MICHAEL.BROWN@ONLYBYTES.COM",
                     Email = "michael.brown@onlybytes.com",
                     NormalizedEmail = "MICHAEL.BROWN@ONLYBYTES.COM",
-
-                    EmployeeId = 4,
                     FirstName = "Michael",
                     LastName = "Brown",
-                    EmailAddress = "michael.brown@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
@@ -231,11 +212,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName  = "EMILY.DAVIS@ONLYBYTES.COM",
                     Email = "emily.davis@onlybytes.com",
                     NormalizedEmail = "EMILY.DAVIS@ONLYBYTES.COM",
-
-                    EmployeeId = 5,
                     FirstName = "Emily",
                     LastName = "Davis",
-                    EmailAddress = "emily.davis@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
@@ -246,11 +224,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "DANIEL.THOMPSON@ONLYBYTES.COM",
                     Email = "daniel.thompson@onlybytes.com",
                     NormalizedEmail = "DANIEL.THOMPSON@ONLYBYTES.COM",
-
-                    EmployeeId = 13,
                     FirstName = "Daniel",
                     LastName = "Thompson",
-                    EmailAddress = "daniel.thompson@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
@@ -261,11 +236,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName  = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
                     Email = "olivia.rodriguez@onlybytes.com",
                     NormalizedEmail = "OLIVIA.RODRIGUEZ@ONLYBYTES.COM",
-
-                    EmployeeId = 14,
                     FirstName = "Olivia",
                     LastName = "Rodriguez",
-                    EmailAddress = "olivia.rodriguez@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
@@ -276,11 +248,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "THOMAS.LEE@ONLYBYTES.COM",
                     Email = "thomas.lee@onlybytes.com",
                     NormalizedEmail = "THOMAS.LEE@ONLYBYTES.COM",
-
-                    EmployeeId = 15,
                     FirstName = "Thomas",
                     LastName = "Lee",
-                    EmailAddress = "thomas.lee@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
@@ -291,11 +260,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "SOPHIA.PATEL@ONLYBYTES.COM",
                     Email  = "sophia.patel@onlybytes.com",
                     NormalizedEmail  = "SOPHIA.PATEL@ONLYBYTES.COM",
-
-                    EmployeeId = 16,
                     FirstName = "Sophia",
                     LastName = "Patel",
-                    EmailAddress = "sophia.patel@onlybytes.com",
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
@@ -308,11 +274,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "MIKE.WILSON@ONLYBYTES.COM",
                     Email = "mike.wilson@onlybytes.com",
                     NormalizedEmail = "MIKE.WILSON@ONLYBYTES.COM",
-
-                    EmployeeId = 6,
                     FirstName = "Mike",
                     LastName = "Wilson",
-                    EmailAddress = "mike.wilson@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 4 // Grill
                 },
@@ -323,11 +286,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "DAVID.GARCIA@ONLYBYTES.COM",
                     Email = "david.garcia@onlybytes.com",
                     NormalizedEmail = "DAVID.GARCIA@ONLYBYTES.COM",
-
-                    EmployeeId = 7,
                     FirstName = "David",
                     LastName = "Garcia",
-                    EmailAddress = "david.garcia@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 5 // Fryer
                 },
@@ -338,11 +298,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "JESSICA.MARTINEZ@ONLYBYTES.COM",
                     Email  = "jessica.martinez@onlybytes.com",
                     NormalizedEmail = "JESSICA.MARTINEZ@ONLYBYTES.COM",
-
-                    EmployeeId = 8,
                     FirstName = "Jessica",
                     LastName = "Martinez",
-                    EmailAddress = "jessica.martinez@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 6 // Prep Table
                 },
@@ -353,11 +310,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "JAMES.WILSON@ONLYBYTES.COM",
                     Email  = "james.wilson@onlybytes.com",
                     NormalizedEmail = "JAMES.WILSON@ONLYBYTES.COM",
-
-                    EmployeeId = 17,
                     FirstName = "James",
                     LastName = "Wilson",
-                    EmailAddress = "james.wilson@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 4 // Grill
                 },
@@ -368,11 +322,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "MARIA.HERNANDEZ@ONLYBYTES.COM",
                     Email = "maria.hernandez@onlybytes.com",
                     NormalizedEmail = "MARIA.HERNANDEZ@ONLYBYTES.COM",
-
-                    EmployeeId = 18,
                     FirstName = "Maria",
                     LastName = "Hernandez",
-                    EmailAddress = "maria.hernandez@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 5 // Fryer
                 },
@@ -383,11 +334,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "KEVIN.KIM@ONLYBYTES.COM",
                     Email = "kevin.kim@onlybytes.com",
                     NormalizedEmail= "KEVIN.KIM@ONLYBYTES.COM",
-
-                    EmployeeId = 19,
                     FirstName = "Kevin",
                     LastName = "Kim",
-                    EmailAddress = "kevin.kim@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 6 // Prep Table
                 },
@@ -398,11 +346,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "JENNIFER.CHEN@ONLYBYTES.COM",
                     Email = "jennifer.chen@onlybytes.com",
                     NormalizedEmail = "JENNIFER.CHEN@ONLYBYTES.COM",
-
-                    EmployeeId = 20,
                     FirstName = "Jennifer",
                     LastName = "Chen",
-                    EmailAddress = "jennifer.chen@onlybytes.com",
                     JobTitleId = 3, // Cook
                     StationId = 4 // Grill
                 },
@@ -415,11 +360,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "ROBERT.TAYLOR@ONLYBYTES.COM",
                     Email = "robert.taylor@onlybytes.com",
                     NormalizedEmail = "ROBERT.TAYLOR@ONLYBYTES.COM",
-
-                    EmployeeId = 9,
                     FirstName = "Robert",
                     LastName = "Taylor",
-                    EmailAddress = "robert.taylor@onlybytes.com",
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
@@ -430,11 +372,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "LISA.ANDERSON@ONLYBYTES.COM",
                     Email = "lisa.anderson@onlybytes.com",
                     NormalizedEmail = "LISA.ANDERSON@ONLYBYTES.COM",
-
-                    EmployeeId = 10,
                     FirstName = "Lisa",
                     LastName = "Anderson",
-                    EmailAddress = "lisa.anderson@onlybytes.com",
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
@@ -445,12 +384,8 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "CARLOS.GOMEZ@ONLYBYTES.COM",
                     Email  = "carlos.gomez@onlybytes.com",
                     NormalizedEmail = "CARLOS.GOMEZ@ONLYBYTES.COM",
-
-
-                    EmployeeId = 21,
                     FirstName = "Carlos",
                     LastName = "Gomez",
-                    EmailAddress = "carlos.gomez@onlybytes.com",
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
@@ -461,22 +396,14 @@ namespace FastFoodAPI.Entities {
                     NormalizedUserName = "EMMA.WRIGHT@ONLYBYTES.COM",
                     Email  = "emma.wright@onlybytes.com",
                     NormalizedEmail = "EMMA.WRIGHT@ONLYBYTES.COM",
-
-                    EmployeeId = 22,
                     FirstName = "Emma",
                     LastName = "Wright",
-                    EmailAddress = "emma.wright@onlybytes.com",
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 }
             };
 
             modelBuilder.Entity<Employee>().HasData(employees);
-
-            // Add this line to set the proper identity seed value
-            modelBuilder.Entity<Employee>()
-                .Property(e => e.EmployeeId)
-                .UseIdentityColumn(23, 1); // Start from 23 (after your last seeded ID of 22)
 
             // Seed sample training assignments with completion status and date
             // Create a base date for completed trainings
@@ -493,10 +420,10 @@ namespace FastFoodAPI.Entities {
                 // Base training - all employees have food safety
                 trainingAssignments.Add(new TrainingAssignment
                 {
-                    EmployeeId = employee.EmployeeId,
-                    TrainingId = 1,
+                    EmployeeId = employee.Id, // Use the Id of an existing Employee
+                    TrainingId = 1, // Reference an existing Training
                     CompletedTraining = true,
-                    DateCompleted = employee.EmployeeId <= 10 ? threeMonthsAgo : lastMonth
+                    DateCompleted = DateTime.Now.AddMonths(-1)
                 });
 
                 // Customer Service - Managers and Cashiers
@@ -504,23 +431,19 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.EmployeeId,
-                        TrainingId = 2,
-                        CompletedTraining = employee.EmployeeId != 5 && employee.EmployeeId != 16,
-                        DateCompleted = employee.EmployeeId == 5 || employee.EmployeeId == 16 ? null :
-                                       (employee.EmployeeId <= 10 ? twoMonthsAgo : lastMonth)
+                        EmployeeId = employee.Id, // Use the Id of another Employee
+                        TrainingId = 2, // Reference another Training
+                        CompletedTraining = false,
+                        DateCompleted = null
                     });
 
                     // Cash Handling - Managers and Cashiers
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.EmployeeId,
+                        EmployeeId = employee.Id,
                         TrainingId = 3,
-                        CompletedTraining = employee.EmployeeId != 4 && employee.EmployeeId != 5 &&
-                                           employee.EmployeeId != 15 && employee.EmployeeId != 16,
-                        DateCompleted = (employee.EmployeeId == 4 || employee.EmployeeId == 5 ||
-                                       employee.EmployeeId == 15 || employee.EmployeeId == 16) ? null :
-                                       (employee.EmployeeId <= 10 ? twoMonthsAgo : lastMonth)
+                        CompletedTraining = true,
+                        DateCompleted = DateTime.Now.AddMonths(-1)
                     });
                 }
 
@@ -529,11 +452,10 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.EmployeeId,
+                        EmployeeId = employee.Id,
                         TrainingId = 4,
-                        CompletedTraining = employee.EmployeeId != 8 && employee.EmployeeId != 20,
-                        DateCompleted = employee.EmployeeId == 8 || employee.EmployeeId == 20 ? null :
-                                       (employee.EmployeeId <= 10 ? twoMonthsAgo : lastMonth)
+                        CompletedTraining = true,
+                        DateCompleted = DateTime.Now.AddMonths(-1)
                     });
                 }
 
@@ -542,11 +464,10 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.EmployeeId,
+                        EmployeeId = employee.Id,
                         TrainingId = 5,
-                        CompletedTraining = employee.EmployeeId != 10 && employee.EmployeeId != 22,
-                        DateCompleted = employee.EmployeeId == 10 || employee.EmployeeId == 22 ? null :
-                                       (employee.EmployeeId <= 10 ? twoMonthsAgo : lastMonth)
+                        CompletedTraining = true,
+                        DateCompleted = DateTime.Now.AddMonths(-1)
                     });
                 }
             }
@@ -564,52 +485,35 @@ namespace FastFoodAPI.Entities {
         /// Generates a complete shift schedule from April 8, 2025 to May 31, 2025
         /// by assigning employees to Day, Afternoon, and Night shifts. 
         /// Employees are rotated and assigned based on job title and staffing needs.
-        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees) {
+        private List<ShiftAssignment> ScheduleEmployeesForShift(
+            DateTime date, int shiftId, List<Employee> employees, int count, HashSet<(string, int)> assignedKeys)
+        {
             var assignments = new List<ShiftAssignment>();
+            if (employees.Count == 0 || count == 0) return assignments;
 
-            // Start with April 8, 2025 (current day) and go until May 31, 2025
-            var startDate = new DateTime(2025, 4, 8);
-            var endDate = new DateTime(2025, 5, 31);
+            var startIndex = ((int)date.DayOfWeek + date.Day + shiftId) % employees.Count;
 
-            // Group employees by job title
-            var managers = employees.Where(e => e.JobTitleId == 1).ToList();
-            var cashiers = employees.Where(e => e.JobTitleId == 2).ToList();
-            var cooks = employees.Where(e => e.JobTitleId == 3).ToList();
-            var cleaners = employees.Where(e => e.JobTitleId == 4).ToList();
-
-            // Create a schedule for each day
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            for (int i = 0; i < count; i++)
             {
-                // Determine day of week (0 = Sunday through 6 = Saturday)
-                int dayOfWeek = (int)date.DayOfWeek;
-                bool isWeekend = dayOfWeek == 0 || dayOfWeek == 6;
+                var employeeIndex = (startIndex + i) % employees.Count;
+                var employee = employees[employeeIndex];
 
-                // Schedule for each shift (Day, Afternoon, Night)
-                for (int shiftId = 1; shiftId <= 3; shiftId++)
+                var key = (employee.Id, shiftId);
+                if (!assignedKeys.Contains(key))
                 {
-                    // Staff needed per shift - higher on weekends for busy periods
-                    int managersNeeded = 1;
-                    int cashiersNeeded = isWeekend ? 3 : 2;
-                    int cooksNeeded = isWeekend ? 3 : 2;
-                    int cleanersNeeded = 1;
-
-                    // For night shift, need fewer staff
-                    if (shiftId == 3) // Night shift
+                    assignedKeys.Add(key);
+                    assignments.Add(new ShiftAssignment
                     {
-                        cashiersNeeded = Math.Max(1, cashiersNeeded - 1);
-                        cooksNeeded = Math.Max(1, cooksNeeded - 1);
-                    }
-
-                    // Assign the appropriate number of employees of each type to the shift
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, managers, managersNeeded));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cashiers, cashiersNeeded));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cooks, cooksNeeded));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cleaners, cleanersNeeded));
+                        EmployeeId = employee.Id,
+                        ShiftId = shiftId,
+                        ShiftDate = date
+                    });
                 }
             }
 
             return assignments;
         }
+
 
         /// <summary>
         /// Assigns a specified number of employees to a shift on a given date using a rotating strategy.
@@ -619,30 +523,36 @@ namespace FastFoodAPI.Entities {
         /// <param name="employees">List of available employees for the job type.</param>
         /// <param name="count">Number of employees to assign.</param>
         /// <returns>A list of shift assignments for the specified shift and date.</returns>
-        private List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date, int shiftId, List<Employee> employees, int count) {
+        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees)
+        {
             var assignments = new List<ShiftAssignment>();
-            if (employees.Count == 0 || count == 0) return assignments;
+            var assignedKeys = new HashSet<(string EmployeeId, int ShiftId)>();
 
-            // Use employee ID modulo operation to assign different employees to different days
-            // This creates a rotation system so the same employees don't always work the same days
-            var startIndex = ((int)date.DayOfWeek + date.Day + shiftId) % employees.Count;
+            var startDate = new DateTime(2025, 4, 8);
+            var endDate = new DateTime(2025, 5, 31);
 
-            for (int i = 0; i < count; i++)
+            var managers = employees.Where(e => e.JobTitleId == 1).ToList();
+            var cashiers = employees.Where(e => e.JobTitleId == 2).ToList();
+            var cooks = employees.Where(e => e.JobTitleId == 3).ToList();
+            var cleaners = employees.Where(e => e.JobTitleId == 4).ToList();
+
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                var employeeIndex = (startIndex + i) % employees.Count;
-                var employee = employees[employeeIndex];
-
-                assignments.Add(new ShiftAssignment
+                for (int shiftId = 1; shiftId <= 3; shiftId++)
                 {
-                    EmployeeId = employee.EmployeeId,
-                    ShiftId = shiftId,
-                    ShiftDate = date
-                });
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, managers, 1, assignedKeys));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cashiers, 2, assignedKeys));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cooks, 2, assignedKeys));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cleaners, 1, assignedKeys));
+                }
             }
 
             return assignments;
         }
-        
+
+
+
+
         /// <summary>
         /// Seeds password and role information for employees using the ASP.NET Identity system.
         /// Employees without a password are assigned a default password and role based on their job title.

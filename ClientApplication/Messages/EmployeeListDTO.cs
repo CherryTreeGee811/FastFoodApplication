@@ -6,7 +6,7 @@ namespace ClientApplication.Messages
     public class EmployeeListDTO
     {
         [JsonPropertyName("employeeId")]
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
 
 
         [JsonPropertyName("firstName")]

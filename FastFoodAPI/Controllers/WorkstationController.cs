@@ -57,10 +57,10 @@ namespace FastFoodAPI.Controllers
         /// Retrieve role for specific employee.
         /// </summary>
         [HttpGet("employees/roles/{id}")]
-        public IActionResult GetEmployeeRole(int id)
+        public IActionResult GetEmployeeRole(string id)
         {
             var employeeRole = _fastFoodDbContext.Employees
-                .Where(e => e.EmployeeId == id)
+                .Where(e => e.Id == id)
                 .Select(e => new
                 {
                     e.JobTitleId

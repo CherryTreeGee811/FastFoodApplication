@@ -1,7 +1,7 @@
 ﻿using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
 using FastFoodAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodAPI.Services
@@ -24,10 +24,10 @@ namespace FastFoodAPI.Services
             return await _fastFoodDbContext.Employees
                 .Select(e => new EmployeeListDTO
                 {
-                    EmployeeId = e.EmployeeId,
+                    EmployeeId = e.Id,
                     FirstName = e.FirstName,
                     LastName = e.LastName,
-                    EmailAddress = e.EmailAddress,
+                    EmailAddress = e.Email,
                     JobTitle = e.JobTitle.Title,
                     StationName = e.Station != null ? e.Station.StationName : null
                 })
@@ -39,12 +39,12 @@ namespace FastFoodAPI.Services
         /// </summary>
         /// <param name="id">The ID of the employee to retrieve.</param>
         /// <returns>The details of the specified employee, or null if not found.</returns>
-        public async Task<object> GetEmployee(int id)
+        public async Task<object> GetEmployee(string id)
         {
             var employee = await _fastFoodDbContext.Employees
                 .Include(e => e.JobTitle)
                 .Include(e => e.Station)
-                .FirstOrDefaultAsync(e => e.EmployeeId == id);
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
             {
@@ -53,10 +53,10 @@ namespace FastFoodAPI.Services
 
             return new
             {
-                employee.EmployeeId,
+                employee.Id,
                 employee.FirstName,
                 employee.LastName,
-                employee.EmailAddress,
+                employee.Email,
                 employee.JobTitleId,
                 JobTitle = employee.JobTitle.Title,
                 employee.StationId,
@@ -72,7 +72,7 @@ namespace FastFoodAPI.Services
         public async Task<(Employee Employee, bool Success, string ErrorMessage)> CreateEmployee(EmployeeDto employeeDto)
         {
             // Check if email already exists
-            if (await _fastFoodDbContext.Employees.AnyAsync(e => e.EmailAddress == employeeDto.EmailAddress))
+            if (await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == employeeDto.EmailAddress))
             {
                 return (null, false, "An employee with this email address already exists");
             }
@@ -95,7 +95,6 @@ namespace FastFoodAPI.Services
             {
                 FirstName = employeeDto.FirstName,
                 LastName = employeeDto.LastName,
-                EmailAddress = employeeDto.EmailAddress,
                 JobTitleId = employeeDto.JobTitleId,
                 StationId = employeeDto.StationId
             };
@@ -112,7 +111,7 @@ namespace FastFoodAPI.Services
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="updateEmployeeDto">The updated employee details.</param>
         /// <returns>A tuple with the updated employee and success status.</returns>
-        public async Task<(Employee Employee, bool Success, string ErrorMessage)> UpdateEmployee(int id, UpdateEmployeeDto updateEmployeeDto)
+        public async Task<(Employee Employee, bool Success, string ErrorMessage)> UpdateEmployee(string id, UpdateEmployeeDto updateEmployeeDto)
         {
             var existingEmployee = await _fastFoodDbContext.Employees.FindAsync(id);
             if (existingEmployee == null)
@@ -122,8 +121,8 @@ namespace FastFoodAPI.Services
 
             // Check for unique email constraint if email is being changed
             if (updateEmployeeDto.EmailAddress != null &&
-                existingEmployee.EmailAddress != updateEmployeeDto.EmailAddress &&
-                await _fastFoodDbContext.Employees.AnyAsync(e => e.EmailAddress == updateEmployeeDto.EmailAddress))
+                existingEmployee.Email != updateEmployeeDto.EmailAddress &&
+                await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == updateEmployeeDto.EmailAddress))
             {
                 return (null, false, "An employee with this email address already exists");
             }
@@ -151,7 +150,7 @@ namespace FastFoodAPI.Services
                 existingEmployee.LastName = updateEmployeeDto.LastName;
 
             if (updateEmployeeDto.EmailAddress != null)
-                existingEmployee.EmailAddress = updateEmployeeDto.EmailAddress;
+                existingEmployee.Email = updateEmployeeDto.EmailAddress;
 
             if (updateEmployeeDto.JobTitleId.HasValue)
                 existingEmployee.JobTitleId = updateEmployeeDto.JobTitleId.Value;
@@ -180,7 +179,7 @@ namespace FastFoodAPI.Services
         /// <param name="id">The ID of the employee to update.</param>
         /// <param name="patchEmployeeDto">The field to update.</param>
         /// <returns>A tuple with the updated employee and success status.</returns>
-        public async Task<(Employee Employee, bool Success, string ErrorMessage)> PatchEmployee(int id, UpdateEmployeeDto patchEmployeeDto)
+        public async Task<(Employee Employee, bool Success, string ErrorMessage)> PatchEmployee(string id, UpdateEmployeeDto patchEmployeeDto)
         {
             var existingEmployee = await _fastFoodDbContext.Employees.FindAsync(id);
             if (existingEmployee == null)
@@ -204,8 +203,8 @@ namespace FastFoodAPI.Services
 
             // Check email uniqueness if email is being changed
             if (patchEmployeeDto.EmailAddress != null &&
-                existingEmployee.EmailAddress != patchEmployeeDto.EmailAddress &&
-                await _fastFoodDbContext.Employees.AnyAsync(e => e.EmailAddress == patchEmployeeDto.EmailAddress))
+                existingEmployee.Email != patchEmployeeDto.EmailAddress &&
+                await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == patchEmployeeDto.EmailAddress))
             {
                 return (null, false, "An employee with this email address already exists");
             }
@@ -231,7 +230,7 @@ namespace FastFoodAPI.Services
             else if (patchEmployeeDto.LastName != null)
                 existingEmployee.LastName = patchEmployeeDto.LastName;
             else if (patchEmployeeDto.EmailAddress != null)
-                existingEmployee.EmailAddress = patchEmployeeDto.EmailAddress;
+                existingEmployee.Email = patchEmployeeDto.EmailAddress;
             else if (patchEmployeeDto.JobTitleId.HasValue)
                 existingEmployee.JobTitleId = patchEmployeeDto.JobTitleId.Value;
             else if (patchEmployeeDto.StationId.HasValue)
@@ -257,9 +256,9 @@ namespace FastFoodAPI.Services
         /// </summary>
         /// <param name="id">The ID of the employee to delete.</param>
         /// <returns>A tuple indicating success or failure with error message.</returns>
-        public async Task<(bool Success, string ErrorMessage)> DeleteEmployee(int id)
+        public async Task<(bool Success, string ErrorMessage)> DeleteEmployee(string id)
         {
-            var employee = await _fastFoodDbContext.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+            var employee = await _fastFoodDbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
             {
@@ -277,9 +276,9 @@ namespace FastFoodAPI.Services
         /// </summary>
         /// <param name="id">The ID of the employee to check.</param>
         /// <returns>True if the employee exists, otherwise false.</returns>
-        public bool EmployeeExists(int id)
+        public bool EmployeeExists(string id)
         {
-            return _fastFoodDbContext.Employees.Any(e => e.EmployeeId == id);
+            return _fastFoodDbContext.Employees.Any(e => e.Id == id);
         }
     }
 }
