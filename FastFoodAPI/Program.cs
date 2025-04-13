@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using FastFoodAPI.Services;
 using FastFoodAPI.Extensions;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,23 @@ builder.Services.AddAuthentication(options => {
        IssuerSigningKey = new SymmetricSecurityKey(
            Encoding.UTF8.GetBytes(secretKey)),
        RoleClaimType = ClaimTypes.Role // Ensure roles are properly mapped
+   };
+   
+   // Check token against the blacklist
+   options.Events = new JwtBearerEvents
+   {
+       OnTokenValidated = context =>
+       {
+           var token = context.SecurityToken as JwtSecurityToken;
+           var tokenString = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+           
+           if (AuthService.IsTokenInvalidated(tokenString))
+           {
+               context.Fail("This token has been revoked");
+           }
+           
+           return Task.CompletedTask;
+       }
    };
 });
 

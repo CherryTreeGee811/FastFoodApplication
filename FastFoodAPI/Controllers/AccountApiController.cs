@@ -1,5 +1,6 @@
 ﻿using FastFoodAPI.Messages;
 using FastFoodAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -33,6 +34,26 @@ namespace FastFoodAPI.Controllers {
             } else {
                 return Unauthorized();
             }
+        }
+
+        /// <summary>
+        /// Logs out a user by invalidating their JWT token.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating success of the logout operation.
+        /// </returns>
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> LogoutUser() {
+            // Get the token from the Authorization header
+            string authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader != null && authHeader.StartsWith("Bearer ")) {
+                string token = authHeader.Substring("Bearer ".Length).Trim();
+                await _authservice.InvalidateToken(token);
+                return Ok(new { message = "Logout successful" });
+            }
+
+            return BadRequest(new { message = "No valid token provided" });
         }
 
         /// <summary>

@@ -6,5 +6,6 @@ namespace FastFoodAPI.Services {
         public Task<string> CreateToken();
         public Task<(bool Success, string[] Errors)> RegisterUser(EmployeeRegistrationRequest registrationRequest);
         public Task<bool> AssignRoleBasedOnJobTitle(int jobTitleId, string userId);
+        public Task<bool> InvalidateToken(string token);
     }
 }

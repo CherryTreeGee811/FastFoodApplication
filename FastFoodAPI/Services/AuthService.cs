@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodAPI.Services {
 
@@ -115,8 +117,8 @@ namespace FastFoodAPI.Services {
             }
 
             var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, _employee.Email),
-                };
+                new Claim(ClaimTypes.Name, _employee.Email),
+            };
 
             var roles = await _userManager.GetRolesAsync(_employee);
             foreach (var role in roles) {
@@ -133,7 +135,11 @@ namespace FastFoodAPI.Services {
         /// <param name="registrationRequest">The registration request containing user details.</param>
         /// <returns>A tuple indicating success and any errors encountered during registration.</returns>
         public async Task<(bool Success, string[] Errors)> RegisterUser(EmployeeRegistrationRequest registrationRequest) {
+            //int nextEmployeeId = await _fastFoodDbContext.Employees.MaxAsync(e => (int?)e.EmployeeId) ?? 0;
+            //nextEmployeeId++;
+
             var employee = new Employee {
+                //EmployeeId = nextEmployeeId,
                 UserName = registrationRequest.Email,
                 Email = registrationRequest.Email,
                 FirstName = registrationRequest.FirstName,
@@ -177,12 +183,14 @@ namespace FastFoodAPI.Services {
             };
 
             // Check if role exists, create if not
+            var roleStore = new RoleStore<IdentityRole>(_fastFoodDbContext);
+            var roleValidators = new List<IRoleValidator<IdentityRole>> { new RoleValidator<IdentityRole>() };
             var roleManager = new RoleManager<IdentityRole>(
-                new RoleStore<IdentityRole>(_fastFoodDbContext),
-                new List<IRoleValidator<IdentityRole>>(), // Provide an empty list for role validators
-                new UpperInvariantLookupNormalizer(),    // Provide a default implementation for ILookupNormalizer
-                new IdentityErrorDescriber(),            // Provide a default implementation for IdentityErrorDescriber
-                null                                     // Logger can remain null if not needed
+                roleStore,
+                roleValidators,
+                new UpperInvariantLookupNormalizer(),
+                new IdentityErrorDescriber(),
+                null as ILogger<RoleManager<IdentityRole>>  // Explicitly cast to nullable type
             );
 
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -193,9 +201,60 @@ namespace FastFoodAPI.Services {
             return true;
         }
 
+        /// <summary>
+        /// Invalidates a JWT token by adding it to the blacklist.
+        /// </summary>
+        /// <param name="token">The JWT token to invalidate.</param>
+        /// <returns>True if the token was successfully invalidated.</returns>
+        public Task<bool> InvalidateToken(string token) {
+            // Parse the token to get its expiration
+            try {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Get token expiration time
+                var expiration = jwtToken.ValidTo;
+
+                // Add to blacklist with its expiration time
+                _invalidatedTokens.TryAdd(token, expiration);
+
+                // Clean up expired tokens
+                CleanupExpiredTokens();
+
+                return Task.FromResult(true);
+            }
+            catch {
+                // If we can't parse the token, still add it with a default expiration
+                _invalidatedTokens.TryAdd(token, DateTime.UtcNow.AddHours(24));
+                return Task.FromResult(false);
+            }
+        }
+
+        /// <summary>
+        /// Checks if a token has been invalidated (blacklisted).
+        /// </summary>
+        /// <param name="token">The token to check.</param>
+        /// <returns>True if the token is invalidated; otherwise, false.</returns>
+        public static bool IsTokenInvalidated(string token) {
+            return _invalidatedTokens.ContainsKey(token);
+        }
+
+        /// <summary>
+        /// Removes expired tokens from the blacklist.
+        /// </summary>
+        private void CleanupExpiredTokens() {
+            var now = DateTime.UtcNow;
+            foreach (var item in _invalidatedTokens) {
+                if (item.Value < now) {
+                    _invalidatedTokens.TryRemove(item.Key, out _);
+                }
+            }
+        }
+
         private Employee? _employee;
         private FastFoodDbContext _fastFoodDbContext;
         private UserManager<Employee> _userManager;
         private IConfiguration _config;
+        private static readonly ConcurrentDictionary<string, DateTime> _invalidatedTokens = new ConcurrentDictionary<string, DateTime>();
     }
 }
