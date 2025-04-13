@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 
-namespace ClientApplication.Models
+namespace ClientApplication.Messages
 {
     public class EmployeeListDTO
     {
