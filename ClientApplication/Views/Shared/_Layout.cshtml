@@ -40,7 +40,7 @@
                         var role = Context.Session.GetString("Role");
                         var employeeID = Context.Session.GetInt32("EmployeeID");
 
-                        if (role == "Worker")
+                        if (string.Equals(role, "Worker"))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="workerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,7 +58,7 @@
                                 </ul>
                             </li>
                         }
-                        else if (role == "Manager")
+                        else if (string.Equals(role, "Manager"))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
