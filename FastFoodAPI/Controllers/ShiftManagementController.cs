@@ -11,17 +11,19 @@ namespace FastFoodAPI.Controllers
         public ILogger<ShiftManagementController> _logger;
         private readonly FastFoodDbContext _fastFoodDbContext;
 
+
         public ShiftManagementController(ILogger<ShiftManagementController> logger, FastFoodDbContext fastFoodDbContext)
         {
             _logger = logger;
             _fastFoodDbContext = fastFoodDbContext;
         }
         
+
         /// <summary>
         /// This method updates the current training module boolean
         /// to indicate it has been completed.
         /// </summary>
-        [HttpPatch("employee/completedtraining/{employeeId}/{trainingModuleId}")]
+        [HttpPatch("employees/completedtrainings/{employeeId}/{trainingModuleId}")]
         public IActionResult UpdateTrainingModule(int employeeId, int trainingModuleId)
         {
             // First step is to find the employee.

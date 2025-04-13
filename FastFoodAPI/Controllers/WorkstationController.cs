@@ -1,6 +1,7 @@
 using FastFoodAPI.Entities;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace FastFoodAPI.Controllers
 {
 
@@ -10,17 +11,20 @@ namespace FastFoodAPI.Controllers
     {
         public ILogger<WorkstationController> _logger;
         private readonly FastFoodDbContext _fastFoodDbContext;
+
+
         public WorkstationController(ILogger<WorkstationController> logger, FastFoodDbContext fastFoodDbContext)
         {
             _logger = logger;
             _fastFoodDbContext = fastFoodDbContext;
             
         }
+
         
         /// <summary>
         /// This method returns all available stations.
         /// </summary>
-        [HttpGet("employee/workstations")]
+        [HttpGet("employees/workstations")]
         public IActionResult GetStations()
         {
             var stations = _fastFoodDbContext.Stations.Select(station => new
@@ -31,10 +35,11 @@ namespace FastFoodAPI.Controllers
             return Ok(stations);
         }
         
+
         /// <summary>
         /// This method returns all available training modules.
         /// </summary>
-        [HttpGet("employee/trainingmodules")]
+        [HttpGet("employees/trainingmodules")]
         public IActionResult GetTrainingModules()
         {
             var trainingModules = _fastFoodDbContext.Trainings.Select(training => new
@@ -46,10 +51,11 @@ namespace FastFoodAPI.Controllers
             return Ok(trainingModules);
         }
         
+
         /// <summary>
         /// Retrieve role for specific employee.
         /// </summary>
-        [HttpGet("employee/role/{id}")]
+        [HttpGet("employees/role/{id}")]
         public IActionResult GetEmployeeRole(int id)
         {
             var employeeRole = _fastFoodDbContext.Employees
@@ -62,7 +68,6 @@ namespace FastFoodAPI.Controllers
             
             return Ok(employeeRole);
         }
-        
     }
 }
 
