@@ -72,6 +72,51 @@ namespace FastFoodAPI.Controllers
             }).ToList();
             return Ok(shifts);
         }
+        
+        /// <summary>
+        /// This method is used for updating the shift of an employee.
+        /// </summary>
+        [HttpPatch("employees/shifts/{employeeId}")]
+        public IActionResult UpdateShiftForEmployee(int employeeId, [FromBody] ShiftsDTO shiftsDTO)
+        {
+            // Find the employee By Id.
+            var employee = _fastFoodDbContext.Employees
+                .FirstOrDefault(e => e.Id == employeeId.ToString());
+            // Now, we need to parse the new shift position and save it in the database.
+            var shiftPosition = Enum.Parse(typeof(ShiftSchedule), shiftsDTO.ShiftPosition);
+            // Now we save to the database and return Ok.
+            _fastFoodDbContext.Update(employee);
+            _fastFoodDbContext.SaveChanges();
+            
+            return Ok();
+        }
+
+        /// <summary>
+        /// This method allows us to add a training module for an employee.
+        /// </summary>
+        [HttpPost("employees/trainingmodules/{employeeId}")]
+        public IActionResult AddNewTrainingModule(string employeeId, [FromBody] TrainingModuleDTO trainingModuleDTO)
+        {
+            // First step is to find the employee.
+            var employee = _fastFoodDbContext.Employees
+                .FirstOrDefault(e => e.Id == employeeId);
+            // Now we need to create a new training module.
+            var trainingModule = new TrainingAssignment
+            {
+                EmployeeId = employeeId,
+                TrainingId = trainingModuleDTO.TrainingId,
+                CompletedTraining = false,
+                DateCompleted = null
+            };
+            // The next thing is to assign that module to that employee.
+            employee.TrainingAssignments.Add(trainingModule);
+            // And finally we add this to the database:
+            _fastFoodDbContext.TrainingAssignments.Add(trainingModule);
+            _fastFoodDbContext.SaveChanges();
+            
+            // Now we return Ok.
+            return Ok();
+        }
     }
 }
 
