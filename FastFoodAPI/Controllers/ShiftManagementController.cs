@@ -76,14 +76,15 @@ namespace FastFoodAPI.Controllers
         /// <summary>
         /// This method is used for updating the shift of an employee.
         /// </summary>
-        [HttpPatch("employees/shifts/{employeeId}")]
-        public IActionResult UpdateShiftForEmployee(int employeeId, [FromBody] ShiftsDTO shiftsDTO)
+        [HttpPatch("employees/shifts/{employeeId}/{shiftId}")]
+        public IActionResult UpdateShiftForEmployee(string employeeId, int shiftId)
         {
             // Find the employee By Id.
             var employee = _fastFoodDbContext.Employees
-                .FirstOrDefault(e => e.Id == employeeId.ToString());
-            // Now, we need to parse the new shift position and save it in the database.
-            var shiftPosition = Enum.Parse(typeof(ShiftSchedule), shiftsDTO.ShiftPosition);
+                .FirstOrDefault(e => e.Id == employeeId);
+           // Now we need to assign the new shift based on the ID that we were given.
+            var shift = _fastFoodDbContext.Shifts
+                .FirstOrDefault(s => s.ShiftId == shiftId);
             // Now we save to the database and return Ok.
             _fastFoodDbContext.Update(employee);
             _fastFoodDbContext.SaveChanges();
