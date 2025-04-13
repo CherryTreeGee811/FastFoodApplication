@@ -57,25 +57,6 @@ namespace FastFoodAPI.Controllers
 
 
         /// <summary>
-        /// Creates a new employee.
-        /// </summary>
-        /// <param name="employeeDto">The employee details to create.</param>
-        /// <returns>The created employee with its ID.</returns>
-        [HttpPost("employees")]
-        public async Task<IActionResult> CreateEmployee(EmployeeDto employeeDto)
-        {
-            var (employee, success, errorMessage) = await _employeeManagerService.CreateEmployee(employeeDto);
-
-            if (!success)
-            {
-                return BadRequest(errorMessage);
-            }
-
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
-        }
-
-
-        /// <summary>
         /// Updates an existing employee.
         /// </summary>
         /// <param name="id">The ID of the employee to update.</param>
