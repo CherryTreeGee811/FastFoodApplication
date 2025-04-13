@@ -107,7 +107,7 @@ namespace FastFoodAPI.Controllers
             
             if (trainingAssignmentCheck != null)
             {
-                return Conflict(new {Message = "Employee already assigned to this training module"});
+                return Conflict(new {Message = "Employee already assigned to this training module."});
             }
             
             var trainingAssignment = new TrainingAssignment
