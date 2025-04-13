@@ -1,8 +1,6 @@
 ﻿using FastFoodAPI.Messages;
 using FastFoodAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Eventing.Reader;
-
 namespace FastFoodAPI.Controllers {
     [ApiController()]
     [Route("/api")]

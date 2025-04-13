@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using FastFoodAPI.Entities;
 
+
 namespace FastFoodAPI.Controllers
 {
-    public class ShiftManagementController : Controller
+    [ApiController]
+    [Route("/api")]
+    public class ShiftManagementController : ControllerBase
     {
         public ILogger<ShiftManagementController> _logger;
         private readonly FastFoodDbContext _fastFoodDbContext;
