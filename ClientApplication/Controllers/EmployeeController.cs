@@ -118,11 +118,14 @@ namespace ClientApplication.Controllers
             // Call the API endpoint
             var trainingResponse = await _client.GetAsync($"{_baseURL}/trainingmodules");
             var stationResponse = await _client.GetAsync($"{_baseURL}/workstations");
-            var shiftsResponse = await _client.GetAsync($"{_baseURL}/workstations");
+            //var shiftsResponse = await _client.GetAsync($"{_baseURL}/workstations");
 
             // Ensure the response is successful
             trainingResponse.EnsureSuccessStatusCode();
             stationResponse.EnsureSuccessStatusCode();
+
+            //shiftsResponse.EnsureSuccessStatusCode();
+            //rolesResponse.EnsureSuccessStatusCode();
 
             // Deserialize the response content into a list of employees
             var trainingModules = await trainingResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
