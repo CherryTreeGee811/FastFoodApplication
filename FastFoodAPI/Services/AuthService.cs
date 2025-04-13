@@ -59,6 +59,10 @@ namespace FastFoodAPI.Services {
             if (_employee == null)
                 return false;
 
+            bool passwordValid = await _userManager.CheckPasswordAsync(_employee, loginRequest.Password);
+            if (!passwordValid)
+                return false;
+
             // Check if the user has any roles
             var roles = await _userManager.GetRolesAsync(_employee);
             if (roles == null || roles.Count == 0) {
@@ -135,11 +139,8 @@ namespace FastFoodAPI.Services {
         /// <param name="registrationRequest">The registration request containing user details.</param>
         /// <returns>A tuple indicating success and any errors encountered during registration.</returns>
         public async Task<(bool Success, string[] Errors)> RegisterUser(EmployeeRegistrationRequest registrationRequest) {
-            //int nextEmployeeId = await _fastFoodDbContext.Employees.MaxAsync(e => (int?)e.EmployeeId) ?? 0;
-            //nextEmployeeId++;
 
             var employee = new Employee {
-                //EmployeeId = nextEmployeeId,
                 UserName = registrationRequest.Email,
                 Email = registrationRequest.Email,
                 FirstName = registrationRequest.FirstName,
