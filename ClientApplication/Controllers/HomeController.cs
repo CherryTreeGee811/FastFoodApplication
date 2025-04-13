@@ -7,12 +7,14 @@ namespace ClientApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _client;
+        private readonly string _baseURL;
 
 
         public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient();
+            _client = httpClientFactory.CreateClient();
+            _baseURL = "http://fastfoodapi:8000/api";
         }
 
 
@@ -21,7 +23,7 @@ namespace ClientApplication.Controllers
         {
             try
             {
-                var response = await _httpClient.GetAsync("http://fastfoodapi:8000/api/carousel");
+                var response = await _client.GetAsync($"{_baseURL}/carousel");
                 response.EnsureSuccessStatusCode();
 
                 // Replaced ReadAsAsync with JSON deserialization
@@ -64,8 +66,21 @@ namespace ClientApplication.Controllers
 
             try
             {
-                var response = await _httpClient.PostAsync("http://fastfoodapi:8000/api/carousel/", formData);
-                response.EnsureSuccessStatusCode();
+                // Add headers to the request
+                var uploadRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/carousel");
+
+                // Set the form data as the request content
+                uploadRequest.Content = formData;
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    uploadRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var uploadResponse = await _client.SendAsync(uploadRequest);
+                uploadResponse.EnsureSuccessStatusCode();
+
                 TempData["UploadSuccess"] = "Upload successful!";
             }
             catch (Exception ex)
