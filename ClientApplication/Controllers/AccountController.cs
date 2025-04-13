@@ -100,13 +100,15 @@ public class AccountController : Controller
             else
             {
                 // Handle unsuccessful login (e.g., log error, throw exception, etc.)
-                throw new Exception("Login failed: " + loginResponse.ReasonPhrase);
+                ViewBag.ErrorMessage = $"Login failed: {loginResponse.ReasonPhrase}";
+                return View();
             }
         }
         catch (Exception ex)
         {
             // Handle exceptions (e.g., network issues, serialization errors, etc.)
-            throw new Exception("An error occurred during login: " + ex.Message);
+            ViewBag.ErrorMessage = $"An error occurred during login: {ex.Message}";
+            return View();
         }
     }
 
