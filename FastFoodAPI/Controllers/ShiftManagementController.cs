@@ -18,7 +18,7 @@ namespace FastFoodAPI.Controllers
             _logger = logger;
             _fastFoodDbContext = fastFoodDbContext;
         }
-        
+
 
         /// <summary>
         /// This method updates the current training module boolean
@@ -36,7 +36,7 @@ namespace FastFoodAPI.Controllers
             // And finally, set the boolean to true for completed training module.
             trainingModule.CompletedTraining = true;
             trainingModule.DateCompleted = DateTime.Now;
-            
+
             // Now we save changes to the database and return Ok.
             _fastFoodDbContext.Update(trainingModule);
             _fastFoodDbContext.SaveChanges();
@@ -44,7 +44,7 @@ namespace FastFoodAPI.Controllers
             return Ok();
         }
 
-        
+
         /// <summary>
         /// This method retrieves all available roles to the client.
         /// </summary>
@@ -58,7 +58,7 @@ namespace FastFoodAPI.Controllers
             }).ToList();
             return Ok(roles);
         }
-        
+
         /// <summary>
         /// This method retrieves all available shifts to the client.
         /// </summary>
@@ -72,7 +72,7 @@ namespace FastFoodAPI.Controllers
             }).ToList();
             return Ok(shifts);
         }
-        
+
         /// <summary>
         /// This method is used for updating the shift of an employee.
         /// </summary>
@@ -82,40 +82,45 @@ namespace FastFoodAPI.Controllers
             // Find the employee By Id.
             var employee = _fastFoodDbContext.Employees
                 .FirstOrDefault(e => e.Id == employeeId);
-           // Now we need to assign the new shift based on the ID that we were given.
+            // Now we need to assign the new shift based on the ID that we were given.
             var shift = _fastFoodDbContext.Shifts
                 .FirstOrDefault(s => s.ShiftId == shiftId);
             // Now we save to the database and return Ok.
             _fastFoodDbContext.Update(employee);
             _fastFoodDbContext.SaveChanges();
-            
+
             return Ok();
         }
 
         /// <summary>
-        /// This method allows us to add a training module for an employee.
+        /// This method allows us to assign a training module to an employee.
         /// </summary>
-        [HttpPost("employees/trainingmodules/{employeeId}")]
-        public IActionResult AddNewTrainingModule(string employeeId, [FromBody] TrainingModuleDTO trainingModuleDTO)
+        [HttpPost("employees/trainingmodules/{employeeId}/{trainingId:int}")]
+        public IActionResult AssignTrainingModuleToEmployee(string employeeId, int trainingId)
         {
-            // First step is to find the employee.
-            var employee = _fastFoodDbContext.Employees
-                .FirstOrDefault(e => e.Id == employeeId);
-            // Now we need to create a new training module.
-            var trainingModule = new TrainingAssignment
+            /*
+             * First we need to check if the employee is already assigned to the training module.
+             * If it is, the request is halted.
+             */
+            var trainingAssignmentCheck = _fastFoodDbContext.TrainingAssignments
+                .FirstOrDefault(t => t.TrainingId == trainingId && t.EmployeeId == employeeId);
+            
+            if (trainingAssignmentCheck != null)
+            {
+                return Conflict(new {Message = "Employee already assigned to this training module"});
+            }
+            
+            var trainingAssignment = new TrainingAssignment
             {
                 EmployeeId = employeeId,
-                TrainingId = trainingModuleDTO.TrainingId,
+                TrainingId = trainingId,
                 CompletedTraining = false,
                 DateCompleted = null
             };
-            // The next thing is to assign that module to that employee.
-            employee.TrainingAssignments.Add(trainingModule);
-            // And finally we add this to the database:
-            _fastFoodDbContext.TrainingAssignments.Add(trainingModule);
+
+            _fastFoodDbContext.TrainingAssignments.Add(trainingAssignment);
             _fastFoodDbContext.SaveChanges();
-            
-            // Now we return Ok.
+
             return Ok();
         }
     }
