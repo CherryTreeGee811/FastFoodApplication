@@ -3,7 +3,6 @@ using ClientApplication.Messages;
 using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
-using FastFoodAPI.Models;
 
 
 namespace ClientApplication.Controllers
@@ -33,9 +32,8 @@ namespace ClientApplication.Controllers
             shiftResponse.EnsureSuccessStatusCode();
 
             // Deserialize the response content into a list of training modules
-            var trainingModules = await trainingModuleResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
-
-            var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>();
+            var trainingModules = await trainingModuleResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>() ?? new List<TrainingModuleDTO>();
+            var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>() ?? new List<ShiftsDTO>();
 
             var model = new EmployeeDetailsViewModel
             {
@@ -116,7 +114,7 @@ namespace ClientApplication.Controllers
 
             roleResponse.EnsureSuccessStatusCode();
 
-            var roles = await roleResponse.Content.ReadFromJsonAsync<List<RolesDTO>>();
+            var roles = await roleResponse.Content.ReadFromJsonAsync<List<RolesDTO>>() ?? new List<RolesDTO>();
 
             var model = new HireEmployeeViewModel
             {
@@ -183,10 +181,10 @@ namespace ClientApplication.Controllers
             var model = new ManageEmployeeViewModel
             {
                 EmployeeID = employeeID,
-                TrainingModules = trainingModules,
-                Stations = stations,
-                Roles = roles,
-                Shifts = shifts
+                TrainingModules = trainingModules ?? new List<TrainingModuleDTO>(),
+                Stations = stations ?? new List<StationDTO>(),
+                Roles = roles ?? new List<RolesDTO>(),
+                Shifts = shifts ?? new List<ShiftsDTO>()
             };
 
             return View(model);
@@ -302,7 +300,8 @@ namespace ClientApplication.Controllers
             }
             catch (Exception ex)
             {
-                // ToDo: Add indication of failure
+                Console.WriteLine($"Error: {ex.Message}");
+                // ToDo: Add better indication of failure
                 return RedirectToAction("Manage", new { employeeID });
             }
         }
@@ -335,9 +334,11 @@ namespace ClientApplication.Controllers
             }
             catch (Exception ex)
             {
-                // ToDo: Add indication of failure
-                return RedirectToAction("Manage", new { employeeID });
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error: {ex.Message}");
+                return View("Error", new { message = "An error occurred while processing your request." });
             }
+
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 
-namespace FastFoodAPI.Models
+namespace ClientApplication.Models
 {
     public class UpdateEmployeeDto
     {

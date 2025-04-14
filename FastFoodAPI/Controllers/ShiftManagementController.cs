@@ -197,7 +197,7 @@ namespace FastFoodAPI.Controllers
                 var shiftDTO = new ShiftsDTO
                 {
                     ShiftId = newShiftAssignment.ShiftId,
-                    ShiftPosition = shift.ShiftPosition.ToString(),
+                    ShiftPosition = shift?.ShiftPosition.ToString(),
                     EmployeeId = newShiftAssignment.EmployeeId,
                     ShiftDate = newShiftAssignment.ShiftDate
                 };
