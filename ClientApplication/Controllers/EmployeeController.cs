@@ -3,6 +3,9 @@ using ClientApplication.Messages;
 using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
+using FastFoodAPI.Models;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Identity.Data;
 
 
 namespace ClientApplication.Controllers
@@ -219,22 +222,62 @@ namespace ClientApplication.Controllers
 
 
         [HttpPost("/employees/{employeeID}/promote-demote")]
-        public IActionResult PromoteDemote(int employeeID, string role)
+        public async Task<IActionResult> PromoteDemote([FromRoute] string employeeID, [FromForm] int roleID)
         {
-            // Placeholder logic for promoting/demoting an employee
-            Console.WriteLine($"Employee {employeeID} role updated to {role}");
+            try
+            {
+                var employee = new UpdateEmployeeDto
+                {
+                    JobTitleId = roleID
+                };
 
-            return RedirectToAction("Manage", new { employeeID });
+                var jsonContent = JsonSerializer.Serialize(employee);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Call the API endpoint
+                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                return View("Error", new { message = "Unable to fire this employee." });
+            }
         }
 
 
         [HttpPost("/employees/{employeeID}/relocate")]
-        public IActionResult Relocate(int employeeID, string position)
+        public async Task<IActionResult> Relocate([FromRoute] string employeeID, [FromForm] int stationID)
         {
-            // Placeholder logic for relocating an employee
-            Console.WriteLine($"Employee {employeeID} relocated to position {position}");
+            try
+            {
+                var employee = new UpdateEmployeeDto
+                {
+                    StationId = stationID
+                };
 
-            return RedirectToAction("Manage", new { employeeID });
+                var jsonContent = JsonSerializer.Serialize(employee);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Call the API endpoint
+                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                return View("Error", new { message = "Unable to fire this employee." });
+            }
         }
 
 
@@ -269,11 +312,13 @@ namespace ClientApplication.Controllers
 
                 // Ensure the response is successful
                 assignTrainingResponse.EnsureSuccessStatusCode();
-
+                
+                //ToDo: Add indication of success
                 return RedirectToAction("Manage", new { employeeID });
             }
             catch (Exception ex)
             {
+                // ToDo: Add indication of failure
                 return RedirectToAction("Manage", new { employeeID });
             }
         }
