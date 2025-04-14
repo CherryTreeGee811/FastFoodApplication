@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
-
+using FastFoodAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastFoodAPI.Controllers
 {
@@ -9,41 +10,19 @@ namespace FastFoodAPI.Controllers
     [Route("/api")]
     public class ShiftManagementController : ControllerBase
     {
-        public ILogger<ShiftManagementController> _logger;
+        private readonly ILogger<ShiftManagementController> _logger;
         private readonly FastFoodDbContext _fastFoodDbContext;
+        private readonly IShiftManagementService _shiftManagementService;
 
-
-        public ShiftManagementController(ILogger<ShiftManagementController> logger, FastFoodDbContext fastFoodDbContext)
+        public ShiftManagementController(
+            ILogger<ShiftManagementController> logger,
+            FastFoodDbContext fastFoodDbContext,
+            IShiftManagementService shiftManagementService)
         {
             _logger = logger;
             _fastFoodDbContext = fastFoodDbContext;
+            _shiftManagementService = shiftManagementService;
         }
-
-
-        /// <summary>
-        /// This method updates the current training module boolean
-        /// to indicate it has been completed.
-        /// </summary>
-        [HttpPatch("employees/completedtrainings/{employeeId}/{trainingModuleId:int}")]
-        public IActionResult UpdateTrainingModule(string employeeId, int trainingModuleId)
-        {
-            // First step is to find the employee.
-            var employee = _fastFoodDbContext.Employees
-                .FirstOrDefault(e => e.Id == employeeId);
-            // The next step is to check for the training module that is being completed.
-            var trainingModule = _fastFoodDbContext.TrainingAssignments
-                .FirstOrDefault(tm => tm.TrainingId == trainingModuleId);
-            // And finally, set the boolean to true for completed training module.
-            trainingModule.CompletedTraining = true;
-            trainingModule.DateCompleted = DateTime.Now;
-
-            // Now we save changes to the database and return Ok.
-            _fastFoodDbContext.Update(trainingModule);
-            _fastFoodDbContext.SaveChanges();
-
-            return Ok();
-        }
-
 
         /// <summary>
         /// This method retrieves all available roles to the client.
@@ -74,22 +53,162 @@ namespace FastFoodAPI.Controllers
         }
 
         /// <summary>
-        /// This method is used for updating the shift of an employee.
+        /// Gets all shifts for a specific employee.
         /// </summary>
-        [HttpPatch("employees/shifts/{employeeId}/{shiftId}")]
-        public IActionResult UpdateShiftForEmployee(string employeeId, int shiftId)
+        /// <param name="employeeId">The ID of the employee.</param>
+        /// <returns>A list of shift assignments for the employee.</returns>
+        [HttpGet("employees/{employeeId}/shifts")]
+        public async Task<IActionResult> GetEmployeeShifts(string employeeId)
         {
-            // Find the employee By Id.
-            var employee = _fastFoodDbContext.Employees
-                .FirstOrDefault(e => e.Id == employeeId);
-            // Now we need to assign the new shift based on the ID that we were given.
-            var shift = _fastFoodDbContext.Shifts
-                .FirstOrDefault(s => s.ShiftId == shiftId);
-            // Now we save to the database and return Ok.
-            _fastFoodDbContext.Update(employee);
-            _fastFoodDbContext.SaveChanges();
+            try
+            {
+                var shifts = await _shiftManagementService.GetEmployeeShiftsAsync(employeeId);
+                return Ok(shifts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving shifts for employee {employeeId}");
+                return StatusCode(500, "An error occurred while retrieving employee shifts.");
+            }
+        }
 
-            return Ok();
+        /// <summary>
+        /// Assigns an employee to a shift on a specific date.
+        /// </summary>
+        /// <param name="employeeId">The ID of the employee.</param>
+        /// <param name="shiftId">The ID of the shift.</param>
+        /// <param name="shiftDate">The date of the shift.</param>
+        [HttpPost("employees/{employeeId}/shifts")]
+        public async Task<IActionResult> AssignShift(string employeeId, [FromBody] AssignShiftRequest request)
+        {
+            if (request == null || request.ShiftId <= 0)
+            {
+                return BadRequest("Invalid shift data");
+            }
+
+            try
+            {
+                var (shift, success, errorMessage) = await _shiftManagementService.AssignShiftToEmployeeAsync(
+                    employeeId,
+                    request.ShiftId,
+                    request.ShiftDate);
+
+                if (!success)
+                {
+                    if (errorMessage.Contains("not found"))
+                    {
+                        return NotFound(errorMessage);
+                    }
+                    return BadRequest(errorMessage);
+                }
+
+                return Ok(shift);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error assigning shift for employee {employeeId}");
+                return StatusCode(500, "An error occurred while assigning the shift.");
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing shift assignment for an employee.
+        /// </summary>
+        /// <param name="employeeId">The ID of the employee.</param>
+        /// <param name="shiftId">The current ID of the shift to update.</param>
+        /// <param name="request">The updated shift details.</param>
+        /// <returns>The updated shift assignment if successful.</returns>
+        [HttpPut("employees/shifts/{employeeId}/{shiftId}")]
+        public async Task<IActionResult> UpdateShiftForEmployee(string employeeId, int shiftId, [FromBody] UpdateShiftRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid shift data");
+            }
+
+            try
+            {
+                // Find the shift assignment
+                var shiftAssignment = await _fastFoodDbContext.ShiftAssignments
+                    .FirstOrDefaultAsync(sa =>
+                        sa.EmployeeId == employeeId &&
+                        sa.ShiftId == shiftId &&
+                        sa.ShiftDate.Date == request.OriginalShiftDate.Date);
+
+                if (shiftAssignment == null)
+                {
+                    return NotFound($"Shift assignment not found for employee {employeeId} on {request.OriginalShiftDate.Date:d} with shift ID {shiftId}");
+                }
+
+                // Determine if we need to update the shift ID
+                int targetShiftId = request.NewShiftId != 0 && request.NewShiftId != shiftId
+                    ? request.NewShiftId
+                    : shiftId;
+
+                // If changing shift ID, validate that the new shift exists
+                if (targetShiftId != shiftId)
+                {
+                    var newShift = await _fastFoodDbContext.Shifts.FindAsync(targetShiftId);
+                    if (newShift == null)
+                    {
+                        return BadRequest($"Shift with ID {targetShiftId} not found");
+                    }
+                }
+
+                // Determine the target date
+                DateTime targetDate = request.NewShiftDate.HasValue
+                    ? request.NewShiftDate.Value.Date
+                    : request.OriginalShiftDate.Date;
+
+                // If no actual changes are being made, return a BadRequest
+                if (targetShiftId == shiftId && targetDate == request.OriginalShiftDate.Date)
+                {
+                    return BadRequest("No changes requested for the shift assignment");
+                }
+
+                // Check for existing assignment at the new shift/date combination
+                var existingAssignment = await _fastFoodDbContext.ShiftAssignments
+                    .AnyAsync(sa =>
+                        sa.EmployeeId == employeeId &&
+                        sa.ShiftId == targetShiftId &&
+                        sa.ShiftDate.Date == targetDate &&
+                        (sa.ShiftId != shiftId || sa.ShiftDate.Date != request.OriginalShiftDate.Date)); // Exclude the current assignment
+
+                if (existingAssignment)
+                {
+                    return BadRequest("Employee is already assigned to this shift on the requested date");
+                }
+
+                // Create new shift assignment
+                var newShiftAssignment = new ShiftAssignment
+                {
+                    EmployeeId = employeeId,
+                    ShiftId = targetShiftId,
+                    ShiftDate = targetDate
+                };
+
+                // Remove old assignment and add new one
+                _fastFoodDbContext.ShiftAssignments.Remove(shiftAssignment);
+                _fastFoodDbContext.ShiftAssignments.Add(newShiftAssignment);
+                await _fastFoodDbContext.SaveChangesAsync();
+
+                // Get the shift details for the response
+                var shift = await _fastFoodDbContext.Shifts.FindAsync(targetShiftId);
+                var shiftDTO = new ShiftsDTO
+                {
+                    ShiftId = newShiftAssignment.ShiftId,
+                    ShiftPosition = shift.ShiftPosition.ToString(),
+                    EmployeeId = newShiftAssignment.EmployeeId,
+                    ShiftDate = newShiftAssignment.ShiftDate
+                };
+
+                return Ok(shiftDTO);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating shift for employee {employeeId}");
+                return StatusCode(500, "An error occurred while updating the shift assignment.");
+            }
         }
 
         /// <summary>
@@ -104,12 +223,12 @@ namespace FastFoodAPI.Controllers
              */
             var trainingAssignmentCheck = _fastFoodDbContext.TrainingAssignments
                 .FirstOrDefault(t => t.TrainingId == trainingId && t.EmployeeId == employeeId);
-            
+
             if (trainingAssignmentCheck != null)
             {
                 return Conflict(new {Message = "Employee already assigned to this training module."});
             }
-            
+
             var trainingAssignment = new TrainingAssignment
             {
                 EmployeeId = employeeId,
@@ -124,5 +243,10 @@ namespace FastFoodAPI.Controllers
             return Ok();
         }
     }
-}
 
+    public class AssignShiftRequest
+    {
+        public int ShiftId { get; set; }
+        public DateTime ShiftDate { get; set; }
+    }
+}

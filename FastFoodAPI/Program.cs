@@ -43,6 +43,9 @@ builder.Services.AddScoped<IEmployeeManagerService, EmployeeManagerService>();
 // Register the Training service
 builder.Services.AddScoped<ITrainingService, TrainingService>();
 
+// Register the Shift Management service
+builder.Services.AddScoped<IShiftManagementService, ShiftManagementService>();
+
 builder.Services.AddDbContext<FastFoodDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
     .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
