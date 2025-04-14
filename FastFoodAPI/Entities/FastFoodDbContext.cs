@@ -36,18 +36,17 @@ namespace FastFoodAPI.Entities {
                 .IsRequired(false)          // employee can exist without being assigned to a station
                 .OnDelete(DeleteBehavior.SetNull); // if station is deleted, set employee's StationId to null
 
-            // Configure Email in Employee to be unique
+            // Configure TrainingAssignment composite key
             modelBuilder.Entity<TrainingAssignment>()
-                .HasKey(ta => new { ta.EmployeeId, ta.TrainingId });
-
+                .HasKey(ta => new { ta.EmployeeId, ta.TrainingId });  // composite primary key
 
             // TrainingAssignment to Employee relationship
             modelBuilder.Entity<TrainingAssignment>()
-                .HasOne(ta => ta.Employee)
-                .WithMany(e => e.TrainingAssignments)
-                .HasForeignKey(ta => ta.EmployeeId)
-                .HasPrincipalKey(e => e.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(ta => ta.Employee)  // training assignment has 1 employee
+                .WithMany(e => e.TrainingAssignments)  // employee has many training assignments
+                .HasForeignKey(ta => ta.EmployeeId)  // using EmployeeId as the foreign key
+                .HasPrincipalKey(e => e.Id)  // explicitly use EmployeeId as the principal key
+                .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their training assignments
 
             // TrainingAssignment to Training relationship
             modelBuilder.Entity<TrainingAssignment>()
@@ -61,24 +60,24 @@ namespace FastFoodAPI.Entities {
                 .Property(ta => ta.CompletedTraining)
                 .HasDefaultValue(false);
 
-            // Configure composite key for ShiftAssignment
+            // Configure ShiftAssignment composite key
             modelBuilder.Entity<ShiftAssignment>()
-                .HasKey(sa => new { sa.EmployeeId, sa.ShiftId });
+                .HasKey(sa => new { sa.EmployeeId, sa.ShiftId, sa.ShiftDate });  // composite primary key including date
 
             // ShiftAssignment to Employee relationship
             modelBuilder.Entity<ShiftAssignment>()
-                 .HasOne(sa => sa.Employee)
-                 .WithMany(e => e.ShiftAssignments) // Adjust if Employee has a collection for ShiftAssignments
-                 .HasForeignKey(sa => sa.EmployeeId)
-                 .OnDelete(DeleteBehavior.Cascade);
+                .HasOne(sa => sa.Employee)  // shift assignment has 1 employee
+                .WithMany(e => e.ShiftAssignments)  // connect to the existing navigation property
+                .HasForeignKey(sa => sa.EmployeeId)  // using EmployeeId as the foreign key
+                .HasPrincipalKey(e => e.Id)  // explicitly use EmployeeId as the principal key
+                .OnDelete(DeleteBehavior.Cascade);  // if employee is deleted, delete their shift assignments
 
             // ShiftAssignment to Shift relationship
             modelBuilder.Entity<ShiftAssignment>()
-                .HasOne(sa => sa.Shift)
-                .WithMany() // Adjust if Shift has a collection for ShiftAssignments
-                .HasForeignKey(sa => sa.ShiftId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .HasOne(sa => sa.Shift)  // shift assignment has 1 shift
+                .WithMany()  // shift can have many assignments (no navigation property defined)
+                .HasForeignKey(sa => sa.ShiftId)  // using ShiftId as the foreign key
+                .OnDelete(DeleteBehavior.Cascade);  // if shift is deleted, delete the assignments
 
             // Configure default value for Shift.ShiftPosition
             modelBuilder.Entity<Shift>()
@@ -90,7 +89,6 @@ namespace FastFoodAPI.Entities {
                 .Property(e => e.ShiftPosition)
                 .HasConversion<string>()
                 .HasMaxLength(50);
-
 
             // Seed JobTitle data
             modelBuilder.Entity<JobTitle>().HasData(
@@ -417,13 +415,16 @@ namespace FastFoodAPI.Entities {
             // Food Safety training for all employees
             foreach (var employee in employees)
             {
+                // Create an int index based on the employee's position in the list
+                int employeeIndex = employees.IndexOf(employee) + 1; // +1 to start from 1 instead of 0
+
                 // Base training - all employees have food safety
                 trainingAssignments.Add(new TrainingAssignment
                 {
-                    EmployeeId = employee.Id, // Use the Id of an existing Employee
-                    TrainingId = 1, // Reference an existing Training
+                    EmployeeId = employee.Id, // Use Id from IdentityUser
+                    TrainingId = 1,
                     CompletedTraining = true,
-                    DateCompleted = DateTime.Now.AddMonths(-1)
+                    DateCompleted = employeeIndex <= 10 ? threeMonthsAgo : lastMonth
                 });
 
                 // Customer Service - Managers and Cashiers
@@ -431,19 +432,23 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.Id, // Use the Id of another Employee
-                        TrainingId = 2, // Reference another Training
-                        CompletedTraining = false,
-                        DateCompleted = null
+                        EmployeeId = employee.Id, // Use Id from IdentityUser
+                        TrainingId = 2,
+                        CompletedTraining = employeeIndex != 5 && employeeIndex != 16,
+                        DateCompleted = employeeIndex == 5 || employeeIndex == 16 ? null :
+                                       (employeeIndex <= 10 ? twoMonthsAgo : lastMonth)
                     });
 
                     // Cash Handling - Managers and Cashiers
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.Id,
+                        EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 3,
-                        CompletedTraining = true,
-                        DateCompleted = DateTime.Now.AddMonths(-1)
+                        CompletedTraining = employeeIndex != 4 && employeeIndex != 5 &&
+                                           employeeIndex != 15 && employeeIndex != 16,
+                        DateCompleted = (employeeIndex == 4 || employeeIndex == 5 ||
+                                       employeeIndex == 15 || employeeIndex == 16) ? null :
+                                       (employeeIndex <= 10 ? twoMonthsAgo : lastMonth)
                     });
                 }
 
@@ -452,10 +457,11 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.Id,
+                        EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 4,
-                        CompletedTraining = true,
-                        DateCompleted = DateTime.Now.AddMonths(-1)
+                        CompletedTraining = employeeIndex != 8 && employeeIndex != 20,
+                        DateCompleted = employeeIndex == 8 || employeeIndex == 20 ? null :
+                                       (employeeIndex <= 10 ? twoMonthsAgo : lastMonth)
                     });
                 }
 
@@ -464,10 +470,11 @@ namespace FastFoodAPI.Entities {
                 {
                     trainingAssignments.Add(new TrainingAssignment
                     {
-                        EmployeeId = employee.Id,
+                        EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 5,
-                        CompletedTraining = true,
-                        DateCompleted = DateTime.Now.AddMonths(-1)
+                        CompletedTraining = employeeIndex != 10 && employeeIndex != 22,
+                        DateCompleted = employeeIndex == 10 || employeeIndex == 22 ? null :
+                                       (employeeIndex <= 10 ? twoMonthsAgo : lastMonth)
                     });
                 }
             }
@@ -477,43 +484,58 @@ namespace FastFoodAPI.Entities {
             // Generate a complete schedule from April 8, 2025 to May 31, 2025
             var shiftAssignments = GenerateShiftSchedule(employees);
             modelBuilder.Entity<ShiftAssignment>().HasData(shiftAssignments);
-
-            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>
         /// Generates a complete shift schedule from April 8, 2025 to May 31, 2025
         /// by assigning employees to Day, Afternoon, and Night shifts. 
         /// Employees are rotated and assigned based on job title and staffing needs.
-        private List<ShiftAssignment> ScheduleEmployeesForShift(
-            DateTime date, int shiftId, List<Employee> employees, int count, HashSet<(string, int)> assignedKeys)
-        {
+        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees) {
             var assignments = new List<ShiftAssignment>();
-            if (employees.Count == 0 || count == 0) return assignments;
 
-            var startIndex = ((int)date.DayOfWeek + date.Day + shiftId) % employees.Count;
+            // Start with April 8, 2025 (current day) and go until May 31, 2025
+            var startDate = new DateTime(2025, 4, 8);
+            var endDate = new DateTime(2025, 5, 31);
 
-            for (int i = 0; i < count; i++)
+            // Group employees by job title
+            var managers = employees.Where(e => e.JobTitleId == 1).ToList();
+            var cashiers = employees.Where(e => e.JobTitleId == 2).ToList();
+            var cooks = employees.Where(e => e.JobTitleId == 3).ToList();
+            var cleaners = employees.Where(e => e.JobTitleId == 4).ToList();
+
+            // Create a schedule for each day
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                var employeeIndex = (startIndex + i) % employees.Count;
-                var employee = employees[employeeIndex];
+                // Determine day of week (0 = Sunday through 6 = Saturday)
+                int dayOfWeek = (int)date.DayOfWeek;
+                bool isWeekend = dayOfWeek == 0 || dayOfWeek == 6;
 
-                var key = (employee.Id, shiftId);
-                if (!assignedKeys.Contains(key))
+                // Schedule for each shift (Day, Afternoon, Night)
+                for (int shiftId = 1; shiftId <= 3; shiftId++)
                 {
-                    assignedKeys.Add(key);
-                    assignments.Add(new ShiftAssignment
+                    // Staff needed per shift - higher on weekends for busy periods
+                    int managersNeeded = 1;
+                    int cashiersNeeded = isWeekend ? 3 : 2;
+                    int cooksNeeded = isWeekend ? 3 : 2;
+                    int cleanersNeeded = 1;
+
+                    // For night shift, need fewer staff
+                    if (shiftId == 3) // Night shift
                     {
-                        EmployeeId = employee.Id,
-                        ShiftId = shiftId,
-                        ShiftDate = date
-                    });
+                        cashiersNeeded = Math.Max(1, cashiersNeeded - 1);
+                        cooksNeeded = Math.Max(1, cooksNeeded - 1);
+                    }
+
+                    // Assign the appropriate number of employees of each type to the shift
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, managers, managersNeeded));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cashiers, cashiersNeeded));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cooks, cooksNeeded));
+                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cleaners, cleanersNeeded));
                 }
             }
 
             return assignments;
         }
-
 
         /// <summary>
         /// Assigns a specified number of employees to a shift on a given date using a rotating strategy.
@@ -523,34 +545,29 @@ namespace FastFoodAPI.Entities {
         /// <param name="employees">List of available employees for the job type.</param>
         /// <param name="count">Number of employees to assign.</param>
         /// <returns>A list of shift assignments for the specified shift and date.</returns>
-        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees)
-        {
+        private List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date, int shiftId, List<Employee> employees, int count) {
             var assignments = new List<ShiftAssignment>();
-            var assignedKeys = new HashSet<(string EmployeeId, int ShiftId)>();
+            if (employees.Count == 0 || count == 0) return assignments;
 
-            var startDate = new DateTime(2025, 4, 8);
-            var endDate = new DateTime(2025, 5, 31);
+            // Use employee ID modulo operation to assign different employees to different days
+            // This creates a rotation system so the same employees don't always work the same days
+            var startIndex = ((int)date.DayOfWeek + date.Day + shiftId) % employees.Count;
 
-            var managers = employees.Where(e => e.JobTitleId == 1).ToList();
-            var cashiers = employees.Where(e => e.JobTitleId == 2).ToList();
-            var cooks = employees.Where(e => e.JobTitleId == 3).ToList();
-            var cleaners = employees.Where(e => e.JobTitleId == 4).ToList();
-
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            for (int i = 0; i < count; i++)
             {
-                for (int shiftId = 1; shiftId <= 3; shiftId++)
+                var employeeIndex = (startIndex + i) % employees.Count;
+                var employee = employees[employeeIndex];
+
+                assignments.Add(new ShiftAssignment
                 {
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, managers, 1, assignedKeys));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cashiers, 2, assignedKeys));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cooks, 2, assignedKeys));
-                    assignments.AddRange(ScheduleEmployeesForShift(date, shiftId, cleaners, 1, assignedKeys));
-                }
+                    EmployeeId = employee.Id,
+                    ShiftId = shiftId,
+                    ShiftDate = date
+                });
             }
 
             return assignments;
         }
-
-
 
 
         /// <summary>

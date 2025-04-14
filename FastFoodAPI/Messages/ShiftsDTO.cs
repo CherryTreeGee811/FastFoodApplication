@@ -10,7 +10,12 @@ namespace FastFoodAPI.Messages
 
         [JsonPropertyName("shiftPosition")]
         public string? ShiftPosition { get; set; } = ShiftSchedule.Unassigned.ToString();
-    
+
+        [JsonPropertyName("employeeId")]
+        public string? EmployeeId { get; set; }
+
+        [JsonPropertyName("shiftDate")]
+        public DateTime? ShiftDate { get; set; }
     }
 }
 
