@@ -1,5 +1,6 @@
 using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -26,6 +27,7 @@ namespace FastFoodAPI.Controllers
         /// This method returns all available stations.
         /// </summary>
         [HttpGet("employees/workstations")]
+        [Authorize(Roles = "Manager")]
         public IActionResult GetStations()
         {
             var stations = _fastFoodDbContext.Stations.Select(station => new StationDTO
@@ -41,6 +43,7 @@ namespace FastFoodAPI.Controllers
         /// This method returns all available training modules.
         /// </summary>
         [HttpGet("employees/trainingmodules")]
+        [Authorize(Roles = "Manager")]
         public IActionResult GetTrainingModules()
         {
             var trainingModules = _fastFoodDbContext.Trainings.Select(training => new TrainingModuleDTO
@@ -57,6 +60,7 @@ namespace FastFoodAPI.Controllers
         /// Retrieve role for specific employee.
         /// </summary>
         [HttpGet("employees/roles/{id}")]
+        [Authorize(Roles = "Manager")]
         public IActionResult GetEmployeeRole(string id)
         {
             var employeeRole = _fastFoodDbContext.Employees

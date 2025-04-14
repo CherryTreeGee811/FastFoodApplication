@@ -21,6 +21,7 @@ namespace FastFoodAPI.Controllers {
         /// </summary>
         /// <returns>A 200 OK response with a list of image URLs, or 404 if the directory is missing.</returns>
         [HttpGet("carousel")]
+        [AllowAnonymous]
         public IActionResult GetPromoCarouselImages() {
             string imagesPath = Path.Combine(_env.WebRootPath, _imagesDir);
 
@@ -49,8 +50,8 @@ namespace FastFoodAPI.Controllers {
         /// A 201 Created response containing URLs of the uploaded images and a count,
         /// or a 400 Bad Request if no files are provided.
         /// </returns>
-        [Authorize(Roles = "Manager")]
         [HttpPost("carousel")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> UploadPromoImages(List<IFormFile> files) {
 
             if (files == null || files.Count == 0) {
