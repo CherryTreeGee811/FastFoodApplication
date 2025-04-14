@@ -125,14 +125,14 @@ namespace FastFoodAPI.Controllers
         /// <summary>
         /// This method allows retrieval of an employee by their email.
         /// </summary>
-        [HttpGet("employees/{email}")]
+        [HttpGet("employees/email/{email}")]
         public async Task<IActionResult> GetEmployeeByEmail(string email)
         {
             var employee = await _employeeManagerService.GetEmployeeByEmail(email);
 
             if (employee == null)
             {
-                return NotFound($"Employee with ID {email} not found");
+                return NotFound($"Employee with Email {email} not found");
             }
 
             return Ok(employee);
