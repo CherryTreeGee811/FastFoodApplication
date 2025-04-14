@@ -14,15 +14,21 @@ namespace FastFoodAPI.Controllers
         private readonly ILogger<ShiftManagementController> _logger;
         private readonly FastFoodDbContext _fastFoodDbContext;
         private readonly IShiftManagementService _shiftManagementService;
+        private readonly IMailService _mailService;
+        private readonly IEmployeeManagerService _employeeManagerService;
 
         public ShiftManagementController(
             ILogger<ShiftManagementController> logger,
             FastFoodDbContext fastFoodDbContext,
-            IShiftManagementService shiftManagementService)
+            IShiftManagementService shiftManagementService,
+            IMailService mailService,
+            IEmployeeManagerService employeeManagerService)
         {
             _logger = logger;
             _fastFoodDbContext = fastFoodDbContext;
             _shiftManagementService = shiftManagementService;
+            _mailService = mailService;
+            _employeeManagerService = employeeManagerService;
         }
 
         /// <summary>
@@ -247,6 +253,21 @@ namespace FastFoodAPI.Controllers
             _fastFoodDbContext.TrainingAssignments.Add(trainingAssignment);
             _fastFoodDbContext.SaveChanges();
 
+            return Ok();
+        }
+        
+        /// <summary>
+        /// This method sends an email to an employee with a list of their shifts.
+        /// </summary>
+        [HttpPost("employees/shifts/{employeeId}/")]
+        public async Task<IActionResult> SendShiftsEmail(string employeeId)
+        {
+            // First we need to find the employee's email so that
+            // we can pass it to the service function.
+            var employee = await _employeeManagerService.GetEmployee(employeeId);
+           
+            await _mailService.SendEmailAsync(employee.EmailAddress, employeeId);
+            
             return Ok();
         }
     }

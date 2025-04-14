@@ -46,6 +46,9 @@ builder.Services.AddScoped<ITrainingService, TrainingService>();
 // Register the Shift Management service
 builder.Services.AddScoped<IShiftManagementService, ShiftManagementService>();
 
+// Register the Mail service
+builder.Services.AddScoped<IMailService, MailService>();
+
 builder.Services.AddDbContext<FastFoodDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FastFoodDB"))
     .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
