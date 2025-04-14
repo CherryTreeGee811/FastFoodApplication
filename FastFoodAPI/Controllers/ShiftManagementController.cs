@@ -3,6 +3,7 @@ using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
 using FastFoodAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FastFoodAPI.Controllers
 {
@@ -28,6 +29,7 @@ namespace FastFoodAPI.Controllers
         /// This method retrieves all available roles to the client.
         /// </summary>
         [HttpGet("employees/roles")]
+        [Authorize(Roles = "Manager")]
         public IActionResult GetRoles()
         {
             var roles = _fastFoodDbContext.JobTitles.Select(role => new RolesDTO
@@ -42,6 +44,7 @@ namespace FastFoodAPI.Controllers
         /// This method retrieves all available shifts to the client.
         /// </summary>
         [HttpGet("employees/shifts")]
+        [Authorize(Roles = "Manager")]
         public IActionResult GetShifts()
         {
             var shifts = _fastFoodDbContext.Shifts.Select(shift => new ShiftsDTO
@@ -58,6 +61,7 @@ namespace FastFoodAPI.Controllers
         /// <param name="employeeId">The ID of the employee.</param>
         /// <returns>A list of shift assignments for the employee.</returns>
         [HttpGet("employees/{employeeId}/shifts")]
+        [Authorize(Roles = ("Manager,Cashier,Cook,Cleaner,Employee"))]
         public async Task<IActionResult> GetEmployeeShifts(string employeeId)
         {
             try
@@ -79,6 +83,7 @@ namespace FastFoodAPI.Controllers
         /// <param name="shiftId">The ID of the shift.</param>
         /// <param name="shiftDate">The date of the shift.</param>
         [HttpPost("employees/{employeeId}/shifts")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> AssignShift(string employeeId, [FromBody] AssignShiftRequest request)
         {
             if (request == null || request.ShiftId <= 0)
@@ -119,6 +124,7 @@ namespace FastFoodAPI.Controllers
         /// <param name="request">The updated shift details.</param>
         /// <returns>The updated shift assignment if successful.</returns>
         [HttpPut("employees/shifts/{employeeId}/{shiftId}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> UpdateShiftForEmployee(string employeeId, int shiftId, [FromBody] UpdateShiftRequest request)
         {
             if (request == null)
@@ -215,6 +221,7 @@ namespace FastFoodAPI.Controllers
         /// This method allows us to assign a training module to an employee.
         /// </summary>
         [HttpPost("employees/trainingmodules/{employeeId}/{trainingId:int}")]
+        [Authorize(Roles = "Manager")]
         public IActionResult AssignTrainingModuleToEmployee(string employeeId, int trainingId)
         {
             /*
