@@ -75,12 +75,24 @@ public class AccountController : Controller
                     return View();
                 }
 
-                // Use hardcoded credentials for demonstration:
+                var employeeResponse = await _client.GetAsync($"{_baseURL}/employees/email/{email}");
+
+                employeeResponse.EnsureSuccessStatusCode();
+
+                var employee = await employeeResponse.Content.ReadFromJsonAsync<EmployeeListDTO>();
+
+                if(Equals(employee, null))
+                {
+                    ViewBag.ErrorMessage = "Employee Details could not be received.";
+                    return View();
+                }
+
+
                 if (string.Equals(role, "Manager"))
                 {
                     // For a manager:
                     HttpContext.Session.SetString("Role", "Manager");
-                    HttpContext.Session.SetInt32("EmployeeID", 1);
+                    HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
                     HttpContext.Session.SetString("LoggedInUser", email);
 
                     // Redirect to the employee list page ("/employees")
@@ -90,11 +102,11 @@ public class AccountController : Controller
                 {
                     // For a worker:
                     HttpContext.Session.SetString("Role", "Worker");
-                    HttpContext.Session.SetInt32("EmployeeID", 2); // example worker employeeID
+                    HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
                     HttpContext.Session.SetString("LoggedInUser", email);
 
                     // Redirect to the specific employee details page ("/employees/{employeeID}")
-                    return RedirectToAction("Details", "Employee", new { employeeID = 2 });
+                    return RedirectToAction("Details", "Employee", new { employeeID = employee.EmployeeId });
                 }
             }
             else

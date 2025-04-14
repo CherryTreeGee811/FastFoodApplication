@@ -5,6 +5,10 @@ namespace ClientApplication.Models
 {
     public class ManageEmployeeViewModel
     {
+
+        public string EmployeeID { get; set; }
+
+
         public TrainingModuleDTO SelectedTrainingModule { get; set; } = new TrainingModuleDTO();
 
 

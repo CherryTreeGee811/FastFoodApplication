@@ -2,20 +2,19 @@
 
 @{
     ViewData["Title"] = "Manage Employee";
-    var employeeID = ViewBag.EmployeeID;
 }
 
 <div class="container mt-5">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Manage Employee</h1>
-        <span>Employee ID @employeeID</span>
+        <span>Employee ID @Model.EmployeeID</span>
     </div>
 
     <div class="row">
         <!-- Promote/Demote Form -->
         <div class="col-md-6">
-            <form method="post" action="/employees/@employeeID/promote-demote">
+            <form method="post" action="/employees/@Model.EmployeeID/promote-demote">
                 <h3>Promote/Demote</h3>
                 <div class="mb-3">
                     <label asp-for="SelectedRole" class="form-label">Role</label>
@@ -30,7 +29,7 @@
             </form>
 
             <!-- Relocate Form -->
-            <form method="post" action="/employees/@employeeID/relocate" class="mt-4">
+            <form method="post" action="/employees/@Model.EmployeeID/relocate" class="mt-4">
                 <h3>Relocate</h3>
                 <div class="mb-3">
                     <label asp-for="SelectedStation" class="form-label">Position</label>
@@ -47,7 +46,7 @@
 
         <!-- Schedule Form -->
         <div class="col-md-6">
-            <form method="post" action="/employees/@employeeID/schedule">
+            <form method="post" action="/employees/@Model.EmployeeID/schedule">
                 <h3>Schedule Employee</h3>
                 <div class="mb-3">
                     <label for="date" class="form-label">Date</label>
@@ -68,11 +67,11 @@
             </form>
 
             <!-- Train Employee Form -->
-            <form method="post" action="/employees/@employeeID/train" class="mt-4">
+            <form method="post" action="/employees/@Model.EmployeeID/assign-training" class="mt-4">
                 <h3>Train Employee</h3>
                 <div class="mb-3">
-                    <label asp-for="SelectedTrainingModule" class="form-label">Training</label>
-                    <select class="form-select" asp-for="SelectedTrainingModule" required>
+                    <label for="trainingID" class="form-label">Training</label>
+                    <select class="form-select" id="trainingID" name="trainingID" required>
                         @foreach (var module in Model.TrainingModules)
                         {
                             <option value="@module.TrainingId">@module.TrainingName</option>
@@ -87,7 +86,7 @@
 
 <script>
     function notifySchedule() {
-        fetch(`/employees/@employeeID/notify-schedule`, { method: 'POST' })
+        fetch(`/employees/@Model.EmployeeID/notify-schedule`, { method: 'POST' })
             .then(response => {
                 if (response.ok) {
                     alert("Schedule notification sent.");

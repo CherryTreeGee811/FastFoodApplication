@@ -1,11 +1,10 @@
-﻿   @using System.Collections.Generic
+﻿   @model EmployeeDetailsViewModel
+   @using System.Collections.Generic
 
    @{
        ViewData["Title"] = "Employee View";
-       var employeeID = ViewBag.EmployeeID;
        // Updated placeholder data with Date and Shift values.
        var shifts = ViewBag.Shifts as List<(string Date, string Shift)>;
-       var training = ViewBag.Training as List<(int CourseId, string CourseName)>;
    }
 
    <div class="container mt-5">
@@ -15,7 +14,7 @@
        <!-- Employee ID -->
        <div class="d-flex justify-content-end">
            <label class="fw-bold me-2">Employee ID:</label>
-           <span>@employeeID</span>
+           <span>@Model.EmployeeId</span>
        </div>
 
        <div class="row mt-4">
@@ -61,21 +60,34 @@
                            <td class="fw-bold">Course Name</td>
                            <td class="fw-bold">Mark Complete</td>
                        </tr>
-                       @if (training != null)
-                       {
-                           foreach (var course in training)
-                           {
-                               <tr>
-                                   <td>@course.CourseName</td>
-                                   <td>
-                                       <form method="post" action="/employees/complete-training">
-                                           <input type="hidden" name="courseId" value="@course.CourseId" />
-                                           <button type="submit" class="btn btn-success">Complete</button>
-                                       </form>
-                                   </td>
-                               </tr>
-                           }
-                       }
+                     
+                        @if(Model.TrainingModules.Any())
+                        {
+                           foreach (var course in Model.TrainingModules)
+                            {
+                                <tr>
+                                    <td>@course.TrainingName</td>
+                                    <td>
+                                        @if (course.CompletedTraining == true)
+                                        {
+                                            <span class="text-success">Completed</span>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" action="/employees/@Model.EmployeeId/complete-training/@course.TrainingId">
+                                                <button type="submit" class="btn btn-success">Complete</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center">No training modules available.</td>
+                            </tr>
+                        }
                    </tbody>
                </table>
            </div>

@@ -21,9 +21,18 @@ namespace ClientApplication.Controllers
 
 
         [HttpGet("/employees/{employeeID}")]
-        public IActionResult Details(int employeeID)
+        public async Task<IActionResult> Details(string employeeID)
         {
-            // Placeholder data for shifts
+            // Call the API endpoint
+            var response = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/trainings");
+
+            // Ensure the response is successful
+            response.EnsureSuccessStatusCode();
+
+            // Deserialize the response content into a list of training modules
+            var trainingModules = await response.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
+
+            // Placeholder data for shifts TODO: Add assigned shifts to viewmodel
             ViewBag.Shifts = new List<(string Start, string End)>
             {
                 ("2025-04-12", "Morning"),
@@ -31,31 +40,37 @@ namespace ClientApplication.Controllers
                 ("2025-04-15", "Night")
             };
 
-            // Placeholder data for training
-            ViewBag.Training = new List<(int CourseId, string CourseName)>
+            var model = new EmployeeDetailsViewModel
             {
-                (1, "Food Safety"),
-                (2, "Customer Service"),
-                (3, "Equipment Maintenance")
+                EmployeeId = employeeID,
+                TrainingModules = trainingModules
             };
 
-            ViewBag.EmployeeID = employeeID;
-
-            return View();
+            return View(model);
         }
 
 
-        [HttpPost("/employees/complete-training")]
-        public IActionResult CompleteTraining(int courseId)
+        [HttpPost("/employees/{employeeID}/complete-training/{courseID:int}")]
+        public async Task<IActionResult> CompleteTraining([FromRoute] string employeeID, [FromRoute] int courseID)
         {
-            // Simulate marking the course as complete
-            // In the future, this will send a POST request to the API
-            var completionTime = DateTime.UtcNow;
+            try
+            {
+                var content = new StringContent("", Encoding.UTF8, "application/json");
 
-            // Log or process the completion (placeholder logic)
-            Console.WriteLine($"Course {courseId} marked complete at {completionTime}");
+                // Call the API endpoint
+                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}/trainings/{courseID}/complete", content);
 
-            return Json(new { success = true, courseId, completionTime });
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Details", "Employee", new { employeeID });
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                return View("Error", new { message = "Unable to fetch employees at this time." });
+            }
         }
 
 
@@ -148,7 +163,7 @@ namespace ClientApplication.Controllers
 
 
         [HttpGet("/employees/{employeeID}/manage")]
-        public async Task <IActionResult> Manage(int employeeID)
+        public async Task <IActionResult> Manage(string employeeID)
         {
             // Call the API endpoint
             var trainingResponse = await _client.GetAsync($"{_baseURL}/employees/trainingmodules");
@@ -162,23 +177,20 @@ namespace ClientApplication.Controllers
             roleResponse.EnsureSuccessStatusCode();
             shiftResponse.EnsureSuccessStatusCode();
 
-
             // Deserialize the response content into a list of employees
             var trainingModules = await trainingResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
             var stations = await stationResponse.Content.ReadFromJsonAsync<List<StationDTO>>();
             var roles = await roleResponse.Content.ReadFromJsonAsync<List<RolesDTO>>();
             var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>();
 
-
             var model = new ManageEmployeeViewModel
             {
+                EmployeeID = employeeID,
                 TrainingModules = trainingModules,
                 Stations = stations,
                 Roles = roles,
                 Shifts = shifts
             };
-
-            ViewBag.EmployeeID = employeeID;
 
             return View(model);
         }
@@ -246,14 +258,24 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/train")]
-        public IActionResult Train(int employeeID, string trainingModule)
+        [HttpPost("/employees/{employeeID}/assign-training")]
+        public async Task<IActionResult> AssignTraining([FromRoute] string employeeID, [FromForm] int trainingID)
         {
-            // Placeholder logic for assigning training to an employee
-            Console.WriteLine($"Employee {employeeID} assigned to training: {trainingModule}");
+            try
+            {
+                var content = new StringContent("", Encoding.UTF8, "application/json");
 
-            return RedirectToAction("Manage", new { employeeID });
+                var assignTrainingResponse = await _client.PostAsync($"{_baseURL}/employees/trainingmodules/{employeeID}/{trainingID}", content);
+
+                // Ensure the response is successful
+                assignTrainingResponse.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Manage", new { employeeID });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Manage", new { employeeID });
+            }
         }
-
     }
 }
