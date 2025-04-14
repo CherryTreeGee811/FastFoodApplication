@@ -3,6 +3,7 @@ using ClientApplication.Messages;
 using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 
 namespace ClientApplication.Controllers
@@ -23,9 +24,19 @@ namespace ClientApplication.Controllers
         [HttpGet("/employees/{employeeID}")]
         public async Task<IActionResult> Details(string employeeID)
         {
+            var trainingModuleRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/{employeeID}/trainings");
+            var shiftRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/{employeeID}/shifts");
+
+            var token = HttpContext.Session.GetString("AuthToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                trainingModuleRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                shiftRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             // Call the API endpoint
-            var trainingModuleResponse = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/trainings");
-            var shiftResponse = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/shifts");
+            var trainingModuleResponse = await _client.SendAsync(trainingModuleRequest);
+            var shiftResponse = await _client.SendAsync(shiftRequest);
 
             // Ensure the response is successful
             trainingModuleResponse.EnsureSuccessStatusCode();
@@ -51,10 +62,20 @@ namespace ClientApplication.Controllers
         {
             try
             {
+                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}/trainings");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
                 var content = new StringContent("", Encoding.UTF8, "application/json");
 
+                request.Content = content;
+
                 // Call the API endpoint
-                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}/trainings/{courseID}/complete", content);
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -75,8 +96,16 @@ namespace ClientApplication.Controllers
         {
             try
             {
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
                 // Call the API endpoint
-                var response = await _client.GetAsync($"{_baseURL}/employees");
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -109,12 +138,20 @@ namespace ClientApplication.Controllers
         [HttpGet("/employees/hire")]
         public async Task<IActionResult> Hire()
         {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/roles");
+
+            var token = HttpContext.Session.GetString("AuthToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             // Call the API endpoint
-            var roleResponse = await _client.GetAsync($"{_baseURL}/employees/roles");
+            var response = await _client.SendAsync(request);
 
-            roleResponse.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-            var roles = await roleResponse.Content.ReadFromJsonAsync<List<RolesDTO>>() ?? new List<RolesDTO>();
+            var roles = await response.Content.ReadFromJsonAsync<List<RolesDTO>>() ?? new List<RolesDTO>();
 
             var model = new HireEmployeeViewModel
             {
@@ -142,7 +179,17 @@ namespace ClientApplication.Controllers
                 var jsonContent = JsonSerializer.Serialize(registerRequest);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var registerResponse = await _client.PostAsync($"{_baseURL}/register", content);
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/register");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
+                var registerResponse = await _client.SendAsync(request);
 
                 registerResponse.EnsureSuccessStatusCode();
 
@@ -160,11 +207,25 @@ namespace ClientApplication.Controllers
         [HttpGet("/employees/{employeeID}/manage")]
         public async Task <IActionResult> Manage(string employeeID)
         {
+            var trainingRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/trainingmodules");
+            var stationRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/workstations");
+            var roleRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/roles");
+            var shiftRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/shifts");
+
+            var token = HttpContext.Session.GetString("AuthToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                trainingRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                stationRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                roleRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                shiftRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             // Call the API endpoint
-            var trainingResponse = await _client.GetAsync($"{_baseURL}/employees/trainingmodules");
-            var stationResponse = await _client.GetAsync($"{_baseURL}/employees/workstations");
-            var roleResponse = await _client.GetAsync($"{_baseURL}/employees/roles");
-            var shiftResponse = await _client.GetAsync($"{_baseURL}/employees/shifts");
+            var trainingResponse = await _client.SendAsync(trainingRequest);
+            var stationResponse = await _client.SendAsync(stationRequest);
+            var roleResponse = await _client.SendAsync(roleRequest);
+            var shiftResponse = await _client.SendAsync(shiftRequest);
 
             // Ensure the response is successful
             trainingResponse.EnsureSuccessStatusCode();
@@ -196,8 +257,16 @@ namespace ClientApplication.Controllers
         {
             try
             {
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseURL}/{employeeID}");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
                 // Call the API endpoint
-                var response = await _client.DeleteAsync($"{_baseURL}/{employeeID}");
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -226,8 +295,18 @@ namespace ClientApplication.Controllers
                 var jsonContent = JsonSerializer.Serialize(employee);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
                 // Call the API endpoint
-                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -256,8 +335,18 @@ namespace ClientApplication.Controllers
                 var jsonContent = JsonSerializer.Serialize(employee);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
                 // Call the API endpoint
-                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -289,8 +378,18 @@ namespace ClientApplication.Controllers
                 var jsonContent = JsonSerializer.Serialize(assignShiftRequest);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/{employeeID}/shifts");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
                 // Call the API endpoint
-                var response = await _client.PostAsync($"{_baseURL}/employees/{employeeID}/shifts", content);
+                var response = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
@@ -324,7 +423,17 @@ namespace ClientApplication.Controllers
             {
                 var content = new StringContent("", Encoding.UTF8, "application/json");
 
-                var assignTrainingResponse = await _client.PostAsync($"{_baseURL}/employees/trainingmodules/{employeeID}/{trainingID}", content);
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/trainingmodules/{employeeID}/{trainingID}");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
+                var assignTrainingResponse = await _client.SendAsync(request);
 
                 // Ensure the response is successful
                 assignTrainingResponse.EnsureSuccessStatusCode();

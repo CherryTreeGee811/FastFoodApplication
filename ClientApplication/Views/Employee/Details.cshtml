@@ -36,7 +36,7 @@
                            foreach (var shift in Model.Shifts)
                            {
                                <tr>
-                                   <td>@shift.ShiftDate</td>
+                                   <td>@shift.ShiftDate?.ToString("d")</td>
                                    <td>@shift.ShiftPosition</td>
                                </tr>
                            }

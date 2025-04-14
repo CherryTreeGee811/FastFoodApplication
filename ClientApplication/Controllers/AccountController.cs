@@ -36,7 +36,6 @@ public class AccountController : Controller
             return View();
         }
 
-
         try
         {
             var loginRequest = new EmployeeLoginRequest { Email = email, Password = password };
@@ -51,12 +50,11 @@ public class AccountController : Controller
                 var tokenDto = await loginResponse.Content.ReadFromJsonAsync<TokenDTO>();
 
 
-                if (string.IsNullOrEmpty(tokenDto.Token))
+                if (string.IsNullOrEmpty(tokenDto?.Token))
                 {
                     ViewBag.ErrorMessage = "Invalid Username or Password.";
                     return View();
                 }
-
 
                 // Parse the token to extract claims
                 var handler = new JwtSecurityTokenHandler();
@@ -75,7 +73,17 @@ public class AccountController : Controller
                     return View();
                 }
 
-                var employeeResponse = await _client.GetAsync($"{_baseURL}/employees/email/{email}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/email/{email}");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                request.Content = content;
+
+                var employeeResponse = await _client.SendAsync(request);
 
                 employeeResponse.EnsureSuccessStatusCode();
 
