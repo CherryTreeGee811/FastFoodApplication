@@ -17,8 +17,8 @@
             <form method="post" action="/employees/@Model.EmployeeID/promote-demote">
                 <h3>Promote/Demote</h3>
                 <div class="mb-3">
-                    <label asp-for="SelectedRole" class="form-label">Role</label>
-                    <select class="form-select" asp-for="SelectedRole" required>
+                    <label for="roleID" class="form-label">Role</label>
+                    <select class="form-select" id="roleID" name="roleID" required>
                         @foreach (var role in Model.Roles)
                         {
                             <option value="@role.JobTitleId">@role.Title</option>
@@ -32,8 +32,8 @@
             <form method="post" action="/employees/@Model.EmployeeID/relocate" class="mt-4">
                 <h3>Relocate</h3>
                 <div class="mb-3">
-                    <label asp-for="SelectedStation" class="form-label">Position</label>
-                    <select class="form-select" asp-for="SelectedStation" required>
+                    <label for="stationID" class="form-label">Position</label>
+                    <select class="form-select" id="stationID" name="stationID" required>
                         @foreach (var position in Model.Stations)
                         {
                             <option value="@position.StationId">@position.StationName</option>
