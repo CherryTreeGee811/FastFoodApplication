@@ -243,10 +243,4 @@ namespace FastFoodAPI.Controllers
             return Ok();
         }
     }
-
-    public class AssignShiftRequest
-    {
-        public int ShiftId { get; set; }
-        public DateTime ShiftDate { get; set; }
-    }
 }
