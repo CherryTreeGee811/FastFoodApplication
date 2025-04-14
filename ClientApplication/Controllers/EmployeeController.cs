@@ -3,6 +3,7 @@ using ClientApplication.Messages;
 using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
+using FastFoodAPI.Models;
 
 
 namespace ClientApplication.Controllers
@@ -24,25 +25,22 @@ namespace ClientApplication.Controllers
         public async Task<IActionResult> Details(string employeeID)
         {
             // Call the API endpoint
-            var response = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/trainings");
+            var trainingModuleResponse = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/trainings");
+            var shiftResponse = await _client.GetAsync($"{_baseURL}/employees/{employeeID}/shifts");
 
             // Ensure the response is successful
-            response.EnsureSuccessStatusCode();
+            trainingModuleResponse.EnsureSuccessStatusCode();
+            shiftResponse.EnsureSuccessStatusCode();
 
             // Deserialize the response content into a list of training modules
-            var trainingModules = await response.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
+            var trainingModules = await trainingModuleResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>();
 
-            // Placeholder data for shifts TODO: Add assigned shifts to viewmodel
-            ViewBag.Shifts = new List<(string Start, string End)>
-            {
-                ("2025-04-12", "Morning"),
-                ("2025-04-13", "Afternoon"),
-                ("2025-04-15", "Night")
-            };
+            var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>();
 
             var model = new EmployeeDetailsViewModel
             {
                 EmployeeId = employeeID,
+                Shifts = shifts,
                 TrainingModules = trainingModules
             };
 
@@ -98,7 +96,6 @@ namespace ClientApplication.Controllers
                 return View("Error", new { message = "Unable to fetch employees at this time." });
             }
         }
-
 
 
         [HttpPost("/employees/notify-schedule")]
@@ -219,32 +216,95 @@ namespace ClientApplication.Controllers
 
 
         [HttpPost("/employees/{employeeID}/promote-demote")]
-        public IActionResult PromoteDemote(int employeeID, string role)
+        public async Task<IActionResult> PromoteDemote([FromRoute] string employeeID, [FromForm] int roleID)
         {
-            // Placeholder logic for promoting/demoting an employee
-            Console.WriteLine($"Employee {employeeID} role updated to {role}");
+            try
+            {
+                var employee = new UpdateEmployeeDto
+                {
+                    JobTitleId = roleID
+                };
 
-            return RedirectToAction("Manage", new { employeeID });
+                var jsonContent = JsonSerializer.Serialize(employee);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Call the API endpoint
+                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                return View("Error", new { message = "Unable to fire this employee." });
+            }
         }
 
 
         [HttpPost("/employees/{employeeID}/relocate")]
-        public IActionResult Relocate(int employeeID, string position)
+        public async Task<IActionResult> Relocate([FromRoute] string employeeID, [FromForm] int stationID)
         {
-            // Placeholder logic for relocating an employee
-            Console.WriteLine($"Employee {employeeID} relocated to position {position}");
+            try
+            {
+                var employee = new UpdateEmployeeDto
+                {
+                    StationId = stationID
+                };
 
-            return RedirectToAction("Manage", new { employeeID });
+                var jsonContent = JsonSerializer.Serialize(employee);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Call the API endpoint
+                var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error deleting employee: {ex.Message}");
+                return View("Error", new { message = "Unable to fire this employee." });
+            }
         }
 
 
         [HttpPost("/employees/{employeeID}/schedule")]
-        public IActionResult Schedule(int employeeID, string startTime, string endTime)
+        public async Task<IActionResult> Schedule([FromRoute] string employeeID, [FromForm] int shiftID, string shiftDate)
         {
-            // Placeholder logic for scheduling an employee
-            Console.WriteLine($"Employee {employeeID} scheduled from {startTime} to {endTime}");
+            try
+            {
+                var date = DateTime.Parse(shiftDate);
 
-            return RedirectToAction("Manage", new { employeeID });
+                var assignShiftRequest = new AssignShiftRequest
+                {
+                    ShiftId = shiftID,
+                    ShiftDate = date
+                };
+
+                var jsonContent = JsonSerializer.Serialize(assignShiftRequest);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // Call the API endpoint
+                var response = await _client.PostAsync($"{_baseURL}/employees/{employeeID}/shifts", content);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                // ToDo: Add indication of success
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // ToDo: Add indication of failure
+                return RedirectToAction("Manage", new { employeeID });
+            }
         }
 
 
@@ -269,11 +329,13 @@ namespace ClientApplication.Controllers
 
                 // Ensure the response is successful
                 assignTrainingResponse.EnsureSuccessStatusCode();
-
+                
+                //ToDo: Add indication of success
                 return RedirectToAction("Manage", new { employeeID });
             }
             catch (Exception ex)
             {
+                // ToDo: Add indication of failure
                 return RedirectToAction("Manage", new { employeeID });
             }
         }
