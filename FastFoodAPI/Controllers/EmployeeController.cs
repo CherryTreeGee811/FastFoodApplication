@@ -121,5 +121,22 @@ namespace FastFoodAPI.Controllers
 
             return Ok(new { message = $"Employee with ID {id} has been successfully deleted" });
         }
+        
+        /// <summary>
+        /// This method allows retrieval of an employee by their email.
+        /// </summary>
+        [HttpGet("employees/{email}")]
+        public async Task<IActionResult> GetEmployeeByEmail(string email)
+        {
+            var employee = await _employeeManagerService.GetEmployeeByEmail(email);
+
+            if (employee == null)
+            {
+                return NotFound($"Employee with ID {email} not found");
+            }
+
+            return Ok(employee);
+        }
+        
     }
 }
