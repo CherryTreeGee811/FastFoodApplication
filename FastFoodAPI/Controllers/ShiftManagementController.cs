@@ -259,7 +259,7 @@ namespace FastFoodAPI.Controllers
         /// <summary>
         /// This method sends an email to an employee with a list of their shifts.
         /// </summary>
-        [HttpPost("employees/shifts/{employeeId}/")]
+        [HttpPost("employees/shifts/send-email/{employeeId}")]
         public async Task<IActionResult> SendShiftsEmail(string employeeId)
         {
             // First we need to find the employee's email so that
