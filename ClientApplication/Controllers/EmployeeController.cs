@@ -4,8 +4,6 @@ using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
 using FastFoodAPI.Models;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Identity.Data;
 
 
 namespace ClientApplication.Controllers
@@ -278,34 +276,35 @@ namespace ClientApplication.Controllers
 
 
         [HttpPost("/employees/{employeeID}/schedule")]
-        public async Task<IActionResult> Schedule([FromRoute] string employeeID, [FromForm] int shiftID)
+        public async Task<IActionResult> Schedule([FromRoute] string employeeID, [FromForm] int shiftID, string shiftDate)
         {
             try
             {
-                //var jsonContent = JsonSerializer.Serialize(employee);
-                //var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var date = DateTime.Parse(shiftDate);
+
+                var assignShiftRequest = new AssignShiftRequest
+                {
+                    ShiftId = shiftID,
+                    ShiftDate = date
+                };
+
+                var jsonContent = JsonSerializer.Serialize(assignShiftRequest);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
                 // Call the API endpoint
-                //var response = await _client.PatchAsync($"{_baseURL}/employees/{employeeID}", content);
+                var response = await _client.PostAsync($"{_baseURL}/employees/{employeeID}/shifts", content);
 
                 // Ensure the response is successful
-                //response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
 
+                // ToDo: Add indication of success
                 return RedirectToAction("List", "Employee");
             }
             catch (Exception ex)
             {
-                // Log the error and return an error view or message
-                Console.WriteLine($"Error deleting employee: {ex.Message}");
-                return View("Error", new { message = "Unable to fire this employee." });
+                // ToDo: Add indication of failure
+                return RedirectToAction("Manage", new { employeeID });
             }
-
-            return RedirectToAction("Manage", new { employeeID });
-
-            // Placeholder logic for scheduling an employee
-            //Console.WriteLine($"Employee {employeeID} scheduled from {shiftsDTO.ShiftDate} to {shiftsDTO.ShiftId}");
-
-            //return RedirectToAction("Manage", new { employeeID });
         }
 
 

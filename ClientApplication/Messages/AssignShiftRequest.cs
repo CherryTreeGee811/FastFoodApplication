@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace FastFoodAPI.Messages
+namespace ClientApplication.Messages
 {
     public class AssignShiftRequest
     {
