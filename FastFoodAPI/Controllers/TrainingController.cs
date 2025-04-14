@@ -1,4 +1,5 @@
 using FastFoodAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodAPI.Controllers
@@ -22,6 +23,7 @@ namespace FastFoodAPI.Controllers
         /// <param name="employeeId">The ID of the employee.</param>
         /// <returns>A list of training assignments for the specified employee.</returns>
         [HttpGet("employees/{employeeId}/trainings")]
+        [Authorize(Roles = ("Manager,Cashier,Cook,Cleaner,Employee"))]
         public async Task<IActionResult> GetEmployeeTrainings(string employeeId)
         {
             try
@@ -43,6 +45,7 @@ namespace FastFoodAPI.Controllers
         /// <param name="trainingId">The ID of the training.</param>
         /// <returns>The updated training assignment if successful.</returns>
         [HttpPatch("employees/{employeeId}/trainings/{trainingId}/complete")]
+        [Authorize(Roles = ("Manager,Cashier,Cook,Cleaner,Employee"))]
         public async Task<IActionResult> CompleteTraining(string employeeId, int trainingId)
         {
             try
