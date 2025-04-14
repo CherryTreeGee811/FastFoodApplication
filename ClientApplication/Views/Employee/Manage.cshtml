@@ -53,11 +53,11 @@
                     <input type="date" class="form-control" id="date" name="date" required />
                 </div>
                 <div class="mb-3">
-                    <label asp-for="SelectedShift" class="form-label">Shift</label>
-                    <select class="form-select" asp-for="SelectedShift" required>
+                    <label for="shiftID" class="form-label">Shift</label>
+                    <select class="form-select" id="shiftID" name="shiftID" required>
                         @foreach (var position in Model.Shifts)
                         {
-                            <!-- Swap with ShiftsNames -->
+                            <!-- Swap ShiftPosition with ShiftsName -->
                             <option value="@position.ShiftId">@position.ShiftPosition</option>
                         }
                     </select>
