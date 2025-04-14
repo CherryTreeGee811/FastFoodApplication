@@ -3,8 +3,6 @@
 
    @{
        ViewData["Title"] = "Employee View";
-       // Updated placeholder data with Date and Shift values.
-       var shifts = ViewBag.Shifts as List<(string Date, string Shift)>;
    }
 
    <div class="container mt-5">
@@ -33,13 +31,13 @@
                            <td class="fw-bold">Date</td>
                            <td class="fw-bold">Shift</td>
                        </tr>
-                       @if (shifts != null)
+                       @if (Model.Shifts != null)
                        {
-                           foreach (var shift in shifts)
+                           foreach (var shift in Model.Shifts)
                            {
                                <tr>
-                                   <td>@shift.Date</td>
-                                   <td>@shift.Shift</td>
+                                   <td>@shift.ShiftDate</td>
+                                   <td>@shift.ShiftPosition</td>
                                </tr>
                            }
                        }
