@@ -38,7 +38,7 @@
                     @if (Context.Session.GetString("LoggedInUser") != null)
                     {
                         var role = Context.Session.GetString("Role");
-                        var employeeID = Context.Session.GetInt32("EmployeeID");
+                        var employeeID = Context.Session.GetString("EmployeeID");
 
                         if (string.Equals(role, "Worker"))
                         {
