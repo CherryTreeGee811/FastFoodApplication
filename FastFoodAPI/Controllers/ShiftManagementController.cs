@@ -265,8 +265,44 @@ namespace FastFoodAPI.Controllers
             // First we need to find the employee's email so that
             // we can pass it to the service function.
             var employee = await _employeeManagerService.GetEmployee(employeeId);
-           
-            await _mailService.SendEmailAsync(employee.EmailAddress, employeeId);
+
+            try
+            {
+                await _mailService.SendEmailAsync(employee.EmailAddress, employeeId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            return Ok();
+        }
+        
+        /// <summary>
+        /// This method sends an email to all employees with a list of their shifts.
+        /// </summary>
+        [HttpPost("employees/shifts/send-email")]
+        public async Task<IActionResult> SendShiftsEmailToAllEmployees()
+        {
+            // First, we need to get a list of all employees using the method
+            // from the EmployeeManagerService.
+            var employees  = await _employeeManagerService.GetAllEmployees();
+            
+            // Now we need to loop through all employees, call the service for emails,
+            // and pass the ID of each employee to the method so that each employee
+            // can get their shifts.
+            foreach (var employee in employees)
+            {
+                try
+                {
+                    await _mailService.SendEmailAsync(employee.EmailAddress, employee.EmployeeId);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
             
             return Ok();
         }
