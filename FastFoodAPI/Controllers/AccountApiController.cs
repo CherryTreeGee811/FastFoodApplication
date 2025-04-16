@@ -80,10 +80,13 @@ namespace FastFoodAPI.Controllers {
                     JobTitle = newEmployee.JobTitle,
                     StationName = newEmployee.StationName
                 });
+            } 
+            
+            if (result.Errors.Any(error => error.Contains("taken", StringComparison.OrdinalIgnoreCase))) {
+                return Conflict(new { errors = result.Errors });
             }
-            else {
-                return BadRequest(new { errors = result.Errors });
-            }
+
+            return BadRequest(new { errors = result.Errors });
         }
 
         private IAuthService _authservice;
