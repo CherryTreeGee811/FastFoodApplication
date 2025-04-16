@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Manage Employees</h1>
-        <a href="/employees/hire" class="btn btn-success">Hire New Employee</a>
+        <a asp-controller="Employee" asp-action="Hire" class="btn btn-success">Hire New Employee</a>
     </div>
 
     <!-- Employee Table -->
@@ -38,11 +38,12 @@
                             </form>
                         </td>
                     </tr>
+
                 }
             }
         </tbody>
     </table>
-    <form method="post" action="/employees/notify-schedule">
+    <form method="post" asp-controller="Employee" asp-action="NotifyScheduleForAllEmployees">
         <button type="submit" class="btn btn-primary mt-3">Notify Staff of Schedule</button>
     </form>
 </div>

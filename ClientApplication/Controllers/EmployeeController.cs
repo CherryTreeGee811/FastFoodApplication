@@ -62,7 +62,7 @@ namespace ClientApplication.Controllers
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}/trainings");
+                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}/trainings/{courseID}/complete");
 
                 var token = HttpContext.Session.GetString("AuthToken");
                 if (!string.IsNullOrEmpty(token))
@@ -305,12 +305,12 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID:int}/fire")]
-        public async Task<IActionResult> Fire(int employeeID)
+        [HttpPost("/employees/{employeeID}/fire")]
+        public async Task<IActionResult> Fire(string employeeID)
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseURL}/{employeeID}");
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseURL}/employees/{employeeID}");
 
                 var token = HttpContext.Session.GetString("AuthToken");
                 if (!string.IsNullOrEmpty(token))
