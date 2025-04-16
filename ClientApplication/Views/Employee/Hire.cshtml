@@ -1,0 +1,37 @@
+﻿@model HireEmployeeViewModel
+@{
+    ViewData["Title"] = "Hire Employee";
+}
+
+<div class="container mt-5">
+    <h1>Hire Employee</h1>
+
+    <form method="post" asp-controller="Employee" asp-action="Hire">
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input type="text" class="form-control" asp-for="Email" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label">First</label>
+            <input type="text" class="form-control" asp-for="FirstName" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label">Last</label>
+            <input type="text" class="form-control" asp-for="LastName" required />
+        </div>
+        <div class="mb-3">
+            <label asp-for="SelectedRole" class="form-label">Role</label>
+            <select class="form-select" asp-for="SelectedRole" required>
+                @foreach (var role in Model.Roles)
+                {
+                    <option value="@role.JobTitleId">@role.Title</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Hire</button>
+    </form>
+</div>

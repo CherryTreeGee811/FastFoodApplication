@@ -1,8 +1,8 @@
 ﻿@{
     Layout = "/Views/Shared/_Layout.cshtml";
     var loggedInUser = Context.Session.GetString("LoggedInUser");
+    var role = Context.Session.GetString("Role"); // Assuming the role is stored in the session
 }
-
 
 <div class="container text-center mt-5">
     <!-- Welcome Message -->
@@ -52,18 +52,21 @@
         }
 
         <!-- Upload Form -->
-        <form asp-action="Upload" asp-controller="Home" method="post" enctype="multipart/form-data" class="mb-4">
-            <div class="mb-3">
-                <label for="formFileMultiple" class="form-label">Upload Images (JPEG or PNG):</label>
-                <input class="form-control"
-                       type="file"
-                       id="formFileMultiple"
-                       name="files"
-                       multiple
-                       accept=".png, .jpeg, .jpg" />
-            </div>
-            <button class="btn btn-primary" type="submit">Upload</button>
-        </form>
+        @if (string.Equals(role, "Manager"))
+        {
+            <form asp-action="Upload" asp-controller="Home" method="post" enctype="multipart/form-data" class="mb-4">
+                <div class="mb-3">
+                    <label for="formFileMultiple" class="form-label">Upload Images (JPEG or PNG):</label>
+                    <input class="form-control"
+                           type="file"
+                           id="formFileMultiple"
+                           name="files"
+                           multiple
+                           accept=".png, .jpeg, .jpg" />
+                </div>
+                <button class="btn btn-primary" type="submit">Upload</button>
+            </form>
+        }
 
         <!-- Success/Error Messages -->
         @if (TempData["UploadSuccess"] != null)
