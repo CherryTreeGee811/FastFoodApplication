@@ -4,6 +4,7 @@ using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Data;
 
 
 namespace ClientApplication.Controllers
@@ -145,14 +146,28 @@ namespace ClientApplication.Controllers
                 // Ensure the response is successful
                 response.EnsureSuccessStatusCode();
 
-                return RedirectToAction("Details", "Employee", new { employeeID });
+                var role = HttpContext.Session.GetString("Role");
+
+                if (string.Equals(role, "Worker"))
+                {
+
+                    return RedirectToAction("Details", "Employee", new { employeeID });
+                }
+                else if (string.Equals(role, "Manager"))
+                {
+                    return RedirectToAction("Manage", "Employee", new { employeeID });
+                }
+                else
+                {
+                    return RedirectToAction("Home", "Employee", new { employeeID });
+                }
             }
             catch (Exception ex)
             {
                 // Log the error and return an error view or message
                 Console.WriteLine($"Error fetching employees: {ex.Message}");
 
-                return RedirectToAction("Details", "Employee", new { employeeID });
+                return RedirectToAction("Home", "Employee", new { employeeID });
             }
         }
 
@@ -454,7 +469,7 @@ namespace ClientApplication.Controllers
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 // ToDo: Add better indication of failure
-                return RedirectToAction("Manage", new { employeeID });
+                return RedirectToAction("Manage", "Employee", new { employeeID });
             }
         }
 
@@ -482,7 +497,7 @@ namespace ClientApplication.Controllers
                 assignTrainingResponse.EnsureSuccessStatusCode();
                 
                 //ToDo: Add indication of success
-                return RedirectToAction("Manage", new { employeeID });
+                return RedirectToAction("Manage", "Employee", new { employeeID });
             }
             catch (Exception ex)
             {
