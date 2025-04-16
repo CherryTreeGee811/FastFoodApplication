@@ -18,7 +18,10 @@
        <div class="row mt-4">
            <!-- Notify Schedule Button and Shifts Table -->
            <div class="col-md-6">
-               <button class="btn btn-primary mb-3">Notify Schedule</button>
+                <form method="post" action="/employees/@Model.EmployeeId/notify-schedule">
+                    <button type="submit" class="btn btn-primary mb-3">Notify Schedule</button>
+                </form>
+               
 
                <table class="table table-bordered">
                    <thead>

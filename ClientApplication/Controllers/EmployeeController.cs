@@ -125,13 +125,66 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/notify-schedule")]
-        public IActionResult NotifySchedule()
+        [HttpPost("/employees/{employeeID}/notify-schedule")]
+        public async Task<IActionResult> NotifyScheduleByEmployeeID([FromRoute] string employeeID)
         {
-            // Placeholder logic for notifying staff
-            Console.WriteLine("Staff notified of schedule.");
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/shifts/send-email/{employeeID}");
 
-            return Json(new { success = true, message = "Staff notified of schedule." });
+                var token = HttpContext.Session.GetString("AuthToken");
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Call the API endpoint
+                var response = await _client.SendAsync(request);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("Details", "Employee", new { employeeID });
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+
+                return RedirectToAction("Details", "Employee", new { employeeID });
+            }
+        }
+
+
+        [HttpPost("/employees/notify-schedule")]
+        public async Task<IActionResult> NotifyScheduleForAllEmployees()
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/shifts/send-email");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Call the API endpoint
+                var response = await _client.SendAsync(request);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                return RedirectToAction("List", "Employee");
+            }
         }
 
 
@@ -403,16 +456,6 @@ namespace ClientApplication.Controllers
                 // ToDo: Add better indication of failure
                 return RedirectToAction("Manage", new { employeeID });
             }
-        }
-
-
-        [HttpPost("/employees/{employeeID}/notify-schedule")]
-        public IActionResult NotifySchedule(int employeeID)
-        {
-            // Placeholder logic for notifying the employee of their schedule
-            Console.WriteLine($"Employee {employeeID} notified of schedule");
-
-            return RedirectToAction("Manage", new { employeeID });
         }
 
 

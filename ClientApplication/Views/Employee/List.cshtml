@@ -42,21 +42,7 @@
             }
         </tbody>
     </table>
-
-    <!-- Notify Staff Button -->
-    <button class="btn btn-primary mt-3" onclick="notifySchedule()">Notify Staff of Schedule</button>
+    <form method="post" action="/employees/notify-schedule">
+        <button type="submit" class="btn btn-primary mt-3">Notify Staff of Schedule</button>
+    </form>
 </div>
-
-<script>
-    function notifySchedule() {
-        fetch('/employees/notify-schedule', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                } else {
-                    alert('Failed to notify staff.');
-                }
-            });
-    }
-</script>
