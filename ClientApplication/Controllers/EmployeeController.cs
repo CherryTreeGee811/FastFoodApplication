@@ -9,17 +9,13 @@ using System.Data;
 
 namespace ClientApplication.Controllers
 {
-    public class EmployeeController : Controller
+    public class EmployeeController(
+            HttpClient client
+        )
+        : Controller
     {
-        private readonly HttpClient _client;
-        private readonly string _baseURL;
-
-
-        public EmployeeController(HttpClient client)
-        {
-            _client = client;
-            _baseURL = "http://fastfoodapi:8000/api";
-        }
+        private readonly HttpClient _client = client;
+        private readonly string _baseURL = "http://fastfoodapi:8000/api";
 
 
         [HttpGet("/employees/{employeeID}")]

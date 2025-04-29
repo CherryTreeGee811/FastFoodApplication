@@ -6,7 +6,7 @@ namespace ClientApplication.Models
     public class ManageEmployeeViewModel
     {
 
-        public string EmployeeID { get; set; }
+        public string? EmployeeID { get; set; }
 
 
         public TrainingModuleDTO SelectedTrainingModule { get; set; } = new TrainingModuleDTO();
@@ -21,15 +21,15 @@ namespace ClientApplication.Models
         public RolesDTO SelectedRole { get; set; } = new RolesDTO();
 
 
-        public ICollection<TrainingModuleDTO> TrainingModules { get; set; }
+        public ICollection<TrainingModuleDTO> TrainingModules { get; set; } = new List<TrainingModuleDTO>();
 
 
-        public ICollection<StationDTO> Stations { get; set; }
+        public ICollection<StationDTO> Stations { get; set; } = new List<StationDTO>();
 
 
-        public ICollection<ShiftsDTO> Shifts { get; set; }
+        public ICollection<ShiftsDTO> Shifts { get; set; } = new List<ShiftsDTO>();
 
 
-        public ICollection<RolesDTO> Roles { get; set; }
+        public ICollection<RolesDTO> Roles { get; set; } = new List<RolesDTO>();
     }
 }
