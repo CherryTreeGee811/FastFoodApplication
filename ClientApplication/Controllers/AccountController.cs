@@ -6,152 +6,150 @@ using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
 
-
-public class AccountController : Controller
+namespace ClientApplication.Controllers
 {
-    private readonly HttpClient _client;
-    private readonly string _baseURL;
-
-
-    public AccountController(HttpClient client)
+    public class AccountController(
+        HttpClient client
+        )
+        : Controller
     {
-        _client = client;
-        _baseURL = "http://fastfoodapi:8000/api";
-    }
+        private readonly HttpClient _client = client;
+        private readonly string _baseURL = "http://fastfoodapi:8000/api";
 
 
-    [HttpGet]
-    public IActionResult Login()
-    {
-        return View();
-    }
-
-
-    [HttpPost]
-    public async Task<IActionResult> Login(string email, string password)
-    {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        [HttpGet]
+        public IActionResult Login()
         {
-            ViewBag.ErrorMessage = "Email and password are required.";
             return View();
         }
 
-        try
+
+        [HttpPost]
+        public async Task<IActionResult> Login(string email, string password)
         {
-            var loginRequest = new EmployeeLoginRequest { Email = email, Password = password };
-            var jsonContent = JsonSerializer.Serialize(loginRequest);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var loginResponse = await _client.PostAsync($"{_baseURL}/login", content);
-
-            if (loginResponse.IsSuccessStatusCode)
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                // Deserialize the response content into a list of employees
-                var tokenDto = await loginResponse.Content.ReadFromJsonAsync<TokenDTO>();
+                ViewBag.ErrorMessage = "Email and password are required.";
+                return View();
+            }
 
+            try
+            {
+                var loginRequest = new EmployeeLoginRequest { Email = email, Password = password };
+                var jsonContent = JsonSerializer.Serialize(loginRequest);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                if (string.IsNullOrEmpty(tokenDto?.Token))
+                var loginResponse = await _client.PostAsync($"{_baseURL}/login", content);
+
+                if (loginResponse.IsSuccessStatusCode)
                 {
-                    ViewBag.ErrorMessage = "Invalid Username or Password.";
-                    return View();
-                }
-
-                // Parse the token to extract claims
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(tokenDto.Token);
-
-                // Extract the role claim
-                var role = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
-                // Store the token and role in session
-                HttpContext.Session.SetString("AuthToken", tokenDto.Token);
+                    // Deserialize the response content into a list of employees
+                    var tokenDto = await loginResponse.Content.ReadFromJsonAsync<TokenDTO>();
 
 
-                if (string.IsNullOrEmpty(role))
-                {
-                    ViewBag.ErrorMessage = "Failed to retrieve role from token.";
-                    return View();
-                }
+                    if (string.IsNullOrEmpty(tokenDto?.Token))
+                    {
+                        ViewBag.ErrorMessage = "Invalid Username or Password.";
+                        return View();
+                    }
 
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/email/{email}");
+                    // Parse the token to extract claims
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(tokenDto.Token);
 
-                var token = HttpContext.Session.GetString("AuthToken");
-                if (!string.IsNullOrEmpty(token))
-                {
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
+                    // Extract the role claim
+                    var role = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-                request.Content = content;
-
-                var employeeResponse = await _client.SendAsync(request);
-
-                employeeResponse.EnsureSuccessStatusCode();
-
-                var employee = await employeeResponse.Content.ReadFromJsonAsync<EmployeeListDTO>();
-
-                if(Equals(employee, null))
-                {
-                    ViewBag.ErrorMessage = "Employee Details could not be received.";
-                    return View();
-                }
+                    // Store the token and role in session
+                    HttpContext.Session.SetString("AuthToken", tokenDto.Token);
 
 
-                if (string.Equals(role, "Manager"))
-                {
-                    // For a manager:
-                    HttpContext.Session.SetString("Role", "Manager");
-                    HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
-                    HttpContext.Session.SetString("LoggedInUser", email);
+                    if (string.IsNullOrEmpty(role))
+                    {
+                        ViewBag.ErrorMessage = "Failed to retrieve role from token.";
+                        return View();
+                    }
 
-                    // Redirect to the employee list page ("/employees")
-                    return RedirectToAction("List", "Employee");
+                    var request = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/email/{email}");
+
+                    var token = HttpContext.Session.GetString("AuthToken");
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    }
+
+                    request.Content = content;
+
+                    var employeeResponse = await _client.SendAsync(request);
+
+                    employeeResponse.EnsureSuccessStatusCode();
+
+                    var employee = await employeeResponse.Content.ReadFromJsonAsync<EmployeeListDTO>();
+
+                    if(Equals(employee, null))
+                    {
+                        ViewBag.ErrorMessage = "Employee Details could not be received.";
+                        return View();
+                    }
+
+
+                    if (string.Equals(role, "Manager"))
+                    {
+                        // For a manager:
+                        HttpContext.Session.SetString("Role", "Manager");
+                        HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        HttpContext.Session.SetString("LoggedInUser", email);
+
+                        // Redirect to the employee list page ("/employees")
+                        return RedirectToAction("List", "Employee");
+                    }
+                    else
+                    {
+                        // For a worker:
+                        HttpContext.Session.SetString("Role", "Worker");
+                        HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        HttpContext.Session.SetString("LoggedInUser", email);
+
+                        // Redirect to the specific employee details page ("/employees/{employeeID}")
+                        return RedirectToAction("Details", "Employee", new { employeeID = employee.EmployeeId });
+                    }
                 }
                 else
                 {
-                    // For a worker:
-                    HttpContext.Session.SetString("Role", "Worker");
-                    HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
-                    HttpContext.Session.SetString("LoggedInUser", email);
-
-                    // Redirect to the specific employee details page ("/employees/{employeeID}")
-                    return RedirectToAction("Details", "Employee", new { employeeID = employee.EmployeeId });
+                    // Handle unsuccessful login (e.g., log error, throw exception, etc.)
+                    ViewBag.ErrorMessage = $"Login failed: {loginResponse.ReasonPhrase}";
+                    return View();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                // Handle unsuccessful login (e.g., log error, throw exception, etc.)
-                ViewBag.ErrorMessage = $"Login failed: {loginResponse.ReasonPhrase}";
+                // Handle exceptions (e.g., network issues, serialization errors, etc.)
+                ViewBag.ErrorMessage = $"An error occurred during login: {ex.Message}";
                 return View();
             }
         }
-        catch (Exception ex)
+
+
+        [HttpPost]
+        public async Task <IActionResult> Logout()
         {
-            // Handle exceptions (e.g., network issues, serialization errors, etc.)
-            ViewBag.ErrorMessage = $"An error occurred during login: {ex.Message}";
-            return View();
+            // Create the HttpRequestMessage
+            var logoutRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/logout");
+
+            var token = HttpContext.Session.GetString("AuthToken");
+
+            // Add headers to the request
+            logoutRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Send the request
+            var logoutResponse = await _client.SendAsync(logoutRequest);
+            logoutResponse.EnsureSuccessStatusCode();
+
+            // Clear the session
+            HttpContext.Session.Clear();
+
+            // Redirect to the Home page
+            return RedirectToAction("Index", "Home");
         }
-    }
-
-
-    [HttpPost]
-    public async Task <IActionResult> Logout()
-    {
-        // Create the HttpRequestMessage
-        var logoutRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/logout");
-
-        var token = HttpContext.Session.GetString("AuthToken");
-
-        // Add headers to the request
-        logoutRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        // Send the request
-        var logoutResponse = await _client.SendAsync(logoutRequest);
-        logoutResponse.EnsureSuccessStatusCode();
-
-        // Clear the session
-        HttpContext.Session.Clear();
-
-        // Redirect to the Home page
-        return RedirectToAction("Index", "Home");
     }
 }

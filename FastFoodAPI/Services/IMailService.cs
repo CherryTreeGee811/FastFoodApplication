@@ -7,6 +7,10 @@ namespace FastFoodAPI.Services
         /// </summary>
         Task SendEmailAsync(string recipient, string employeeId);
         
+        /// <summary>
+        /// This method allos sending emails to all employees.
+        /// </summary>
+        
     }
 }
 

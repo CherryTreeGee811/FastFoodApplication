@@ -6,7 +6,7 @@
 <div class="container mt-5">
     <h1>Hire Employee</h1>
 
-    <form method="post" action="/employees/hire">
+    <form method="post" asp-controller="Employee" asp-action="Hire">
         <div class="mb-3">
             <label asp-for="Email" class="form-label">Email</label>
             <input type="text" class="form-control" asp-for="Email" required />

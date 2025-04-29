@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Manage Employees</h1>
-        <a href="/employees/hire" class="btn btn-success">Hire New Employee</a>
+        <a asp-controller="Employee" asp-action="Hire" class="btn btn-success">Hire New Employee</a>
     </div>
 
     <!-- Employee Table -->
@@ -38,25 +38,12 @@
                             </form>
                         </td>
                     </tr>
+
                 }
             }
         </tbody>
     </table>
-
-    <!-- Notify Staff Button -->
-    <button class="btn btn-primary mt-3" onclick="notifySchedule()">Notify Staff of Schedule</button>
+    <form method="post" asp-controller="Employee" asp-action="NotifyScheduleForAllEmployees">
+        <button type="submit" class="btn btn-primary mt-3">Notify Staff of Schedule</button>
+    </form>
 </div>
-
-<script>
-    function notifySchedule() {
-        fetch('/employees/notify-schedule', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                } else {
-                    alert('Failed to notify staff.');
-                }
-            });
-    }
-</script>

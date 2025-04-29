@@ -14,7 +14,7 @@
     <div class="row">
         <!-- Promote/Demote Form -->
         <div class="col-md-6">
-            <form method="post" action="/employees/@Model.EmployeeID/promote-demote">
+            <form method="post" asp-controller="Employee" asp-action="PromoteDemote" asp-route-employeeid="@Model.EmployeeID">
                 <h3>Promote/Demote</h3>
                 <div class="mb-3">
                     <label for="roleID" class="form-label">Role</label>
@@ -29,7 +29,7 @@
             </form>
 
             <!-- Relocate Form -->
-            <form method="post" action="/employees/@Model.EmployeeID/relocate" class="mt-4">
+            <form method="post" asp-controller="Employee" asp-action="Relocate" asp-route-employeeid="@Model.EmployeeID" class="mt-4">
                 <h3>Relocate</h3>
                 <div class="mb-3">
                     <label for="stationID" class="form-label">Position</label>
@@ -46,8 +46,13 @@
 
         <!-- Schedule Form -->
         <div class="col-md-6">
-            <form method="post" action="/employees/@Model.EmployeeID/schedule">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>Schedule Employee</h3>
+                <form method="post" asp-controller="Employee" asp-action="NotifyScheduleByEmployeeID" asp-route-employeeid="@Model.EmployeeID" class="m-0">
+                    <button type="submit" class="btn btn-primary">Notify Schedule</button>
+                </form>
+            </div>
+            <form method="post" asp-controller="Employee" asp-action="Schedule" asp-route-employeeid="@Model.EmployeeID">
                 <div class="mb-3">
                     <label for="shiftDate" class="form-label">Date</label>
                     <input type="date" class="form-control" id="shiftDate" name="shiftDate" required />
@@ -57,17 +62,15 @@
                     <select class="form-select" id="shiftID" name="shiftID" required>
                         @foreach (var position in Model.Shifts)
                         {
-                            <!-- Swap ShiftPosition with ShiftsName -->
                             <option value="@position.ShiftId">@position.ShiftPosition</option>
                         }
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Schedule</button>
-                <button type="button" class="btn btn-secondary ms-2" onclick="notifySchedule()">Notify Schedule</button>
             </form>
 
             <!-- Train Employee Form -->
-            <form method="post" action="/employees/@Model.EmployeeID/assign-training" class="mt-4">
+            <form method="post" asp-controller="Employee" asp-action="AssignTraining" asp-route-employeeid="@Model.EmployeeID" class="mt-4">
                 <h3>Train Employee</h3>
                 <div class="mb-3">
                     <label for="trainingID" class="form-label">Training</label>
@@ -83,16 +86,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function notifySchedule() {
-        fetch(`/employees/@Model.EmployeeID/notify-schedule`, { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    alert("Schedule notification sent.");
-                } else {
-                    alert("Failed to send schedule notification.");
-                }
-            });
-    }
-</script>

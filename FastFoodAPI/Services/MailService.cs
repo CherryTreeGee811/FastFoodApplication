@@ -55,8 +55,19 @@ namespace FastFoodAPI.Services
             };
             // Now, we send the email.
             mailMessage.To.Add(recipient);
-            smtpClient.Send(mailMessage);
+            
+            //try to catch the SmtpFailedRecipientException
+            try
+            {
+                smtpClient.Send(mailMessage);
+            }
+            catch (SmtpException ex)
+            {
+                // Throw an exception.
+                throw new Exception($"Failed to send email to {recipient}. Error: {ex.Message}");
+            }
+            
+             
         }
     }
 }
-

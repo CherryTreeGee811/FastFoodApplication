@@ -4,21 +4,18 @@ using ClientApplication.Models;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Data;
 
 
 namespace ClientApplication.Controllers
 {
-    public class EmployeeController : Controller
+    public class EmployeeController(
+            HttpClient client
+        )
+        : Controller
     {
-        private readonly HttpClient _client;
-        private readonly string _baseURL;
-
-
-        public EmployeeController(HttpClient client)
-        {
-            _client = client;
-            _baseURL = "http://fastfoodapi:8000/api";
-        }
+        private readonly HttpClient _client = client;
+        private readonly string _baseURL = "http://fastfoodapi:8000/api";
 
 
         [HttpGet("/employees/{employeeID}")]
@@ -62,7 +59,7 @@ namespace ClientApplication.Controllers
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}/trainings");
+                var request = new HttpRequestMessage(HttpMethod.Patch, $"{_baseURL}/employees/{employeeID}/trainings/{courseID}/complete");
 
                 var token = HttpContext.Session.GetString("AuthToken");
                 if (!string.IsNullOrEmpty(token))
@@ -125,13 +122,80 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/notify-schedule")]
-        public IActionResult NotifySchedule()
+        [HttpPost("/employees/{employeeID}/notify-schedule")]
+        public async Task<IActionResult> NotifyScheduleByEmployeeID([FromRoute] string employeeID)
         {
-            // Placeholder logic for notifying staff
-            Console.WriteLine("Staff notified of schedule.");
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/shifts/send-email/{employeeID}");
 
-            return Json(new { success = true, message = "Staff notified of schedule." });
+                var token = HttpContext.Session.GetString("AuthToken");
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Call the API endpoint
+                var response = await _client.SendAsync(request);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                var role = HttpContext.Session.GetString("Role");
+
+                if (string.Equals(role, "Worker"))
+                {
+
+                    return RedirectToAction("Details", "Employee", new { employeeID });
+                }
+                else if (string.Equals(role, "Manager"))
+                {
+                    return RedirectToAction("Manage", "Employee", new { employeeID });
+                }
+                else
+                {
+                    return RedirectToAction("Home", "Employee", new { employeeID });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+
+                return RedirectToAction("Home", "Employee", new { employeeID });
+            }
+        }
+
+
+        [HttpPost("/employees/notify-schedule")]
+        public async Task<IActionResult> NotifyScheduleForAllEmployees()
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/employees/shifts/send-email");
+
+                var token = HttpContext.Session.GetString("AuthToken");
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Call the API endpoint
+                var response = await _client.SendAsync(request);
+
+                // Ensure the response is successful
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("List", "Employee");
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an error view or message
+                Console.WriteLine($"Error fetching employees: {ex.Message}");
+                return RedirectToAction("List", "Employee");
+            }
         }
 
 
@@ -252,12 +316,12 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID:int}/fire")]
-        public async Task<IActionResult> Fire(int employeeID)
+        [HttpPost("/employees/{employeeID}/fire")]
+        public async Task<IActionResult> Fire(string employeeID)
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseURL}/{employeeID}");
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseURL}/employees/{employeeID}");
 
                 var token = HttpContext.Session.GetString("AuthToken");
                 if (!string.IsNullOrEmpty(token))
@@ -401,18 +465,8 @@ namespace ClientApplication.Controllers
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 // ToDo: Add better indication of failure
-                return RedirectToAction("Manage", new { employeeID });
+                return RedirectToAction("Manage", "Employee", new { employeeID });
             }
-        }
-
-
-        [HttpPost("/employees/{employeeID}/notify-schedule")]
-        public IActionResult NotifySchedule(int employeeID)
-        {
-            // Placeholder logic for notifying the employee of their schedule
-            Console.WriteLine($"Employee {employeeID} notified of schedule");
-
-            return RedirectToAction("Manage", new { employeeID });
         }
 
 
@@ -439,7 +493,7 @@ namespace ClientApplication.Controllers
                 assignTrainingResponse.EnsureSuccessStatusCode();
                 
                 //ToDo: Add indication of success
-                return RedirectToAction("Manage", new { employeeID });
+                return RedirectToAction("Manage", "Employee", new { employeeID });
             }
             catch (Exception ex)
             {

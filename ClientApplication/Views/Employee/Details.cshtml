@@ -18,7 +18,10 @@
        <div class="row mt-4">
            <!-- Notify Schedule Button and Shifts Table -->
            <div class="col-md-6">
-               <button class="btn btn-primary mb-3">Notify Schedule</button>
+                <form method="post" action="/employees/@Model.EmployeeId/notify-schedule">
+                    <button type="submit" class="btn btn-primary mb-3">Notify Schedule</button>
+                </form>
+               
 
                <table class="table table-bordered">
                    <thead>
@@ -72,7 +75,7 @@
                                         }
                                         else
                                         {
-                                            <form method="post" action="/employees/@Model.EmployeeId/complete-training/@course.TrainingId">
+                                            <form method="post" asp-controller="Employee" asp-action="CompleteTraining" asp-route-employeeid="@Model.EmployeeId" asp-route-courseid="@course.TrainingId">
                                                 <button type="submit" class="btn btn-success">Complete</button>
                                             </form>
                                         }
