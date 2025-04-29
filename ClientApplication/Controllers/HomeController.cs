@@ -5,17 +5,13 @@ using System.Net.Http.Headers;
 
 namespace ClientApplication.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(
+            HttpClient client
+        )
+        : Controller
     {
-        private readonly HttpClient _client;
-        private readonly string _baseURL;
-
-
-        public HomeController(IHttpClientFactory httpClientFactory)
-        {
-            _client = httpClientFactory.CreateClient();
-            _baseURL = "http://fastfoodapi:8000/api";
-        }
+        private readonly HttpClient _client = client;
+        private readonly string _baseURL = "http://fastfoodapi:8000/api";
 
 
         [HttpGet]
@@ -32,7 +28,7 @@ namespace ClientApplication.Controllers
 
                 return View(images);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the error
                 ViewBag.Error = "Failed to load carousel images.";
@@ -66,11 +62,11 @@ namespace ClientApplication.Controllers
 
             try
             {
-                // Add headers to the request
-                var uploadRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/carousel");
-
-                // Set the form data as the request content
-                uploadRequest.Content = formData;
+                // Add headers to the request & set the form data as the request content
+                var uploadRequest = new HttpRequestMessage(HttpMethod.Post, $"{_baseURL}/carousel")
+                {
+                    Content = formData
+                };
 
                 var token = HttpContext.Session.GetString("AuthToken");
                 if (!string.IsNullOrEmpty(token))
@@ -83,7 +79,7 @@ namespace ClientApplication.Controllers
 
                 TempData["UploadSuccess"] = "Upload successful!";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the error
                 TempData["UploadError"] = "Upload failed. Please try again.";
