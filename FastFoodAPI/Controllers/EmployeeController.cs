@@ -1,4 +1,4 @@
-﻿using FastFoodAPI.Models;
+﻿using FastFoodAPI.Messages;
 using FastFoodAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +9,15 @@ namespace FastFoodAPI.Controllers
     /// <summary>
     /// Provides API endpoints for managing employees.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EmployeeController"/> class.
+    /// </remarks>
+    /// <param name="employeeManagerService">The service for managing employees.</param>
     [ApiController]
     [Route("/api")]
-    public class EmployeeController : ControllerBase
+    public class EmployeeController(IEmployeeManagerService employeeManagerService) : ControllerBase
     {
-        private readonly IEmployeeManagerService _employeeManagerService;
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EmployeeController"/> class.
-        /// </summary>
-        /// <param name="employeeManagerService">The service for managing employees.</param>
-        public EmployeeController(IEmployeeManagerService employeeManagerService)
-        {
-            _employeeManagerService = employeeManagerService;
-        }
+        private readonly IEmployeeManagerService _employeeManagerService = employeeManagerService;
 
 
         /// <summary>

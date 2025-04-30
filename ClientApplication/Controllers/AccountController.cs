@@ -6,10 +6,11 @@ using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
 
+
 namespace ClientApplication.Controllers
 {
     public class AccountController(
-        HttpClient client
+            HttpClient client
         )
         : Controller
     {
@@ -97,7 +98,15 @@ namespace ClientApplication.Controllers
                     {
                         // For a manager:
                         HttpContext.Session.SetString("Role", "Manager");
-                        HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        if (!string.IsNullOrEmpty(employee?.EmployeeId))
+                        {
+                            HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = "Employee ID is missing.";
+                            return View();
+                        }
                         HttpContext.Session.SetString("LoggedInUser", email);
 
                         // Redirect to the employee list page ("/employees")
@@ -107,7 +116,16 @@ namespace ClientApplication.Controllers
                     {
                         // For a worker:
                         HttpContext.Session.SetString("Role", "Worker");
-                        HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        if (!string.IsNullOrEmpty(employee?.EmployeeId))
+                        {
+                            HttpContext.Session.SetString("EmployeeID", employee.EmployeeId);
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = "Employee ID is missing.";
+                            return View();
+                        }
+                        ;
                         HttpContext.Session.SetString("LoggedInUser", email);
 
                         // Redirect to the specific employee details page ("/employees/{employeeID}")

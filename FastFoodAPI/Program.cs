@@ -8,11 +8,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-
-using FastFoodAPI.Services;
-using FastFoodAPI.Extensions;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] { }
+            Array.Empty<string>()
         }
     });
 });
@@ -126,7 +124,7 @@ builder.Services.AddAuthentication(options => {
        OnTokenValidated = context =>
        {
            var token = context.SecurityToken as JwtSecurityToken;
-           var tokenString = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+           var tokenString = context.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
            
            if (AuthService.IsTokenInvalidated(tokenString))
            {

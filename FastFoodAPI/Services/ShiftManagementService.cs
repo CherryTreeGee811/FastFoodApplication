@@ -2,16 +2,13 @@ using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace FastFoodAPI.Services
 {
-    public class ShiftManagementService : IShiftManagementService
+    public class ShiftManagementService(FastFoodDbContext dbContext) : IShiftManagementService
     {
-        private readonly FastFoodDbContext _dbContext;
+        private readonly FastFoodDbContext _dbContext = dbContext;
 
-        public ShiftManagementService(FastFoodDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         /// <summary>
         /// Gets all shift assignments for a specific employee.
@@ -24,7 +21,8 @@ namespace FastFoodAPI.Services
                 .Select(sa => new ShiftsDTO
                 {
                     ShiftId = sa.ShiftId,
-                    ShiftPosition = sa.Shift.ShiftPosition.ToString(),
+                    ShiftPosition = sa.Shift != null 
+                        ? sa.Shift.ShiftPosition.ToString() : "Unassigned",
                     EmployeeId = sa.EmployeeId,
                     ShiftDate = sa.ShiftDate
                 })
@@ -43,14 +41,14 @@ namespace FastFoodAPI.Services
             var employee = await _dbContext.Employees.FindAsync(employeeId);
             if (employee == null)
             {
-                return (null, false, $"Employee with ID {employeeId} not found");
+                return (null!, false, $"Employee with ID {employeeId} not found");
             }
 
             // Check if the shift exists
             var shift = await _dbContext.Shifts.FindAsync(shiftId);
             if (shift == null)
             {
-                return (null, false, $"Shift with ID {shiftId} not found");
+                return (null!, false, $"Shift with ID {shiftId} not found");
             }
 
             // Check if the employee is already assigned to this shift on this date
@@ -62,7 +60,7 @@ namespace FastFoodAPI.Services
 
             if (existingAssignment != null)
             {
-                return (null, false, "Employee already assigned to this shift on this date");
+                return (null!, false, "Employee already assigned to this shift on this date");
             }
 
             // Create new shift assignment
@@ -91,7 +89,7 @@ namespace FastFoodAPI.Services
             }
             catch (Exception ex)
             {
-                return (null, false, $"Error assigning shift: {ex.Message}");
+                return (null!, false, $"Error assigning shift: {ex.Message}");
             }
         }
     }

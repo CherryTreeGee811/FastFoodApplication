@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
+
 namespace FastFoodAPI.Messages
 {
     public class StationDTO

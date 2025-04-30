@@ -6,6 +6,6 @@ namespace FastFoodAPI.Messages
     public class TokenDTO
     {
         [JsonPropertyName("token")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 }

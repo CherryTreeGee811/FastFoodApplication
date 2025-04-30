@@ -1,6 +1,5 @@
 ﻿using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
-using FastFoodAPI.Models;
 
 
 namespace FastFoodAPI.Services

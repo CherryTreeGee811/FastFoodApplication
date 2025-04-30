@@ -9,27 +9,27 @@ namespace ClientApplication.Models
         public string? EmployeeID { get; set; }
 
 
-        public TrainingModuleDTO SelectedTrainingModule { get; set; } = new TrainingModuleDTO();
+        public TrainingModuleDTO SelectedTrainingModule { get; set; } = new();
 
 
-        public StationDTO SelectedStation { get; set; } = new StationDTO();
+        public StationDTO SelectedStation { get; set; } = new();
 
 
-        public ShiftsDTO SelectedShift { get; set; } = new ShiftsDTO();
+        public ShiftsDTO SelectedShift { get; set; } = new();
 
 
-        public RolesDTO SelectedRole { get; set; } = new RolesDTO();
+        public RolesDTO SelectedRole { get; set; } = new();
 
 
-        public ICollection<TrainingModuleDTO> TrainingModules { get; set; } = new List<TrainingModuleDTO>();
+        public ICollection<TrainingModuleDTO> TrainingModules { get; set; } = [];
 
 
-        public ICollection<StationDTO> Stations { get; set; } = new List<StationDTO>();
+        public ICollection<StationDTO> Stations { get; set; } = [];
 
 
-        public ICollection<ShiftsDTO> Shifts { get; set; } = new List<ShiftsDTO>();
+        public ICollection<ShiftsDTO> Shifts { get; set; } = [];
 
 
-        public ICollection<RolesDTO> Roles { get; set; } = new List<RolesDTO>();
+        public ICollection<RolesDTO> Roles { get; set; } = [];
     }
 }

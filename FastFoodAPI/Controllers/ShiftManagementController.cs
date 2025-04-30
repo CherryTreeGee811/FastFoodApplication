@@ -9,27 +9,18 @@ namespace FastFoodAPI.Controllers
 {
     [ApiController]
     [Route("/api")]
-    public class ShiftManagementController : ControllerBase
+    public class ShiftManagementController(
+        ILogger<ShiftManagementController> logger,
+        FastFoodDbContext fastFoodDbContext,
+        IShiftManagementService shiftManagementService,
+        IMailService mailService,
+        IEmployeeManagerService employeeManagerService) : ControllerBase
     {
-        private readonly ILogger<ShiftManagementController> _logger;
-        private readonly FastFoodDbContext _fastFoodDbContext;
-        private readonly IShiftManagementService _shiftManagementService;
-        private readonly IMailService _mailService;
-        private readonly IEmployeeManagerService _employeeManagerService;
-
-        public ShiftManagementController(
-            ILogger<ShiftManagementController> logger,
-            FastFoodDbContext fastFoodDbContext,
-            IShiftManagementService shiftManagementService,
-            IMailService mailService,
-            IEmployeeManagerService employeeManagerService)
-        {
-            _logger = logger;
-            _fastFoodDbContext = fastFoodDbContext;
-            _shiftManagementService = shiftManagementService;
-            _mailService = mailService;
-            _employeeManagerService = employeeManagerService;
-        }
+        private readonly ILogger<ShiftManagementController> _logger = logger;
+        private readonly FastFoodDbContext _fastFoodDbContext = fastFoodDbContext;
+        private readonly IShiftManagementService _shiftManagementService = shiftManagementService;
+        private readonly IMailService _mailService = mailService;
+        private readonly IEmployeeManagerService _employeeManagerService = employeeManagerService;
 
         /// <summary>
         /// This method retrieves all available roles to the client.
@@ -77,7 +68,7 @@ namespace FastFoodAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving shifts for employee {employeeId}");
+                _logger.LogError(ex, "Error retrieving shifts for employee {EmployeeId}", employeeId);
                 return StatusCode(500, "An error occurred while retrieving employee shifts.");
             }
         }
@@ -117,7 +108,7 @@ namespace FastFoodAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error assigning shift for employee {employeeId}");
+                _logger.LogError(ex, "Error assigning shift for employee {EmployeeId}", employeeId);
                 return StatusCode(500, "An error occurred while assigning the shift.");
             }
         }
@@ -218,7 +209,7 @@ namespace FastFoodAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error updating shift for employee {employeeId}");
+                _logger.LogError(ex, "Error updating shift for employee {EmployeeId}", employeeId);
                 return StatusCode(500, "An error occurred while updating the shift assignment.");
             }
         }
@@ -266,6 +257,11 @@ namespace FastFoodAPI.Controllers
             // we can pass it to the service function.
             var employee = await _employeeManagerService.GetEmployee(employeeId);
 
+            if (employee == null || string.IsNullOrEmpty(employee.EmailAddress))
+            {
+                return BadRequest("Employee not found or email address is missing.");
+            }
+
             try
             {
                 await _mailService.SendEmailAsync(employee.EmailAddress, employeeId);
@@ -287,23 +283,27 @@ namespace FastFoodAPI.Controllers
             // First, we need to get a list of all employees using the method
             // from the EmployeeManagerService.
             var employees  = await _employeeManagerService.GetAllEmployees();
-            
+
             // Now we need to loop through all employees, call the service for emails,
             // and pass the ID of each employee to the method so that each employee
             // can get their shifts.
             foreach (var employee in employees)
             {
-                try
+                if (!string.IsNullOrEmpty(employee.EmailAddress) && !string.IsNullOrEmpty(employee.EmployeeId))
                 {
-                    await _mailService.SendEmailAsync(employee.EmailAddress, employee.EmployeeId);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
+                    try
+                    {
+                        await _mailService.SendEmailAsync(employee.EmailAddress,
+                                                          employee.EmployeeId);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
                 }
             }
-            
+
             return Ok();
         }
     }

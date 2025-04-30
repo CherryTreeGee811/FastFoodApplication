@@ -8,9 +8,9 @@ namespace ClientApplication.Models
         public string? EmployeeId { get; set; }
 
 
-        public ICollection<ShiftsDTO> Shifts { get; set; } = new List<ShiftsDTO>();
+        public ICollection<ShiftsDTO> Shifts { get; set; } = [];
 
 
-        public ICollection<TrainingModuleDTO> TrainingModules { get; set; } = new List<TrainingModuleDTO>();
+        public ICollection<TrainingModuleDTO> TrainingModules { get; set; } = [];
     }
 }

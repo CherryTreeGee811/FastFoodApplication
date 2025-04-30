@@ -40,8 +40,8 @@ namespace ClientApplication.Controllers
             shiftResponse.EnsureSuccessStatusCode();
 
             // Deserialize the response content into a list of training modules
-            var trainingModules = await trainingModuleResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>() ?? new List<TrainingModuleDTO>();
-            var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>() ?? new List<ShiftsDTO>();
+            var trainingModules = await trainingModuleResponse.Content.ReadFromJsonAsync<List<TrainingModuleDTO>>() ?? [];
+            var shifts = await shiftResponse.Content.ReadFromJsonAsync<List<ShiftsDTO>>() ?? [];
 
             var model = new EmployeeDetailsViewModel
             {
@@ -215,7 +215,7 @@ namespace ClientApplication.Controllers
 
             response.EnsureSuccessStatusCode();
 
-            var roles = await response.Content.ReadFromJsonAsync<List<RolesDTO>>() ?? new List<RolesDTO>();
+            var roles = await response.Content.ReadFromJsonAsync<List<RolesDTO>>() ?? [];
 
             var model = new HireEmployeeViewModel
             {
@@ -306,10 +306,10 @@ namespace ClientApplication.Controllers
             var model = new ManageEmployeeViewModel
             {
                 EmployeeID = employeeID,
-                TrainingModules = trainingModules ?? new List<TrainingModuleDTO>(),
-                Stations = stations ?? new List<StationDTO>(),
-                Roles = roles ?? new List<RolesDTO>(),
-                Shifts = shifts ?? new List<ShiftsDTO>()
+                TrainingModules = trainingModules ?? [],
+                Stations = stations ?? [],
+                Roles = roles ?? [],
+                Shifts = shifts ?? []
             };
 
             return View(model);

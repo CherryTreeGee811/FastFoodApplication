@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace FastFoodAPI.Entities
 {
     public class Station
@@ -14,6 +15,6 @@ namespace FastFoodAPI.Entities
 
         public bool IsActive { get; set; } = true;
 
-        public ICollection<Employee> AssignedEmployees { get; set; } = new List<Employee>();
+        public ICollection<Employee> AssignedEmployees { get; set; } = [];
     }
 }

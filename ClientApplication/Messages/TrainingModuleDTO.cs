@@ -10,7 +10,7 @@ namespace ClientApplication.Messages
 
 
         [JsonPropertyName("trainingName")]
-        public string TrainingName { get; set; }
+        public string? TrainingName { get; set; }
 
 
         [JsonPropertyName("trainingDescription")]
