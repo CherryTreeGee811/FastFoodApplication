@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace FastFoodAPI.Entities
 {
     public class JobTitle

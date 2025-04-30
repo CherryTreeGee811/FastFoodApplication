@@ -6,15 +6,9 @@ namespace FastFoodAPI.Controllers;
 
 [ApiController]
 [Route("/api")]
-public class HomeController : ControllerBase
+public class HomeController(ILogger<HomeController> logger) : ControllerBase
 {
-    private readonly ILogger<HomeController> _logger;
-
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
 
 
     /// <summary>

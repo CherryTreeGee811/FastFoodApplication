@@ -1,5 +1,6 @@
 ﻿using FastFoodAPI.Messages;
 
+
 namespace FastFoodAPI.Services {
     public interface IAuthService {
         public Task<bool> LoginUser(EmployeeLoginRequest loginRequest);

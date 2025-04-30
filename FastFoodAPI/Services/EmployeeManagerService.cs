@@ -1,19 +1,14 @@
 ﻿using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
-using FastFoodAPI.Models;
-
 using Microsoft.EntityFrameworkCore;
+
 
 namespace FastFoodAPI.Services
 {
-    public class EmployeeManagerService : IEmployeeManagerService
+    public class EmployeeManagerService(FastFoodDbContext fastFoodDbContext) : IEmployeeManagerService
     {
-        private readonly FastFoodDbContext _fastFoodDbContext;
+        private readonly FastFoodDbContext _fastFoodDbContext = fastFoodDbContext;
 
-        public EmployeeManagerService(FastFoodDbContext fastFoodDbContext)
-        {
-            _fastFoodDbContext = fastFoodDbContext;
-        }
 
         /// <summary>
         /// Retrieves all employees.
@@ -28,7 +23,7 @@ namespace FastFoodAPI.Services
                     FirstName = e.FirstName,
                     LastName = e.LastName,
                     EmailAddress = e.Email,
-                    JobTitle = e.JobTitle.Title,
+                    JobTitle = e.JobTitle != null ? e.JobTitle.Title : null,
                     StationName = e.Station != null ? e.Station.StationName : null
                 })
                 .ToListAsync();
@@ -48,7 +43,7 @@ namespace FastFoodAPI.Services
 
             if (employee == null)
             {
-                return null;
+                return null!;
             }
 
             return new EmployeeListDTO { 
@@ -56,8 +51,8 @@ namespace FastFoodAPI.Services
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 EmailAddress = employee.Email,
-                JobTitle = employee.JobTitle.Title,
-                StationName = employee.Station != null ? employee.Station.StationName : null
+                JobTitle = employee?.JobTitle?.Title,
+                StationName = employee?.Station != null ? employee.Station.StationName : null
             };
         }
 
@@ -73,7 +68,7 @@ namespace FastFoodAPI.Services
                 .FirstOrDefaultAsync(e => e.Email == email);
 
             if (employee == null) {
-                return null;
+                return null!;
             }
 
             return new EmployeeListDTO { 
@@ -81,8 +76,8 @@ namespace FastFoodAPI.Services
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 EmailAddress = employee.Email,
-                JobTitle = employee.JobTitle.Title,
-                StationName = employee.Station != null ? employee.Station.StationName : null
+                JobTitle = employee?.JobTitle?.Title,
+                StationName = employee?.Station != null ? employee.Station.StationName : null
             };
         }
 
@@ -96,20 +91,20 @@ namespace FastFoodAPI.Services
             // Check if email already exists
             if (await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == employeeDto.EmailAddress))
             {
-                return (null, false, "An employee with this email address already exists");
+                return (null!, false, "An employee with this email address already exists");
             }
 
             // Check if JobTitle exists
             if (!await _fastFoodDbContext.JobTitles.AnyAsync(jt => jt.JobTitleId == employeeDto.JobTitleId))
             {
-                return (null, false, "Specified job title does not exist");
+                return (null!, false, "Specified job title does not exist");
             }
 
             // Check if Station exists (if provided)
             if (employeeDto.StationId.HasValue &&
                 !await _fastFoodDbContext.Stations.AnyAsync(s => s.StationId == employeeDto.StationId))
             {
-                return (null, false, "Specified station does not exist");
+                return (null!, false, "Specified station does not exist");
             }
 
             // Map DTO to entity
@@ -138,7 +133,7 @@ namespace FastFoodAPI.Services
             var existingEmployee = await _fastFoodDbContext.Employees.FindAsync(id);
             if (existingEmployee == null)
             {
-                return (null, false, $"Employee with ID {id} not found");
+                return (null!, false, $"Employee with ID {id} not found");
             }
 
             // Check for unique email constraint if email is being changed
@@ -146,14 +141,14 @@ namespace FastFoodAPI.Services
                 existingEmployee.Email != updateEmployeeDto.EmailAddress &&
                 await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == updateEmployeeDto.EmailAddress))
             {
-                return (null, false, "An employee with this email address already exists");
+                return (null!, false, "An employee with this email address already exists");
             }
 
             // Check if JobTitle exists if being updated
             if (updateEmployeeDto.JobTitleId.HasValue &&
                 !await _fastFoodDbContext.JobTitles.AnyAsync(jt => jt.JobTitleId == updateEmployeeDto.JobTitleId))
             {
-                return (null, false, "Specified job title does not exist");
+                return (null!, false, "Specified job title does not exist");
             }
 
             // Check if Station exists if being updated
@@ -161,7 +156,7 @@ namespace FastFoodAPI.Services
                 updateEmployeeDto.StationId != null &&
                 !await _fastFoodDbContext.Stations.AnyAsync(s => s.StationId == updateEmployeeDto.StationId))
             {
-                return (null, false, "Specified station does not exist");
+                return (null!, false, "Specified station does not exist");
             }
 
             // Update only the provided employee properties
@@ -189,9 +184,9 @@ namespace FastFoodAPI.Services
             {
                 if (!EmployeeExists(id))
                 {
-                    return (null, false, "Employee not found during update");
+                    return (null!, false, "Employee not found during update");
                 }
-                return (null, false, "A concurrency error occurred while updating the employee");
+                return (null!, false, "A concurrency error occurred while updating the employee");
             }
         }
 
@@ -206,7 +201,7 @@ namespace FastFoodAPI.Services
             var existingEmployee = await _fastFoodDbContext.Employees.FindAsync(id);
             if (existingEmployee == null)
             {
-                return (null, false, $"Employee with ID {id} not found");
+                return (null!, false, $"Employee with ID {id} not found");
             }
 
             // Count how many fields have values
@@ -220,7 +215,7 @@ namespace FastFoodAPI.Services
             // Ensure only one field is being patched
             if (fieldCount != 1)
             {
-                return (null, false, "Patch operation should update exactly one field");
+                return (null!, false, "Patch operation should update exactly one field");
             }
 
             // Check email uniqueness if email is being changed
@@ -228,14 +223,14 @@ namespace FastFoodAPI.Services
                 existingEmployee.Email != patchEmployeeDto.EmailAddress &&
                 await _fastFoodDbContext.Employees.AnyAsync(e => e.Email == patchEmployeeDto.EmailAddress))
             {
-                return (null, false, "An employee with this email address already exists");
+                return (null!, false, "An employee with this email address already exists");
             }
 
             // Check if JobTitle exists if being updated
             if (patchEmployeeDto.JobTitleId.HasValue &&
                 !await _fastFoodDbContext.JobTitles.AnyAsync(jt => jt.JobTitleId == patchEmployeeDto.JobTitleId))
             {
-                return (null, false, "Specified job title does not exist");
+                return (null!, false, "Specified job title does not exist");
             }
 
             // Check if Station exists if being updated
@@ -243,7 +238,7 @@ namespace FastFoodAPI.Services
                 patchEmployeeDto.StationId != null &&
                 !await _fastFoodDbContext.Stations.AnyAsync(s => s.StationId == patchEmployeeDto.StationId))
             {
-                return (null, false, "Specified station does not exist");
+                return (null!, false, "Specified station does not exist");
             }
 
             // Apply the single field update
@@ -267,9 +262,9 @@ namespace FastFoodAPI.Services
             {
                 if (!EmployeeExists(id))
                 {
-                    return (null, false, "Employee not found during update");
+                    return (null!, false, "Employee not found during update");
                 }
-                return (null, false, "A concurrency error occurred while updating the employee");
+                return (null!, false, "A concurrency error occurred while updating the employee");
             }
         }
 

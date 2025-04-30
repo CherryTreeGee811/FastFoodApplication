@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace FastFoodAPI.Messages
 {
     /// <summary>
@@ -13,10 +14,12 @@ namespace FastFoodAPI.Messages
         [Required]
         public DateTime OriginalShiftDate { get; set; }
 
+
         /// <summary>
         /// The new shift ID to assign. Set to 0 to keep the current shift ID.
         /// </summary>
         public int NewShiftId { get; set; }
+
 
         /// <summary>
         /// The new date for the shift assignment. Set to null to keep the current date.

@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
 
 namespace FastFoodAPI.Entities {
     //public class FastFoodDbContext : DbContext {
-    public class FastFoodDbContext : IdentityDbContext<Employee> {
-        public FastFoodDbContext(DbContextOptions<FastFoodDbContext> options)
-            : base(options) { }
-
+    public class FastFoodDbContext(DbContextOptions options)
+        : DbContext(options)
+    {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
         public DbSet<Station> Stations { get; set; }
@@ -129,7 +127,7 @@ namespace FastFoodAPI.Entities {
             var employees = new List<Employee>
             {
                 // Managers (4)
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "john.doe@onlybytes.com",
@@ -141,7 +139,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "sarah.johnson@onlybytes.com",
@@ -153,7 +151,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "richard.parker@onlybytes.com",
@@ -165,7 +163,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 1, // Manager
                     StationId = 1  // Management Office
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName  = "amanda.williams@onlybytes.com",
@@ -179,7 +177,7 @@ namespace FastFoodAPI.Entities {
                 },
 
                 // Cashiers (7)
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName  = "jane.smith@onlybytes.com",
@@ -191,7 +189,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "michael.brown@onlybytes.com",
@@ -203,7 +201,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName  = "emily.davis@onlybytes.com",
@@ -215,7 +213,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "daniel.thompson@onlybytes.com",
@@ -227,7 +225,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName  = "olivia.rodriguez@onlybytes.com",
@@ -239,7 +237,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 2 // Front Counter
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "thomas.lee@onlybytes.com",
@@ -251,7 +249,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 2, // Cashier
                     StationId = 3 // Drive-Thru
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "sophia.patel@onlybytes.com",
@@ -265,7 +263,7 @@ namespace FastFoodAPI.Entities {
                 },
 
                 // Cooks (7)
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "mike.wilson@onlybytes.com",
@@ -277,7 +275,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 4 // Grill
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "david.garcia@onlybytes.com",
@@ -289,7 +287,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 5 // Fryer
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "jessica.martinez@onlybytes.com",
@@ -301,7 +299,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 6 // Prep Table
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "james.wilson@onlybytes.com",
@@ -313,7 +311,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 4 // Grill
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "maria.hernandez@onlybytes.com",
@@ -325,7 +323,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 5 // Fryer
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "kevin.kim@onlybytes.com",
@@ -337,7 +335,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 3, // Cook
                     StationId = 6 // Prep Table
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "jennifer.chen@onlybytes.com",
@@ -351,7 +349,7 @@ namespace FastFoodAPI.Entities {
                 },
 
                 // Cleaners (4)
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "robert.taylor@onlybytes.com",
@@ -363,7 +361,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "lisa.anderson@onlybytes.com",
@@ -375,7 +373,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "carlos.gomez@onlybytes.com",
@@ -387,7 +385,7 @@ namespace FastFoodAPI.Entities {
                     JobTitleId = 4, // Cleaner
                     StationId = 7 // Dining Area
                 },
-                new Employee
+                new()
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = "emma.wright@onlybytes.com",
@@ -419,7 +417,7 @@ namespace FastFoodAPI.Entities {
                 int employeeIndex = employees.IndexOf(employee) + 1; // +1 to start from 1 instead of 0
 
                 // Base training - all employees have food safety
-                trainingAssignments.Add(new TrainingAssignment
+                trainingAssignments.Add(new()
                 {
                     EmployeeId = employee.Id, // Use Id from IdentityUser
                     TrainingId = 1,
@@ -430,7 +428,7 @@ namespace FastFoodAPI.Entities {
                 // Customer Service - Managers and Cashiers
                 if (employee.JobTitleId == 1 || employee.JobTitleId == 2)
                 {
-                    trainingAssignments.Add(new TrainingAssignment
+                    trainingAssignments.Add(new()
                     {
                         EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 2,
@@ -440,7 +438,7 @@ namespace FastFoodAPI.Entities {
                     });
 
                     // Cash Handling - Managers and Cashiers
-                    trainingAssignments.Add(new TrainingAssignment
+                    trainingAssignments.Add(new()
                     {
                         EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 3,
@@ -455,7 +453,7 @@ namespace FastFoodAPI.Entities {
                 // Cooking Procedures - Managers and Cooks
                 if (employee.JobTitleId == 1 || employee.JobTitleId == 3)
                 {
-                    trainingAssignments.Add(new TrainingAssignment
+                    trainingAssignments.Add(new()
                     {
                         EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 4,
@@ -468,7 +466,7 @@ namespace FastFoodAPI.Entities {
                 // Cleaning Standards - Managers and Cleaners
                 if (employee.JobTitleId == 1 || employee.JobTitleId == 4)
                 {
-                    trainingAssignments.Add(new TrainingAssignment
+                    trainingAssignments.Add(new()
                     {
                         EmployeeId = employee.Id, // Use Id from IdentityUser
                         TrainingId = 5,
@@ -490,7 +488,7 @@ namespace FastFoodAPI.Entities {
         /// Generates a complete shift schedule from April 8, 2025 to May 31, 2025
         /// by assigning employees to Day, Afternoon, and Night shifts. 
         /// Employees are rotated and assigned based on job title and staffing needs.
-        private List<ShiftAssignment> GenerateShiftSchedule(List<Employee> employees) {
+        private static List<ShiftAssignment> GenerateShiftSchedule(IList<Employee> employees) {
             var assignments = new List<ShiftAssignment>();
 
             // Start with April 8, 2025 (current day) and go until May 31, 2025
@@ -545,7 +543,11 @@ namespace FastFoodAPI.Entities {
         /// <param name="employees">List of available employees for the job type.</param>
         /// <param name="count">Number of employees to assign.</param>
         /// <returns>A list of shift assignments for the specified shift and date.</returns>
-        private List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date, int shiftId, List<Employee> employees, int count) {
+        private static List<ShiftAssignment> ScheduleEmployeesForShift(DateTime date,
+            int shiftId,
+            List<Employee> employees,
+            int count)
+        {
             var assignments = new List<ShiftAssignment>();
             if (employees.Count == 0 || count == 0) return assignments;
 
@@ -558,7 +560,7 @@ namespace FastFoodAPI.Entities {
                 var employeeIndex = (startIndex + i) % employees.Count;
                 var employee = employees[employeeIndex];
 
-                assignments.Add(new ShiftAssignment
+                assignments.Add(new()
                 {
                     EmployeeId = employee.Id,
                     ShiftId = shiftId,
@@ -615,10 +617,10 @@ namespace FastFoodAPI.Entities {
             using var scope = serviceProvider.CreateScope();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string[] roles = { "Manager", "Cashier", "Cook", "Cleaner", "Employee" };
+            string[] roles = ["Manager", "Cashier", "Cook", "Cleaner", "Employee"];
             foreach (var role in roles) {
                 if (!await roleManager.RoleExistsAsync(role)) {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new(role));
                 }
             }
         }

@@ -4,17 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FastFoodAPI.Controllers {
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PromotionalController"/> class.
+    /// </summary>
+    /// <param name="env">Provides information about the web hosting environment.</param>            
     [ApiController]
     [Route("/api")]
-    public class PromotionalController : Controller {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PromotionalController"/> class.
-        /// </summary>
-        /// <param name="env">Provides information about the web hosting environment.</param>            
-        public PromotionalController(IWebHostEnvironment env) {
-            _env = env;
-        }
+    public class PromotionalController(IWebHostEnvironment env) : Controller {
 
         /// <summary>
         /// Returns a list of full URLs to all JPEG or PNG images in the "carouselImages" directory under wwwroot.
@@ -29,15 +25,14 @@ namespace FastFoodAPI.Controllers {
                 return NotFound("Images directory not found.");
             }
 
-            List<string> imageFiles = Directory.GetFiles(imagesPath)
+            List<string> imageFiles = [.. Directory.GetFiles(imagesPath)
                 .Where(file => _allowedCarouselExtensions.Any(ext =>
                     file.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
-                .Select(file => Path.GetFileName(file))
-                .ToList();
+                .Select(file => Path.GetFileName(file))];
 
             string baseUrl = $"http://localhost:8000";
 
-            List<string> carouselItems = imageFiles.Select(file => $"{baseUrl}/{_imagesDir}/{file}").ToList();
+            List<string> carouselItems = [.. imageFiles.Select(file => $"{baseUrl}/{_imagesDir}/{file}")];
 
             return Ok(carouselItems);
         }
@@ -64,13 +59,13 @@ namespace FastFoodAPI.Controllers {
                 Directory.CreateDirectory(uploadPath);
             }
 
-            List<string> uploaded = new();
+            List<string> uploaded = [];
 
             foreach (IFormFile file in files) {
                 string fileName = Path.GetFileName(file.FileName);
                 string filePath = Path.Combine(uploadPath, fileName);
 
-                using FileStream stream = new FileStream(filePath, FileMode.Create);
+                using var stream = new FileStream(filePath, FileMode.Create);
                 await file.CopyToAsync(stream);
 
                 string baseUrl = $"http://localhost:8000";
@@ -84,8 +79,8 @@ namespace FastFoodAPI.Controllers {
             });
         }
 
-        private string _imagesDir = "carouselImages";
-        private string[] _allowedCarouselExtensions = { ".png", ".jpg", ".jepg" };
-        private readonly IWebHostEnvironment _env;
+        private readonly string _imagesDir = "carouselImages";
+        private readonly string[] _allowedCarouselExtensions = [".png", ".jpg", ".jepg"];
+        private readonly IWebHostEnvironment _env = env;
     }
 }
