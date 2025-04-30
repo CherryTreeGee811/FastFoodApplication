@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 
+
 namespace ClientApplication.Messages
 {
     public class AssignShiftRequest

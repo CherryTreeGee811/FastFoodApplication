@@ -1,14 +1,11 @@
 using FastFoodAPI.Controllers;
-using FastFoodAPI.Models;
 using FastFoodAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using FastFoodAPI.Messages;
 using FastFoodAPI.Entities;
+
 
 namespace FastFoodAPI.Tests.Controllers
 {
@@ -34,7 +31,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Arrange
             var employees = new List<EmployeeListDTO>
             {
-                new EmployeeListDTO { 
+                new() {
                     EmployeeId = "1", 
                     FirstName = "John", 
                     LastName = "Doe", 
@@ -54,7 +51,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeEquivalentTo(employees);
+            okResult?.Value.Should().BeEquivalentTo(employees);
         }
 
         [Test]
@@ -78,7 +75,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
-            okResult.Value.Should().BeEquivalentTo(employee);
+            okResult?.Value.Should().BeEquivalentTo(employee);
         }
 
         [Test]
@@ -88,7 +85,7 @@ namespace FastFoodAPI.Tests.Controllers
             var id = "999";
             _mockEmployeeService
                 .Setup(service => service.GetEmployee(id))
-                .ReturnsAsync((EmployeeListDTO)null);
+                .ReturnsAsync((EmployeeListDTO)null!);
 
             // Act
             var result = await _controller.GetEmployee(id);

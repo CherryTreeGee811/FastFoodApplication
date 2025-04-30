@@ -13,14 +13,14 @@ namespace FastFoodAPI.Entities {
         [Required(ErrorMessage = "Job title is required.")]
         public int JobTitleId { get; set; }
 
-        public JobTitle JobTitle { get; set; }
+        public JobTitle? JobTitle { get; set; }
 
         public int? StationId { get; set; }
 
         public Station? Station { get; set; }
 
-        public ICollection<ShiftAssignment> ShiftAssignments { get; set; } = new List<ShiftAssignment>();
+        public ICollection<ShiftAssignment> ShiftAssignments { get; set; } = [];
 
-        public ICollection<TrainingAssignment> TrainingAssignments { get; set; } = new List<TrainingAssignment>();
+        public ICollection<TrainingAssignment> TrainingAssignments { get; set; } = [];
     }
 }

@@ -5,18 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 
 
 namespace FastFoodAPI.Controllers {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AccountApiController"/> class.
+    /// </summary>
+    /// <param name="authService">The authentication service used for login and registration operations.</param>
     [ApiController()]
     [Route("/api")]
-    public class AccountApiController : Controller {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AccountApiController"/> class.
-        /// </summary>
-        /// <param name="authService">The authentication service used for login and registration operations.</param>
-        public AccountApiController(IAuthService authService, IEmployeeManagerService employeeManagerService) {
-            _authservice = authService;
-            _employeeManagerService = employeeManagerService;
-        }
+    public class AccountApiController(
+            IAuthService authService,
+            IEmployeeManagerService employeeManagerService
+        ) : Controller {
 
         /// <summary>
         /// Logs in a user with the provided credentials.
@@ -45,11 +43,13 @@ namespace FastFoodAPI.Controllers {
         /// </returns>
         [HttpPost("logout")]
         [Authorize]
-        public async Task<IActionResult> LogoutUser() {
+        public async Task<IActionResult> LogoutUser()
+        {
             // Get the token from the Authorization header
-            string authHeader = Request.Headers["Authorization"].FirstOrDefault();
-            if (authHeader != null && authHeader.StartsWith("Bearer ")) {
-                string token = authHeader.Substring("Bearer ".Length).Trim();
+            string? authHeader = Request.Headers.Authorization.FirstOrDefault();
+            if (authHeader != null && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                string token = authHeader["Bearer ".Length..].Trim(); // Simplified Substring
                 await _authservice.InvalidateToken(token);
                 return Ok(new { message = "Logout successful" });
             }
@@ -67,9 +67,9 @@ namespace FastFoodAPI.Controllers {
         [HttpPost("register")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> RegisterUser(EmployeeRegistrationRequest registrationRequest) {
-            var result = await _authservice.RegisterUser(registrationRequest);
+            var (Success, Errors) = await _authservice.RegisterUser(registrationRequest);
 
-            if (result.Success) {
+            if (Success) {
                 var newEmployee = await _employeeManagerService.GetEmployeeByEmail(registrationRequest.Email);
                 var locationUri = Url.Action("GetUserByEmail", "AccountApi", new { email = registrationRequest.Email }, Request.Scheme);
                 return Created(locationUri, new EmployeeListDTO { 
@@ -82,14 +82,14 @@ namespace FastFoodAPI.Controllers {
                 });
             } 
             
-            if (result.Errors.Any(error => error.Contains("taken", StringComparison.OrdinalIgnoreCase))) {
-                return Conflict(new { errors = result.Errors });
+            if (Errors.Any(error => error.Contains("taken", StringComparison.OrdinalIgnoreCase))) {
+                return Conflict(new { errors = Errors });
             }
 
-            return BadRequest(new { errors = result.Errors });
+            return BadRequest(new { errors = Errors });
         }
 
-        private IAuthService _authservice;
-        private IEmployeeManagerService _employeeManagerService;
+        private readonly IAuthService _authservice = authService;
+        private readonly IEmployeeManagerService _employeeManagerService = employeeManagerService;
     }
 }

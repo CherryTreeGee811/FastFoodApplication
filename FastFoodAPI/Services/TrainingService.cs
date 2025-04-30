@@ -2,16 +2,13 @@ using FastFoodAPI.Entities;
 using FastFoodAPI.Messages;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace FastFoodAPI.Services
 {
-    public class TrainingService : ITrainingService
+    public class TrainingService(FastFoodDbContext dbContext) : ITrainingService
     {
-        private readonly FastFoodDbContext _dbContext;
+        private readonly FastFoodDbContext _dbContext = dbContext;
 
-        public TrainingService(FastFoodDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         /// <summary>
         /// Gets all training assignments for a specific employee.
@@ -24,8 +21,10 @@ namespace FastFoodAPI.Services
                 .Select(ta => new TrainingModuleDTO
                 {
                     TrainingId = ta.TrainingId,
-                    TrainingName = ta.Training.TrainingName,
-                    TrainingDescription = ta.Training.TrainingDescription,
+                    TrainingName = ta.Training != null 
+                        ? ta.Training.TrainingName : "Unknown",
+                    TrainingDescription = ta.Training != null 
+                        ? ta.Training.TrainingDescription : "No description available",
                     CompletedTraining = ta.CompletedTraining,
                     DateCompleted = ta.DateCompleted
                 })
@@ -46,13 +45,13 @@ namespace FastFoodAPI.Services
 
             if (trainingAssignment == null)
             {
-                return (null, false, $"Training assignment not found for employee {employeeId} and training {trainingId}");
+                return (null!, false, $"Training assignment not found for employee {employeeId} and training {trainingId}");
             }
 
             // Check if it's already completed
             if (trainingAssignment.CompletedTraining)
             {
-                return (null, false, "Training is already marked as completed");
+                return (null!, false, "Training is already marked as completed");
             }
 
             // Mark as completed
@@ -68,8 +67,10 @@ namespace FastFoodAPI.Services
                 var trainingModuleDTO = new TrainingModuleDTO
                 {
                     TrainingId = trainingAssignment.TrainingId,
-                    TrainingName = trainingAssignment.Training.TrainingName,
-                    TrainingDescription = trainingAssignment.Training.TrainingDescription,
+                    TrainingName = trainingAssignment.Training?.TrainingName
+                        ?? "Unknown",
+                    TrainingDescription = trainingAssignment.Training?.TrainingDescription
+                        ?? "No description available",
                     CompletedTraining = trainingAssignment.CompletedTraining,
                     DateCompleted = trainingAssignment.DateCompleted
                 };
@@ -78,7 +79,7 @@ namespace FastFoodAPI.Services
             }
             catch (Exception ex)
             {
-                return (null, false, $"Error updating training assignment: {ex.Message}");
+                return (null!, false, $"Error updating training assignment: {ex.Message}");
             }
         }
     }

@@ -14,19 +14,13 @@ namespace FastFoodAPI.Services {
     /// <summary>
     /// Service for handling authentication and authorization operations.
     /// </summary>
-    public class AuthService : IAuthService {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthService"/> class.
-        /// </summary>
-        /// <param name="userManager">The user manager for managing employee accounts.</param>
-        /// <param name="config">The application configuration for accessing settings.</param>
-        /// <param name="fastFoodDbContext">The database context for accessing the database.</param>
-        public AuthService(UserManager<Employee> userManager, IConfiguration config, FastFoodDbContext fastFoodDbContext) {
-            _userManager = userManager;
-            _config = config;
-            _fastFoodDbContext = fastFoodDbContext;
-        }
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AuthService"/> class.
+    /// </remarks>
+    /// <param name="userManager">The user manager for managing employee accounts.</param>
+    /// <param name="config">The application configuration for accessing settings.</param>
+    /// <param name="fastFoodDbContext">The database context for accessing the database.</param>
+    public class AuthService(UserManager<Employee> userManager, IConfiguration config, FastFoodDbContext fastFoodDbContext) : IAuthService {
 
 
         /// <summary>
@@ -47,14 +41,17 @@ namespace FastFoodAPI.Services {
         /// </summary>
         /// <param name="loginRequest">The login request containing email and password.</param>
         /// <returns>True if authentication is successful; otherwise, false.</returns>
-        public async Task<bool> LoginUser(EmployeeLoginRequest loginRequest) {
+        public async Task<bool> LoginUser(EmployeeLoginRequest loginRequest)
+        {
             // These two checks are redundant since the validation is already done in the controller, done to kill warnings
-            if (string.IsNullOrEmpty(loginRequest.Password)) {
-                throw new ArgumentException("Password cannot be null or empty.", nameof(loginRequest.Password));
+            if (string.IsNullOrEmpty(loginRequest.Password))
+            {
+                throw new ArgumentException("Password cannot be null or empty.", nameof(loginRequest));
             }
 
-            if (string.IsNullOrEmpty(loginRequest.Email)) {
-                throw new ArgumentException("Email cannot be null or empty.", nameof(loginRequest.Password));
+            if (string.IsNullOrEmpty(loginRequest.Email))
+            {
+                throw new ArgumentException("Email cannot be null or empty.", nameof(loginRequest));
             }
 
             _employee = await _userManager.FindByEmailAsync(loginRequest.Email);
@@ -67,7 +64,8 @@ namespace FastFoodAPI.Services {
 
             // Check if the user has any roles
             var roles = await _userManager.GetRolesAsync(_employee);
-            if (roles == null || roles.Count == 0) {
+            if (roles == null || roles.Count == 0)
+            {
                 // If no roles found, assign role based on job title
                 await AssignRoleBasedOnJobTitle(_employee.JobTitleId, _employee.Id);
             }
@@ -125,7 +123,7 @@ namespace FastFoodAPI.Services {
             }
 
             var claims = new List<Claim> {
-                new Claim(ClaimTypes.Name, _employee.Email),
+                new(ClaimTypes.Name, _employee.Email),
             };
 
             var roles = await _userManager.GetRolesAsync(_employee);
@@ -197,7 +195,7 @@ namespace FastFoodAPI.Services {
                 roleValidators,
                 new UpperInvariantLookupNormalizer(),
                 new IdentityErrorDescriber(),
-                null as ILogger<RoleManager<IdentityRole>>  // Explicitly cast to nullable type
+                null!  // Explicitly cast to nullable type
             );
 
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -250,7 +248,7 @@ namespace FastFoodAPI.Services {
         /// <summary>
         /// Removes expired tokens from the blacklist.
         /// </summary>
-        private void CleanupExpiredTokens() {
+        private static void CleanupExpiredTokens() {
             var now = DateTime.UtcNow;
             foreach (var item in _invalidatedTokens) {
                 if (item.Value < now) {
@@ -260,9 +258,9 @@ namespace FastFoodAPI.Services {
         }
 
         private Employee? _employee;
-        private FastFoodDbContext _fastFoodDbContext;
-        private UserManager<Employee> _userManager;
-        private IConfiguration _config;
-        private static readonly ConcurrentDictionary<string, DateTime> _invalidatedTokens = new ConcurrentDictionary<string, DateTime>();
+        private readonly FastFoodDbContext _fastFoodDbContext = fastFoodDbContext;
+        private readonly UserManager<Employee> _userManager = userManager;
+        private readonly IConfiguration _config = config;
+        private static readonly ConcurrentDictionary<string, DateTime> _invalidatedTokens = [];
     }
 }

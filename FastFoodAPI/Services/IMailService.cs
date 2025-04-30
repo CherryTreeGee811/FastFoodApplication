@@ -9,8 +9,7 @@ namespace FastFoodAPI.Services
         
         /// <summary>
         /// This method allos sending emails to all employees.
-        /// </summary>
-        
+        /// </summary>   
     }
 }
 

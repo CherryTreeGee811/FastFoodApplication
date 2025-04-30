@@ -2,16 +2,13 @@ using System.Net;
 using System.Net.Mail;
 using FastFoodAPI.Entities;
 using Microsoft.EntityFrameworkCore;
+
+
 namespace FastFoodAPI.Services
 {
-    public class MailService : IMailService
+    public class MailService(FastFoodDbContext context) : IMailService
     {
-        private FastFoodDbContext _context;
-        
-        public MailService(FastFoodDbContext context)
-        {
-            _context = context;
-        }
+        private readonly FastFoodDbContext _context = context;
 
         /// <summary>
         /// Email the employee with the list of schedules.
@@ -41,7 +38,7 @@ namespace FastFoodAPI.Services
             string emailBody = "<h1>Your Shift Schedule</h1><p>Here are your shifts:</p><table border='1' cellpadding='10' cellspacing='0' style='border-collapse: collapse; width: 100%;'><thead><tr><th>Date</th><th>Shift</th></tr></thead><tbody>";
             foreach (var shift in shifts)
             {
-                emailBody += $"<tr><td>{shift.ShiftDate:yyyy-MM-dd}</td><td>{shift.Shift.ShiftPosition}</td></tr>";
+                emailBody += $"<tr><td>{shift.ShiftDate:yyyy-MM-dd}</td><td>{shift?.Shift?.ShiftPosition}</td></tr>";
             }
             emailBody += "</tbody></table><p>If you have any questions, please contact your manager. With <3, TechNerd.</p>";
             // Now, we need to actually send the message! :)

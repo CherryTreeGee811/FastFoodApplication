@@ -11,6 +11,7 @@ namespace FastFoodAPI.Entities
         Night
     }
 
+
     public class Shift
     {
         [Key]

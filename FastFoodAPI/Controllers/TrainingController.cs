@@ -6,16 +6,10 @@ namespace FastFoodAPI.Controllers
 {
     [ApiController]
     [Route("api/")]
-    public class TrainingController : ControllerBase
+    public class TrainingController(ITrainingService trainingService, ILogger<TrainingController> logger) : ControllerBase
     {
-        private readonly ITrainingService _trainingService;
-        private readonly ILogger<TrainingController> _logger;
-
-        public TrainingController(ITrainingService trainingService, ILogger<TrainingController> logger)
-        {
-            _trainingService = trainingService;
-            _logger = logger;
-        }
+        private readonly ITrainingService _trainingService = trainingService;
+        private readonly ILogger<TrainingController> _logger = logger;
 
         /// <summary>
         /// Gets all trainings for a specific employee.
@@ -33,7 +27,7 @@ namespace FastFoodAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving trainings for employee {employeeId}");
+                _logger.LogError(ex, "Error retrieving trainings for employee {EmployeeId}", employeeId);
                 return StatusCode(500, "An error occurred while retrieving employee trainings.");
             }
         }
@@ -65,7 +59,7 @@ namespace FastFoodAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error completing training {trainingId} for employee {employeeId}");
+                _logger.LogError(ex, "Error completing training {TrainingId} for employee {EmployeeId}", trainingId, employeeId);
                 return StatusCode(500, "An error occurred while updating the training status.");
             }
         }

@@ -20,6 +20,6 @@ namespace ClientApplication.Models
         public string Password { get; set; } = string.Empty;
 
 
-        public List<RolesDTO> Roles { get; set; } = new List<RolesDTO>();
+        public List<RolesDTO> Roles { get; set; } = [];
     }
 }

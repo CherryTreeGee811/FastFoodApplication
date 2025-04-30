@@ -5,7 +5,7 @@ namespace FastFoodAPI.Messages
     public class EmployeeListDTO
     {
         [JsonPropertyName("employeeId")]
-        public string EmployeeId { get; set; }
+        public string? EmployeeId { get; set; }
 
 
         [JsonPropertyName("firstName")]

@@ -10,7 +10,7 @@ namespace FastFoodAPI.Messages
 
 
         [JsonPropertyName("trainingName")]
-        public string TrainingName { get; set; }
+        public string? TrainingName { get; set; }
 
 
         [JsonPropertyName("trainingDescription")]

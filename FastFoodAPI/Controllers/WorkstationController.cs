@@ -9,20 +9,12 @@ namespace FastFoodAPI.Controllers
 
     [ApiController]
     [Route("/api")]
-    public class WorkstationController : ControllerBase
+    public class WorkstationController(ILogger<WorkstationController> logger, FastFoodDbContext fastFoodDbContext) : ControllerBase
     {
-        public ILogger<WorkstationController> _logger;
-        private readonly FastFoodDbContext _fastFoodDbContext;
+        public ILogger<WorkstationController> _logger = logger;
+        private readonly FastFoodDbContext _fastFoodDbContext = fastFoodDbContext;
 
 
-        public WorkstationController(ILogger<WorkstationController> logger, FastFoodDbContext fastFoodDbContext)
-        {
-            _logger = logger;
-            _fastFoodDbContext = fastFoodDbContext;
-            
-        }
-
-        
         /// <summary>
         /// This method returns all available stations.
         /// </summary>

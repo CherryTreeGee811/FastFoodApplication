@@ -1,5 +1,5 @@
-﻿using FastFoodAPI.Entities;
-using FastFoodAPI.Messages;
+﻿using FastFoodAPI.Messages;
+
 
 namespace FastFoodAPI.Services
 {
@@ -11,6 +11,7 @@ namespace FastFoodAPI.Services
         /// <param name="employeeId">The ID of the employee.</param>
         /// <returns>A list of training assignments for the employee.</returns>
         Task<IEnumerable<TrainingModuleDTO>> GetEmployeeTrainingsAsync(string employeeId);
+
 
         /// <summary>
         /// Updates a training assignment status from incomplete to complete.
