@@ -11,6 +11,7 @@ namespace FastFoodAPI.Controllers
         private readonly ITrainingService _trainingService = trainingService;
         private readonly ILogger<TrainingController> _logger = logger;
 
+
         /// <summary>
         /// Gets all trainings for a specific employee.
         /// </summary>
@@ -31,6 +32,7 @@ namespace FastFoodAPI.Controllers
                 return StatusCode(500, "An error occurred while retrieving employee trainings.");
             }
         }
+
 
         /// <summary>
         /// Marks a training as completed for a specific employee.

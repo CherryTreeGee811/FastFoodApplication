@@ -15,6 +15,7 @@ namespace FastFoodAPI.Entities {
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<ShiftAssignment> ShiftAssignments { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -484,6 +485,7 @@ namespace FastFoodAPI.Entities {
             modelBuilder.Entity<ShiftAssignment>().HasData(shiftAssignments);
         }
 
+
         /// <summary>
         /// Generates a complete shift schedule from April 8, 2025 to May 31, 2025
         /// by assigning employees to Day, Afternoon, and Night shifts. 
@@ -534,6 +536,7 @@ namespace FastFoodAPI.Entities {
 
             return assignments;
         }
+
 
         /// <summary>
         /// Assigns a specified number of employees to a shift on a given date using a rotating strategy.
@@ -612,6 +615,7 @@ namespace FastFoodAPI.Entities {
                 }
             }
         }
+
 
         public static async Task SeedRolesAsync(IServiceProvider serviceProvider) {
             using var scope = serviceProvider.CreateScope();

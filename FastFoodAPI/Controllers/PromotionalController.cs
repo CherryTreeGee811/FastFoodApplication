@@ -37,6 +37,7 @@ namespace FastFoodAPI.Controllers {
             return Ok(carouselItems);
         }
 
+
         /// <summary>
         /// Handles uploading promotional images to the server.
         /// </summary>
@@ -78,6 +79,7 @@ namespace FastFoodAPI.Controllers {
                 count = uploaded.Count,
             });
         }
+
 
         private readonly string _imagesDir = "carouselImages";
         private readonly string[] _allowedCarouselExtensions = [".png", ".jpg", ".jepg"];

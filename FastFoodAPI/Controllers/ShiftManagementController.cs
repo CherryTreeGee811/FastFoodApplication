@@ -22,6 +22,7 @@ namespace FastFoodAPI.Controllers
         private readonly IMailService _mailService = mailService;
         private readonly IEmployeeManagerService _employeeManagerService = employeeManagerService;
 
+
         /// <summary>
         /// This method retrieves all available roles to the client.
         /// </summary>
@@ -37,6 +38,7 @@ namespace FastFoodAPI.Controllers
             return Ok(roles);
         }
 
+
         /// <summary>
         /// This method retrieves all available shifts to the client.
         /// </summary>
@@ -51,6 +53,7 @@ namespace FastFoodAPI.Controllers
             }).ToList();
             return Ok(shifts);
         }
+
 
         /// <summary>
         /// Gets all shifts for a specific employee.
@@ -72,6 +75,7 @@ namespace FastFoodAPI.Controllers
                 return StatusCode(500, "An error occurred while retrieving employee shifts.");
             }
         }
+
 
         /// <summary>
         /// Assigns an employee to a shift on a specific date.
@@ -112,6 +116,7 @@ namespace FastFoodAPI.Controllers
                 return StatusCode(500, "An error occurred while assigning the shift.");
             }
         }
+
 
         /// <summary>
         /// Updates an existing shift assignment for an employee.
@@ -214,6 +219,7 @@ namespace FastFoodAPI.Controllers
             }
         }
 
+
         /// <summary>
         /// This method allows us to assign a training module to an employee.
         /// </summary>
@@ -247,6 +253,7 @@ namespace FastFoodAPI.Controllers
             return Ok();
         }
         
+
         /// <summary>
         /// This method sends an email to an employee with a list of their shifts.
         /// </summary>
@@ -273,6 +280,7 @@ namespace FastFoodAPI.Controllers
             }
             return Ok();
         }
+
         
         /// <summary>
         /// This method sends an email to all employees with a list of their shifts.

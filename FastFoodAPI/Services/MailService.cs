@@ -63,8 +63,6 @@ namespace FastFoodAPI.Services
                 // Throw an exception.
                 throw new Exception($"Failed to send email to {recipient}. Error: {ex.Message}");
             }
-            
-             
         }
     }
 }
