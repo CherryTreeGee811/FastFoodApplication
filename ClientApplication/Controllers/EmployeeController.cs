@@ -18,7 +18,7 @@ namespace ClientApplication.Controllers
         private readonly string _baseURL = "http://fastfoodapi:8000/api";
 
 
-        [HttpGet("/employees/{employeeID}")]
+        [HttpGet("/employees/{employeeID:guid}")]
         public async Task<IActionResult> Details(string employeeID)
         {
             var trainingModuleRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/{employeeID}/trainings");
@@ -54,7 +54,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/complete-training/{courseID:int}")]
+        [HttpPost("/employees/{employeeID:guid}/complete-training/{courseID:int}")]
         public async Task<IActionResult> CompleteTraining([FromRoute] string employeeID, [FromRoute] int courseID)
         {
             try
@@ -122,7 +122,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/notify-schedule")]
+        [HttpPost("/employees/{employeeID:guid}/notify-schedule")]
         public async Task<IActionResult> NotifyScheduleByEmployeeID([FromRoute] string employeeID)
         {
             try
@@ -268,7 +268,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpGet("/employees/{employeeID}/manage")]
+        [HttpGet("/employees/{employeeID:guid}/manage")]
         public async Task <IActionResult> Manage(string employeeID)
         {
             var trainingRequest = new HttpRequestMessage(HttpMethod.Get, $"{_baseURL}/employees/trainingmodules");
@@ -316,7 +316,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/fire")]
+        [HttpPost("/employees/{employeeID:guid}/fire")]
         public async Task<IActionResult> Fire(string employeeID)
         {
             try
@@ -346,7 +346,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/promote-demote")]
+        [HttpPost("/employees/{employeeID:guid}/promote-demote")]
         public async Task<IActionResult> PromoteDemote([FromRoute] string employeeID, [FromForm] int roleID)
         {
             try
@@ -386,7 +386,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/relocate")]
+        [HttpPost("/employees/{employeeID:guid}/relocate")]
         public async Task<IActionResult> Relocate([FromRoute] string employeeID, [FromForm] int stationID)
         {
             try
@@ -426,7 +426,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/schedule")]
+        [HttpPost("/employees/{employeeID:guid}/schedule")]
         public async Task<IActionResult> Schedule([FromRoute] string employeeID, [FromForm] int shiftID, string shiftDate)
         {
             try
@@ -470,7 +470,7 @@ namespace ClientApplication.Controllers
         }
 
 
-        [HttpPost("/employees/{employeeID}/assign-training")]
+        [HttpPost("/employees/{employeeID:guid}/assign-training")]
         public async Task<IActionResult> AssignTraining([FromRoute] string employeeID, [FromForm] int trainingID)
         {
             try

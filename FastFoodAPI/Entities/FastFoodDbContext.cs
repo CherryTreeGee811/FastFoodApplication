@@ -14,11 +14,16 @@ namespace FastFoodAPI.Entities {
         public DbSet<TrainingAssignment> TrainingAssignments { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<ShiftAssignment> ShiftAssignments { get; set; }
+        public DbSet<IdentityRole> Roles { get; set; }
+        public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUserRole<string>>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
 
             // JobTitle to Employee relationship
             modelBuilder.Entity<Employee>()
