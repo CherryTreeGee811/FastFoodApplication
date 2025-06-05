@@ -1,0 +1,29 @@
+﻿<div class="container mt-5">
+    <h1>Hire Employee</h1>
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email" required />
+        </div>
+        <div class="mb-3">
+            <label for="first-name" class="form-label">First</label>
+            <input type="text" class="form-control" for="first-name" required />
+        </div>
+        <div class="mb-3">
+            <label for="last-name" class="form-label">Last</label>
+            <input type="text" class="form-control" id="last-name" name="last-name" required />
+        </div>
+        <div class="mb-3">
+            <label for="selected-role" class="form-label">Role</label>
+            <select class="form-select" id="selected-role" name="selected-role" required>
+                <div id="roles"><!--Dynamic--></div>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Hire</button>
+    </form>
+</div>
