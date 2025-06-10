@@ -17,24 +17,24 @@
             <form method="post" id="promote-demote-form">
                 <h3>Promote/Demote</h3>
                 <div class="mb-3">
-                    <label for="role-id" class="form-label">Role</label>
-                    <select class="form-select" id="role-id" name="role-id" required>
-                        <div id="roles"><!--Dynamic--></div>
+                    <label id="role-label" for="role-select-list" class="form-label">Role</label>
+                    <select class="form-select" id="role-select-list" name="role-select-list" required>
+                        <!--Dynamic-->
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <input type="button" class="btn btn-primary" id="promote-demote-btn" value="Update" />
             </form>
 
             <!-- Relocate Form -->
             <form method="post" class="mt-4" id="relocate-form">
                 <h3>Relocate</h3>
                 <div class="mb-3">
-                    <label for="station-id" class="form-label">Position</label>
-                    <select class="form-select" id="station-id" name="station-id" required>
-                       <div id="stations"><!--Dynamic--></div>
+                    <label id="station-label" for="station-select-list" class="form-label">Position</label>
+                    <select class="form-select" id="station-select-list" name="station-select-list" required>
+                       <!--Dynamic-->
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Update</button>
+                <input type="button" class="btn btn-primary" id="relocate-btn" value="Update" />
             </form>
         </div>
 
@@ -43,33 +43,33 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3>Schedule Employee</h3>
                 <form method="post" id="notify-shift-form" class="m-0">
-                    <button type="submit" class="btn btn-primary">Notify Schedule</button>
+                    <input type="button" class="btn btn-primary" id="notify-shift-btn" value="Notify Schedule" />
                 </form>
             </div>
-            <form method="post" >
-                <div class="mb-3" id="schedule-shift-form">
-                    <label for="shiftDate" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="shiftDate" name="shiftDate" required />
+            <form method="post" id="schedule-shift-form">
+                <div class="mb-3">
+                    <label id="shift-date-label" for="shift-date-input" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="shift-date-input" name="shift-date-input" required />
                 </div>
                 <div class="mb-3">
-                    <label for="shift-id" class="form-label">Shift</label>
-                    <select class="form-select" id="shift-id" name="shift-id" required>
-                        <div id="shifts"><!--Dynamic--></div>
+                    <label id="shift-label" for="shift-select-list" class="form-label">Shift</label>
+                    <select class="form-select" id="shift-select-list" name="shift-select-list" required>
+                        <!--Dynamic-->
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Schedule</button>
+                <input type="button" class="btn btn-primary" id="schedule-shift-btn" value="Schedule" />
             </form>
 
             <!-- Train Employee Form -->
             <form method="post" id="assign-training-form" class="mt-4">
                 <h3>Train Employee</h3>
                 <div class="mb-3">
-                    <label for="training-id" class="form-label">Training</label>
-                    <select class="form-select" id="training-id" name="training-id" required>
-                       <div id="training"><!--Dynamic--></div>
+                    <label id="training-label" for="training-select-list" class="form-label">Training</label>
+                    <select class="form-select" id="training-select-list" name="training-select-list" required>
+                       <!--Dynamic-->
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Assign</button>
+                <input type="button" class="btn btn-primary" id="assign-training-btn" value="Assign" />
             </form>
         </div>
     </div>

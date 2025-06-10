@@ -11,42 +11,41 @@
     <div class="row mt-4">
         <!-- Notify Schedule Button and Shifts Table -->
         <div class="col-md-6">
-            <form method="post">
+            <form method="post" id="notify-schedule-form">
                 <!--"/employees/employeeId/notify-schedule"--->
-                <button type="submit" class="btn btn-primary mb-3">Notify Schedule</button>
+                <input type="button" class="btn btn-primary mb-3" id="notify-schedule-btn" value="Notify Schedule" />
             </form>
 
-
-            <table class="table table-bordered">
-                <thead>
+            <table id="shifts-table" class="table table-bordered">
+                <thead id="shifts-table-head">
                     <tr>
                         <th colspan="2" class="text-center">Shifts</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="shifts-table-body">
                     <tr>
                         <td class="fw-bold">Date</td>
                         <td class="fw-bold">Shift</td>
                     </tr>
-                    <div id="shifts"><!--Dynamic--></div>
+                    <!--Dynamic-->
                 </tbody>
             </table>
         </div>
 
         <!-- Training Table -->
         <div class="col-md-6" id="training-table-container">
-            <table class="table table-bordered">
-                <thead>
+            <table class="table table-bordered" id="training-table">
+                <thead id="training-table-head">
                     <tr>
                         <th colspan="2" class="text-center">Training</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="training-table-body">
                     <tr>
                         <td class="fw-bold">Course Name</td>
                         <td class="fw-bold">Mark Complete</td>
                     </tr>
-                    <div id="training"><!--Dynamic--></div>
+                    <!--Dynamic-->
                 </tbody>
             </table>
         </div>

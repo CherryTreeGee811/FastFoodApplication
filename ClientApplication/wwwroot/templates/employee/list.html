@@ -6,8 +6,8 @@
     </div>
 
     <!-- Employee Table -->
-    <table class="table table-bordered">
-        <thead>
+    <table id="employee-list-table" class="table table-bordered">
+        <thead id="employee-list-table-head">
             <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -15,11 +15,13 @@
                 <th>Position</th>
             </tr>
         </thead>
-        <tbody>
-            <div id="employees"><!--Dynamic--></div>
+        <tbody id="employee-list-table-body">
+            <!--Dynamic-->
         </tbody>
     </table>
     <form method="post">
         <button type="submit" class="btn btn-primary mt-3">Notify Staff of Schedule</button>
     </form>
+    <p id="error-text"></p>
+    <p id="loading-text"></p>
 </div>

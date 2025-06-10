@@ -7,22 +7,22 @@
             <input type="text" class="form-control" id="email" name="email" required />
         </div>
         <div class="mb-3">
-            <label for="first-name" class="form-label">First</label>
-            <input type="text" class="form-control" for="first-name" required />
+            <label id="first-name-label" for="first-name-input" class="form-label">First</label>
+            <input type="text" class="form-control" id="first-name-input" name="first-name-input" required />
         </div>
         <div class="mb-3">
-            <label for="last-name" class="form-label">Last</label>
-            <input type="text" class="form-control" id="last-name" name="last-name" required />
+            <label id="last-name-label" for="last-name-input" class="form-label">Last</label>
+            <input type="text" class="form-control" id="last-name-input" name="last-name-input" required />
         </div>
         <div class="mb-3">
-            <label for="selected-role" class="form-label">Role</label>
-            <select class="form-select" id="selected-role" name="selected-role" required>
-                <div id="roles"><!--Dynamic--></div>
+            <label id="role-label" for="role-select-list" class="form-label">Role</label>
+            <select class="form-select" id="role-select-list" name="role-select-list" required>
+                <!--Dynamic-->
             </select>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required />
+            <label id="password-label" for="password-input" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password-input" name="password-input" required />
         </div>
         <button type="submit" class="btn btn-primary">Hire</button>
     </form>

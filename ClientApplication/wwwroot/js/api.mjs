@@ -1,20 +1,22 @@
 ﻿// API base URL for login.
-const base = "http://localhost:8000/auth/login";
+export const baseUrl = "http://localhost:8000/api";
 
 
 export function getToken(username, password) {
+    const url = `${baseUrl}/login`;
+
     const body = JSON.stringify({
-        username: `${username}`,
+        email: `${username}`,
         password: `${password}`
     });
 
-    return fetch(base, {
+    return fetch(url, {
         method: 'POST',
         mode: 'cors',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Accept-Language': 'en-US',
+            'Accept-Language': 'en-CA',
         },
         body: body,
     })

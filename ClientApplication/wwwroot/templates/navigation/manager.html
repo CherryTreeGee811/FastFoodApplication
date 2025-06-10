@@ -2,16 +2,19 @@
     <a class="nav-link dropdown-toggle" href="#" id="manager-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         UserName <!--Dynamic-->
     </a>
-    <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+    <ul class="dropdown-menu" aria-labelledby="manager-dropdown">
+        <li>
+            <a class="dropdown-item" id="home-link" href="/">Home</a>
+        </li>
         <li>
             <a class="dropdown-item" id="hire-link" href="/employees/hire">Hire</a>
         </li>
         <li>
-            <a class="dropdown-item" id="list-link" href="/employees/manage">Manage</a>
+            <a class="dropdown-item" id="list-link" href="/employees/list">Manage</a>
         </li>
         <li>
-            <form method="post" class="d-inline">
-                <button type="submit" class="dropdown-item">Logout</button>
+            <form method="post" class="d-inline" id="logout-form">
+                <input type="button" class="dropdown-item" id="logout-btn" value="Logout" />
             </form>
         </li>
     </ul>

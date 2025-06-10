@@ -1,5 +1,5 @@
 ﻿import { loadFormJS } from './login.mjs';
-import { getAccessTokenFromCookie } from './token-parser.mjs';
+import { getAccessTokenFromCookie, getRoleFromToken } from './token-parser.mjs';
 import { handleEmployeeRoutes, initEmployeeLinkListeners } from './employee/router.mjs';
 
 
@@ -15,15 +15,7 @@ import { handleEmployeeRoutes, initEmployeeLinkListeners } from './employee/rout
  */
 document.addEventListener("DOMContentLoaded", () => {
     const contentDiv = document.getElementById("content");
-    const navContentDiv = document.getElementById("nav-content");
-
-    // Event listener for the home link
-    document.getElementById("home-link").addEventListener("click", (e) => {
-        e.preventDefault();
-        window.history.pushState({}, '', '/');
-        routeHandler(contentDiv);
-    });
-
+    const navContentDiv = document.getElementById("navbar-list");
 
     // Handle browser back/forward navigation
     window.addEventListener("popstate", routeHandler);
@@ -32,7 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
     initEmployeeLinkListeners(contentDiv, routeHandler);
 
     // Load Navigation Bar
-    loadNavTemplate(navContentDiv);
+    loadNavTemplate(navContentDiv).then(() => {
+        // Event listener for the home link
+        document.getElementById("home-link").addEventListener("click", (e) => {
+            e.preventDefault();
+            window.history.pushState({}, '', '/');
+            routeHandler(contentDiv);
+        });
+    });
 
     // Initial route handling
     routeHandler(contentDiv);
@@ -95,8 +94,13 @@ export function loadNavTemplate(navContentDiv) {
     // Check if an existing token exists
     const token = getAccessTokenFromCookie();
     if (token) {
-        console.log("Token found in cookie:", token);
-        templateName = "employee.html"
+        role = getRoleFromToken(token);
+        if (role === "Manager") {
+            templateName = "manager.html"
+        }
+        else {
+            templateName = "employee.html"
+        } 
     }
 
     return fetch(`/templates/navigation/${templateName}`)

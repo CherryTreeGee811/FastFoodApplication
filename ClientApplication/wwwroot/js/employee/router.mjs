@@ -1,4 +1,5 @@
 ﻿import { loadTemplate } from '../router.mjs';
+import { loadEmployeeList } from './list.mjs';
 
 
 export function initEmployeeLinkListeners(contentDiv, routeHandler) {
@@ -32,7 +33,7 @@ export function handleEmployeeRoutes(path, contentDiv) {
             break;
         case '/employees/list':
             loadTemplate("employee/list.html", contentDiv).then(() => {
-                return loadRadiationMeasurementsForYear(dateParam)
+                return loadEmployeeList()
             }).catch((error) => {
                 console.error('Error loading radiation measurements for year:', error);
             });
