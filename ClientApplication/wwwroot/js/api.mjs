@@ -42,3 +42,34 @@ export function getToken(username, password) {
             throw error;
         });
 }
+
+
+export function requestLogout(token) {
+    const url = `${baseUrl}/logout`;
+
+    return fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return true;
+                } else {
+                    return response.json();
+                }
+            } else if (response.status == 401) {
+                document.getElementById("login-link").click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}

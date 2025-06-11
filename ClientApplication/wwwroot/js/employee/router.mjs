@@ -2,16 +2,6 @@
 import { loadEmployeeList } from './list.mjs';
 
 
-export function initEmployeeLinkListeners(contentDiv, routeHandler) {
-    contentDiv.addEventListener("click", (e) => {
-        if (e.target.matches("#details-link")) {
-            e.preventDefault();
-            window.history.pushState({}, '', '');
-            routeHandler();
-        }
-    });
-}
-
 
 export function handleEmployeeRoutes(path, contentDiv) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -26,7 +16,7 @@ export function handleEmployeeRoutes(path, contentDiv) {
             break;
         case '/employees/hire':
             loadTemplate("employee/hire.html", contentDiv).then(() => {
-                return loadRadiationMeasurementsForDay(dateParam)
+                return loadFormJS()
             }).catch((error) => {
                 console.error('Error loading radiation measurements for day:', error);
             });
@@ -40,7 +30,7 @@ export function handleEmployeeRoutes(path, contentDiv) {
             break;
         case '/employees/manage':
             loadTemplate("employee/manage.html", contentDiv).then(() => {
-                return loadRadiationMeasurementsForYear(dateParam)
+                return loadFormJS()
             }).catch((error) => {
                 console.error('Error loading radiation measurements for year:', error);
             });

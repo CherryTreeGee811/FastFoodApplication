@@ -49,6 +49,7 @@ app.MapGet("/health", async context =>
 // Map SPA routes to index.html
 app.MapGet("/", async context => await ServeIndexHtml(context));
 app.MapGet("/login", async context => await ServeIndexHtml(context));
+app.MapGet("/logout", async context => await ServeIndexHtml(context));
 app.MapGet("/employees", async context => await ServeIndexHtml(context));
 app.MapGet("/employees/details", async context => await ServeIndexHtml(context));
 app.MapGet("/employees/list", async context => await ServeIndexHtml(context));

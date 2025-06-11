@@ -1,6 +1,11 @@
-﻿import { loadFormJS } from './login.mjs';
-import { getAccessTokenFromCookie, getRoleFromToken } from './token-parser.mjs';
-import { handleEmployeeRoutes, initEmployeeLinkListeners } from './employee/router.mjs';
+﻿import {
+    initGeneralLinkListeners, initUnauthenticatedLinkListeners,
+    initAuthenticatedLinkListeners, initEmployeeLinkListeners, initManagerLinkListeners
+} from './navigation/router.mjs';
+import { loadLoginForm } from './login.mjs';
+import { getAccessTokenFromCookie, getRoleFromToken, deleteTokenCookie } from './token-parser.mjs';
+import { handleEmployeeRoutes } from './employee/router.mjs';
+import { requestLogout } from './api.mjs';
 
 
 /**
@@ -20,21 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle browser back/forward navigation
     window.addEventListener("popstate", routeHandler);
 
-    // Initialize link listeners for radiation measurements
-    initEmployeeLinkListeners(contentDiv, routeHandler);
-
-    // Load Navigation Bar
-    loadNavTemplate(navContentDiv).then(() => {
-        // Event listener for the home link
-        document.getElementById("home-link").addEventListener("click", (e) => {
-            e.preventDefault();
-            window.history.pushState({}, '', '/');
-            routeHandler(contentDiv);
-        });
-    });
-
     // Initial route handling
-    routeHandler(contentDiv);
+    routeHandler(navContentDiv, contentDiv);
 });
 
 
@@ -85,9 +77,9 @@ export function loadTemplate(templateName, contentDiv) {
 * 
 * @example
 * // Load the home template into the contentDiv
-* loadNavTemplate(navContentDiv);
+* loadNavTemplate(navContentDiv, contentDiv);
 */
-export function loadNavTemplate(navContentDiv) {
+export function loadNavTemplate(navContentDiv, contentDiv) {
     let role = "anonymous";
     let templateName = "anonymous.html";
 
@@ -96,10 +88,10 @@ export function loadNavTemplate(navContentDiv) {
     if (token) {
         role = getRoleFromToken(token);
         if (role === "Manager") {
-            templateName = "manager.html"
+            templateName = "manager.html";
         }
         else {
-            templateName = "employee.html"
+            templateName = "employee.html";
         } 
     }
 
@@ -110,6 +102,7 @@ export function loadNavTemplate(navContentDiv) {
         })
         .then(html => {
             navContentDiv.innerHTML = html;
+            initNavLinkListeners(templateName, navContentDiv, contentDiv);
             return Promise.resolve();
         })
         .catch(error => {
@@ -118,6 +111,23 @@ export function loadNavTemplate(navContentDiv) {
         });
 }
 
+
+function initNavLinkListeners(templateName, navContentDiv, contentDiv) {
+    initGeneralLinkListeners(navContentDiv, contentDiv);
+    if ((templateName === "employee.html") || (templateName === "manager.html")) {
+        initAuthenticatedLinkListeners(navContentDiv, contentDiv);
+
+        if (templateName === "manager.html") {
+            initManagerLinkListeners(navContentDiv, contentDiv);
+        }
+        else {
+            initEmployeeLinkListeners(navContentDiv, contentDiv);
+        }
+    }
+    else {
+        initUnauthenticatedLinkListeners(navContentDiv, contentDiv);
+    }
+}
 
 /**
 * Handles routing based on the current URL path.
@@ -129,20 +139,33 @@ export function loadNavTemplate(navContentDiv) {
 * @function routeHandler
 * @returns {void} This function does not return a value.
 */
-export function routeHandler(contentDiv) {
+export function routeHandler(navContentDiv, contentDiv) {
     const path = window.location.pathname;
     switch (true) {
         case path == '/':
+            loadNavTemplate(navContentDiv, contentDiv);
             loadTemplate("home.html", contentDiv);
             break;
         case path.startsWith('/employees'):
+            loadNavTemplate(navContentDiv, contentDiv);
             handleEmployeeRoutes(path, contentDiv);
-            break
+            break;
         case path == '/login':
+            loadNavTemplate(navContentDiv, contentDiv);
             loadTemplate("login.html", contentDiv).then(() => {
-                return loadFormJS()
+                return loadLoginForm(navContentDiv, contentDiv);
             }).catch((error) => {
-                console.error('Error loading login form js:', error);
+                console.error('Error loading login form js: ', error);
+            });
+            break;
+        case path == '/logout':
+            loadNavTemplate(navContentDiv, contentDiv);
+            const token = getAccessTokenFromCookie();
+            requestLogout(token).then(() => {
+                deleteTokenCookie();
+                loadTemplate("home.html", contentDiv);
+            }).catch((error) => {
+                console.error('Error logging out: ', error);
             });
             break;
         default:

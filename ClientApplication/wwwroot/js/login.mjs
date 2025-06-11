@@ -1,26 +1,36 @@
 import { getToken } from './api.mjs';
+import { getAccessTokenFromCookie, getRoleFromToken } from './token-parser.mjs';
+import { routeHandler } from './router.mjs';
 
 
-export function loadFormJS() {
+export function loadLoginForm(navContentDiv, contentDiv) {
     const loginBtn = document.getElementById("login-btn");
 
     loginBtn.addEventListener("click", function () {
-        manageSubmission();
+        manageSubmission(navContentDiv, contentDiv);
     });
 }
 
 
-function manageSubmission() {
+function manageSubmission(navContentDiv, contentDiv) {
     const emailElement = document.getElementById("email-input");
     const passwordElement = document.getElementById("password-input");
 
     getToken(emailElement.value, passwordElement.value)
         .then(() => {
-            const loginLinkElement = document.getElementById("login-link");
-            loginLinkElement.style.display = 'none';
-            loginLinkElement.ariaHidden = true;
-            const logoElement = document.getElementById("logo");
-            logoElement.click();
+            // Check if an existing token exists
+            const token = getAccessTokenFromCookie();
+            if (token) {
+                const role = getRoleFromToken(token);
+                if (role === "Manager") {
+                    window.history.pushState({}, '', '/employees/list');
+                    routeHandler(navContentDiv, contentDiv);
+                }
+                else {
+                    window.history.pushState({}, '', '/employees/details');
+                    routeHandler(navContentDiv, contentDiv);
+                }
+            }
         }).catch(error => {
             console.error("An error occured while trying to log in ", error);
         });
