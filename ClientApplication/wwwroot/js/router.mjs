@@ -148,7 +148,7 @@ export function routeHandler(navContentDiv, contentDiv) {
             break;
         case path.startsWith('/employees'):
             loadNavTemplate(navContentDiv, contentDiv);
-            handleEmployeeRoutes(path, contentDiv);
+            handleEmployeeRoutes(path, navContentDiv, contentDiv);
             break;
         case path == '/login':
             loadNavTemplate(navContentDiv, contentDiv);

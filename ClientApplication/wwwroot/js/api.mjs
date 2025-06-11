@@ -15,8 +15,9 @@ export function getToken(username, password) {
         mode: 'cors',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
             'Accept-Language': 'en-CA',
+            'Content-Type': 'application/json',
+            'Content-Language': 'en-CA',
         },
         body: body,
     })

@@ -1,10 +1,11 @@
 ﻿<div class="container mt-5">
     <h1>Hire Employee</h1>
-
-    <form method="post">
+    <p id="error-text"></p>
+    <p id="loading-text"></p>
+    <form method="post" id="hire-employee-form">
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control" id="email" name="email" required />
+            <label id="email-label" for="email-input" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email-input" name="email-input" required />
         </div>
         <div class="mb-3">
             <label id="first-name-label" for="first-name-input" class="form-label">First</label>
@@ -24,6 +25,6 @@
             <label id="password-label" for="password-input" class="form-label">Password</label>
             <input type="password" class="form-control" id="password-input" name="password-input" required />
         </div>
-        <button type="submit" class="btn btn-primary">Hire</button>
+        <input type="button" class="btn btn-primary" id="hire-employee-btn" value="Hire" />
     </form>
 </div>
