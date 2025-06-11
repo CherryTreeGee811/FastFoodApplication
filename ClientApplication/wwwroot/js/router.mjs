@@ -1,9 +1,8 @@
-﻿import {
-    initGeneralLinkListeners, initUnauthenticatedLinkListeners,
-    initAuthenticatedLinkListeners, initEmployeeLinkListeners, initManagerLinkListeners
-} from './navigation/router.mjs';
+﻿import { loadNavTemplate } from './navigation/router.mjs';
+import { loadHomePage } from './home.mjs';
+import { swapUserNameInNavBar } from './navigation/navigation.mjs';
 import { loadLoginForm } from './login.mjs';
-import { getAccessTokenFromCookie, getRoleFromToken, deleteTokenCookie } from './token-parser.mjs';
+import { getAccessTokenFromCookie, deleteTokenCookie } from './token-parser.mjs';
 import { handleEmployeeRoutes } from './employee/router.mjs';
 import { requestLogout } from './api.mjs';
 
@@ -64,72 +63,6 @@ export function loadTemplate(templateName, contentDiv) {
 
 
 /**
-* Loads an HTML template and updates the specified contentDiv with the fetched content.
-* 
-* This function fetches the specified template from the server and updates the 
-* inner HTML of the provided contentDiv. If the fetch operation fails, it displays 
-* an error message in the navContentDiv.
-* 
-* @function loadTemplate
-* @param {string} templateName - The name of the template file to load.
-* @param {HTMLElement} contentDiv - The HTML element where the template will be loaded.
-* @returns {void} This function does not return a value.
-* 
-* @example
-* // Load the home template into the contentDiv
-* loadNavTemplate(navContentDiv, contentDiv);
-*/
-export function loadNavTemplate(navContentDiv, contentDiv) {
-    let role = "anonymous";
-    let templateName = "anonymous.html";
-
-    // Check if an existing token exists
-    const token = getAccessTokenFromCookie();
-    if (token) {
-        role = getRoleFromToken(token);
-        if (role === "Manager") {
-            templateName = "manager.html";
-        }
-        else {
-            templateName = "employee.html";
-        } 
-    }
-
-    return fetch(`/templates/navigation/${templateName}`)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.text();
-        })
-        .then(html => {
-            navContentDiv.innerHTML = html;
-            initNavLinkListeners(templateName, navContentDiv, contentDiv);
-            return Promise.resolve();
-        })
-        .catch(error => {
-            navContentDiv.innerHTML = `<h1>Error loading template</h1><p>${error.message}</p>`;
-            return Promise.reject(error);
-        });
-}
-
-
-function initNavLinkListeners(templateName, navContentDiv, contentDiv) {
-    initGeneralLinkListeners(navContentDiv, contentDiv);
-    if ((templateName === "employee.html") || (templateName === "manager.html")) {
-        initAuthenticatedLinkListeners(navContentDiv, contentDiv);
-
-        if (templateName === "manager.html") {
-            initManagerLinkListeners(navContentDiv, contentDiv);
-        }
-        else {
-            initEmployeeLinkListeners(navContentDiv, contentDiv);
-        }
-    }
-    else {
-        initUnauthenticatedLinkListeners(navContentDiv, contentDiv);
-    }
-}
-
-/**
 * Handles routing based on the current URL path.
 * 
 * This function determines which template to load and which data to fetch based 
@@ -141,17 +74,19 @@ function initNavLinkListeners(templateName, navContentDiv, contentDiv) {
 */
 export function routeHandler(navContentDiv, contentDiv) {
     const path = window.location.pathname;
+    loadNavTemplate(navContentDiv, contentDiv).then(() => {
+        swapUserNameInNavBar();
+    });
     switch (true) {
         case path == '/':
-            loadNavTemplate(navContentDiv, contentDiv);
-            loadTemplate("home.html", contentDiv);
+            loadTemplate("home.html", contentDiv).then(() => {
+                return loadHomePage();
+            });
             break;
         case path.startsWith('/employees'):
-            loadNavTemplate(navContentDiv, contentDiv);
             handleEmployeeRoutes(path, navContentDiv, contentDiv);
             break;
         case path == '/login':
-            loadNavTemplate(navContentDiv, contentDiv);
             loadTemplate("login.html", contentDiv).then(() => {
                 return loadLoginForm(navContentDiv, contentDiv);
             }).catch((error) => {
@@ -159,7 +94,6 @@ export function routeHandler(navContentDiv, contentDiv) {
             });
             break;
         case path == '/logout':
-            loadNavTemplate(navContentDiv, contentDiv);
             const token = getAccessTokenFromCookie();
             requestLogout(token).then(() => {
                 deleteTokenCookie();

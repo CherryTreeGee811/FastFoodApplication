@@ -25,7 +25,7 @@ function base64UrlDecode(str) {
 }
 
 
-// Extract the role from a JWT token
+// Extract the role from the JWT token
 export function getRoleFromToken(token) {
     if (!token) return null;
     const parts = token.split('.');
@@ -36,6 +36,25 @@ export function getRoleFromToken(token) {
         return (
             payload['role'] ||
             payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
+            null
+        );
+    } catch (e) {
+        return null;
+    }
+}
+
+
+// Extract the user name from the JWT token
+export function getNameFromToken(token) {
+    if (!token) return null;
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    try {
+        const payload = JSON.parse(base64UrlDecode(parts[1]));
+        // Try both standard and Microsoft claim types
+        return (
+            payload['name'] ||
+            payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
             null
         );
     } catch (e) {

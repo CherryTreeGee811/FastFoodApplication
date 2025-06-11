@@ -1,6 +1,7 @@
 ﻿import { loadTemplate } from '../router.mjs';
 import { loadEmployeeList } from './list.mjs';
 import { loadHireForm } from './hire.mjs';
+import { loadManageForm } from './manage.mjs';
 
 
 
@@ -31,7 +32,7 @@ export function handleEmployeeRoutes(path, navContentDiv, contentDiv) {
             break;
         case '/employees/manage':
             loadTemplate("employee/manage.html", contentDiv).then(() => {
-                return loadFormJS();
+                return loadManageForm(idParam, navContentDiv, contentDiv);
             }).catch((error) => {
                 console.error('Error loading radiation measurements for year:', error);
             });
