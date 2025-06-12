@@ -72,6 +72,41 @@ export function getEmployeeById(employeeId) {
 }
 
 
+export function getEmployeeByEmail(employeeEmail) {
+    const url = `${baseUrl}/employees/email/${employeeEmail}`;
+    const accessToken = getAccessTokenFromCookie();
+
+    return fetch(url, {
+        mode: 'cors',
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return null;
+                } else {
+                    return response.json();
+                }
+            } else if (response.status == 401) {
+                const loginLinkElem = document.getElementById("login-link");
+                loginLinkElem.style.display = "block";
+                loginLinkElem.ariaHidden = false;
+                loginLinkElem.click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+
 export function fireEmployee(employeeId) {
     const url = `${baseUrl}/employees/${employeeId}`;
     const accessToken = getAccessTokenFromCookie();
@@ -407,6 +442,40 @@ export function nofifyEmployeeOfShifts(employeeId) {
 }
 
 
+export function nofifyAllEmployeesOfShifts() {
+    const url = `${baseUrl}/employees/shifts/send-email`;
+    const accessToken = getAccessTokenFromCookie();
+    return fetch(url, {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        },
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return null;
+                } else {
+                    return {};
+                }
+            } else if (response.status == 401) {
+                const loginLinkElem = document.getElementById("login-link");
+                loginLinkElem.style.display = "block";
+                loginLinkElem.ariaHidden = false;
+                loginLinkElem.click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+
 export function assignEmployeeShift(employeeId, shiftId, shiftDate) {
     const url = `${baseUrl}/employees/${employeeId}/shifts`;
     const accessToken = getAccessTokenFromCookie();
@@ -466,6 +535,111 @@ export function assignEmployeeTraining(employeeId, trainingId) {
                     return null;
                 } else {
                     return {};
+                }
+            } else if (response.status == 401) {
+                const loginLinkElem = document.getElementById("login-link");
+                loginLinkElem.style.display = "block";
+                loginLinkElem.ariaHidden = false;
+                loginLinkElem.click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+
+export function getShiftsByEmployeeId(employeeId) {
+    const url = `${baseUrl}/employees/${employeeId}/shifts`;
+    const accessToken = getAccessTokenFromCookie();
+
+    return fetch(url, {
+        mode: 'cors',
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return null;
+                } else {
+                    return response.json();
+                }
+            } else if (response.status == 401) {
+                const loginLinkElem = document.getElementById("login-link");
+                loginLinkElem.style.display = "block";
+                loginLinkElem.ariaHidden = false;
+                loginLinkElem.click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+
+export function getTrainingModulesByEmployeeId(employeeId) {
+    const url = `${baseUrl}/employees/${employeeId}/trainings`;
+    const accessToken = getAccessTokenFromCookie();
+
+    return fetch(url, {
+        mode: 'cors',
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return null;
+                } else {
+                    return response.json();
+                }
+            } else if (response.status == 401) {
+                const loginLinkElem = document.getElementById("login-link");
+                loginLinkElem.style.display = "block";
+                loginLinkElem.ariaHidden = false;
+                loginLinkElem.click();
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        })
+        .catch(error => {
+            throw error;
+        });
+}
+
+
+export function markTrainingAsComplete(employeeId, trainingId) {
+    const url = `${baseUrl}/employees/${employeeId}/trainings/${trainingId}/complete`;
+    const accessToken = getAccessTokenFromCookie();
+
+    return fetch(url, {
+        mode: 'cors',
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Accept': 'application/json',
+            'Accept-Language': 'en-CA',
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                if (response.status === 204) {
+                    return null;
+                } else {
+                    return response.json();
                 }
             } else if (response.status == 401) {
                 const loginLinkElem = document.getElementById("login-link");

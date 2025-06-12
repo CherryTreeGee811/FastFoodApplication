@@ -1,10 +1,39 @@
 import { routeHandler } from "../router.mjs";
-import { getAllEmployees, fireEmployee } from "./api.mjs";
+import { getAllEmployees, fireEmployee, nofifyAllEmployeesOfShifts } from "./api.mjs";
 
 
 export function loadEmployeeList(navContentDiv, contentDiv) {
     const tableBody = document.getElementById('employee-list-table-body');
+    const hireButtonElement = document.getElementById('hire-btn');
+    const notifyAllEmployeesOfShiftsButtonElement = document.getElementById('notify-all-employees-of-shifts-btn');
     const errorTextElement = document.getElementById("error-text");
+    const successTextElement = document.getElementById("success-text");
+    const loadingTextElement = document.getElementById("loading-text");
+
+    loadingTextElement.textContent = "Loading employees...";
+
+    hireButtonElement.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.history.pushState({}, '', '/employees/hire');
+        routeHandler(navContentDiv, contentDiv);
+    });
+
+    notifyAllEmployeesOfShiftsButtonElement.addEventListener("click", (e) => {
+        e.preventDefault();
+        nofifyAllEmployeesOfShifts().then(() => {
+            errorTextElement.textContent = "";
+            successTextElement.textContent = "All employees have been notified of their shifts.";
+        }).catch(error => {
+            successTextElement.textContent = "";
+            if (error.message.includes("404")) {
+                errorTextElement.textContent = "Notify all of shifts endpoint not found";
+            } else if (error.message.includes("500")) {
+                errorTextElement.textContent = "Internal server error while notifying all staff of shifts";
+            } else {
+                errorTextElement.textContent = `Unknown error notifying all staff of shifts: ${error}`;
+            }
+        });
+    });
 
     // Clear any existing rows in the table body
     tableBody.innerHTML = '';
@@ -33,8 +62,7 @@ export function loadEmployeeList(navContentDiv, contentDiv) {
                 fireEmployee(employeeId).then(() => {
                     // Reload the list after firing an employee
                     loadEmployeeList();
-                }).catch(error => {
-                    console.error('Error firing employee:', error);
+                }).catch(() => {
                     errorTextElement.textContent = "Failed to fire employee. Please try again.";
                 });
             });
@@ -56,6 +84,6 @@ export function loadEmployeeList(navContentDiv, contentDiv) {
         } else {
             errorTextElement.textContent = "Unknown error";
         }
-        loadingTextElement.textContent = "";
     });
+    loadingTextElement.textContent = "";
 }

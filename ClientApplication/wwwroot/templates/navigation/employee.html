@@ -3,16 +3,14 @@
         UserName <!--Dynamic-->
     </a>
     <ul class="dropdown-menu" aria-labelledby="employee-dropdown">
-        <li class="nav-item">
-            <a class="nav-link" id="home-link" href="/">Home</a>
+        <li>
+            <a class="dropdown-item" id="home-link" href="/">Home</a>
         </li>
         <li>
             <a class="dropdown-item" id="details-link" href="/employees/details">Details</a>
         </li>
         <li>
-            <form method="post" class="d-inline" id="logout-form">
-                <input type="button" class="dropdown-item" id="logout-btn" value="Logout" />
-            </form>
+            <a class="dropdown-item" id="logout-link" href="/logout">Logout</a>
         </li>
     </ul>
 </li>

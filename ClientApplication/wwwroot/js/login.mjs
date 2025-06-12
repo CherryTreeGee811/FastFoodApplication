@@ -1,4 +1,5 @@
 import { getToken } from './api.mjs';
+import { getEmployeeByEmail } from './employee/api.mjs';
 import { getAccessTokenFromCookie, getRoleFromToken } from './token-parser.mjs';
 import { routeHandler } from './router.mjs';
 
@@ -27,8 +28,10 @@ function manageSubmission(navContentDiv, contentDiv) {
                     routeHandler(navContentDiv, contentDiv);
                 }
                 else {
-                    window.history.pushState({}, '', '/employees/details');
-                    routeHandler(navContentDiv, contentDiv);
+                    getEmployeeByEmail(emailElement.value).then(employee => {
+                        window.history.pushState({}, '', `/employees/details?id=${employee.employeeId}`);
+                        routeHandler(navContentDiv, contentDiv);
+                    });
                 }
             }
         }).catch(error => {

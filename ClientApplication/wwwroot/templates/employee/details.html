@@ -4,7 +4,7 @@
 
     <!-- Employee ID -->
     <div class="d-flex justify-content-end">
-        <label class="fw-bold me-2">Employee ID:</label>
+        <label for="employee-id" class="fw-bold me-2">Employee ID:</label>
         <span id="employee-id"><!--Dynamic--></span>
     </div>
 
@@ -23,10 +23,6 @@
                     </tr>
                 </thead>
                 <tbody id="shifts-table-body">
-                    <tr>
-                        <td class="fw-bold">Date</td>
-                        <td class="fw-bold">Shift</td>
-                    </tr>
                     <!--Dynamic-->
                 </tbody>
             </table>
@@ -41,13 +37,12 @@
                     </tr>
                 </thead>
                 <tbody id="training-table-body">
-                    <tr>
-                        <td class="fw-bold">Course Name</td>
-                        <td class="fw-bold">Mark Complete</td>
-                    </tr>
                     <!--Dynamic-->
                 </tbody>
             </table>
         </div>
     </div>
+    <p id="error-text"></p>
+    <p id="loading-text"></p>
+    <p id="success-text"></p>
 </div>

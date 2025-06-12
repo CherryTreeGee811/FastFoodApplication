@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Manage Employees</h1>
-        <a href="/employees/hire" class="btn btn-success">Hire New Employee</a>
+        <a id="hire-btn" href="/employees/hire" class="btn btn-success">Hire New Employee</a>
     </div>
 
     <!-- Employee Table -->
@@ -19,9 +19,11 @@
             <!--Dynamic-->
         </tbody>
     </table>
-    <form method="post">
-        <button type="submit" class="btn btn-primary mt-3">Notify Staff of Schedule</button>
+    <form method="post" id="notify-all-employees-of-shifts-form">
+        <input type="button" class="btn btn-primary mt-3" id="notify-all-employees-of-shifts-btn" 
+               value="Notify Staff of Schedule" />
     </form>
     <p id="error-text"></p>
+    <p id="success-text"></p>
     <p id="loading-text"></p>
 </div>

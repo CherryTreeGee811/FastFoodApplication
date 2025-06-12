@@ -2,6 +2,7 @@
 import { loadEmployeeList } from './list.mjs';
 import { loadHireForm } from './hire.mjs';
 import { loadManageForm } from './manage.mjs';
+import { loadDetailsForm } from './details.mjs';
 
 
 
@@ -11,7 +12,7 @@ export function handleEmployeeRoutes(path, navContentDiv, contentDiv) {
     switch (path) {
         case '/employees/details':
             loadTemplate("employee/details.html", contentDiv).then(() => {
-                return loadFormJS();
+                return loadDetailsForm(idParam);
             }).catch((error) => {
                 console.error('Error loading form js:', error);
             });
