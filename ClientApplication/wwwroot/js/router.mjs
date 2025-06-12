@@ -97,7 +97,8 @@ export function routeHandler(navContentDiv, contentDiv) {
             const token = getAccessTokenFromCookie();
             requestLogout(token).then(() => {
                 deleteTokenCookie();
-                loadTemplate("home.html", contentDiv);
+                window.history.pushState({}, '', '/');
+                routeHandler(navContentDiv, contentDiv);
             }).catch((error) => {
                 console.error('Error logging out: ', error);
             });
