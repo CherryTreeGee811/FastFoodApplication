@@ -8,6 +8,12 @@ function initGeneralLinkListeners(navContentDiv, contentDiv) {
         window.history.pushState({}, '', '/');
         routeHandler(navContentDiv, contentDiv);
     });
+
+    document.getElementById("logo").addEventListener("click", (e) => {
+        e.preventDefault();
+        window.history.pushState({}, '', '/');
+        routeHandler(navContentDiv, contentDiv);
+    });
 }
 
 
@@ -40,6 +46,12 @@ function initManagerLinkListeners(navContentDiv, contentDiv) {
     document.getElementById("list-link").addEventListener("click", (e) => {
         e.preventDefault();
         window.history.pushState({}, '', '/employees/list');
+        routeHandler(navContentDiv, contentDiv);
+    });
+
+    document.getElementById("hire-link").addEventListener("click", (e) => {
+        e.preventDefault();
+        window.history.pushState({}, '', '/employees/hire');
         routeHandler(navContentDiv, contentDiv);
     });
 }
