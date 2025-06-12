@@ -33,6 +33,7 @@ namespace FastFoodAPI.Services
             return trainings;
         }
 
+
         /// <summary>
         /// Updates a training assignment status from incomplete to complete.
         /// </summary>

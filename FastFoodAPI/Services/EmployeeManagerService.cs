@@ -29,6 +29,7 @@ namespace FastFoodAPI.Services
                 .ToListAsync();
         }
 
+
         /// <summary>
         /// Retrieves a specific employee by ID.
         /// </summary>
@@ -56,6 +57,7 @@ namespace FastFoodAPI.Services
             };
         }
 
+
         /// <summary>
         /// Retrieves a specific employee by email.
         /// </summary>
@@ -80,6 +82,7 @@ namespace FastFoodAPI.Services
                 StationName = employee?.Station != null ? employee.Station.StationName : null
             };
         }
+
 
         /// <summary>
         /// Creates a new employee.
@@ -121,6 +124,7 @@ namespace FastFoodAPI.Services
 
             return (employee, true, string.Empty);
         }
+
 
         /// <summary>
         /// Updates an existing employee with any combination of fields.
@@ -189,6 +193,7 @@ namespace FastFoodAPI.Services
                 return (null!, false, "A concurrency error occurred while updating the employee");
             }
         }
+
 
         /// <summary>
         /// Updates a single field of an existing employee.
@@ -268,6 +273,7 @@ namespace FastFoodAPI.Services
             }
         }
 
+
         /// <summary>
         /// Deletes an employee by ID.
         /// </summary>
@@ -287,6 +293,7 @@ namespace FastFoodAPI.Services
 
             return (true, string.Empty);
         }
+
 
         /// <summary>
         /// Checks if an employee exists by ID.

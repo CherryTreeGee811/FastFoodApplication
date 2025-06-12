@@ -15,6 +15,7 @@ namespace FastFoodAPI.Tests.Controllers
         private Mock<IEmployeeManagerService> _mockEmployeeService;
         private EmployeeController _controller;
 
+
         [SetUp]
         public void Setup()
         {
@@ -24,6 +25,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Create controller with mocked service
             _controller = new EmployeeController(_mockEmployeeService.Object);
         }
+
 
         [Test]
         public async Task GetAllEmployees_ReturnsOkResult_WithListOfEmployees()
@@ -54,6 +56,7 @@ namespace FastFoodAPI.Tests.Controllers
             okResult?.Value.Should().BeEquivalentTo(employees);
         }
 
+
         [Test]
         public async Task GetEmployee_WithValidId_ReturnsOkResult()
         {
@@ -78,6 +81,7 @@ namespace FastFoodAPI.Tests.Controllers
             okResult?.Value.Should().BeEquivalentTo(employee);
         }
 
+
         [Test]
         public async Task GetEmployee_WithInvalidId_ReturnsNotFound()
         {
@@ -93,6 +97,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundObjectResult>();
         }
+
 
         [Test]
         public async Task UpdateEmployee_WithValidIdAndData_ReturnsOkResult()
@@ -117,6 +122,7 @@ namespace FastFoodAPI.Tests.Controllers
             // Assert
             result.Should().BeOfType<OkObjectResult>();
         }
+
 
         [Test]
         public async Task DeleteEmployee_WithValidId_ReturnsOkResult()

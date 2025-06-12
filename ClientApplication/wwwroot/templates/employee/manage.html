@@ -1,0 +1,75 @@
+﻿<div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Employee</h1>
+        <span id="employee-name-and-id"><!--Dynamic--></span>
+    </div>
+
+    <a id="employee-list-link" href="/employees/list">See Employee List</a>
+
+    <div class="row">
+        <!-- Promote/Demote Form -->
+        <div class="col-md-6">
+            <form method="post" id="promote-demote-form">
+                <h3>Promote/Demote</h3>
+                <div class="mb-3">
+                    <label id="role-label" for="role-select-list" class="form-label">Role</label>
+                    <select class="form-select" id="role-select-list" name="role-select-list" required>
+                        <!--Dynamic-->
+                    </select>
+                </div>
+                <input type="button" class="btn btn-primary" id="promote-demote-btn" value="Update" />
+            </form>
+
+            <!-- Relocate Form -->
+            <form method="post" class="mt-4" id="relocate-form">
+                <h3>Relocate</h3>
+                <div class="mb-3">
+                    <label id="station-label" for="station-select-list" class="form-label">Position</label>
+                    <select class="form-select" id="station-select-list" name="station-select-list" required>
+                        <!--Dynamic-->
+                    </select>
+                </div>
+                <input type="button" class="btn btn-primary" id="relocate-btn" value="Update" />
+            </form>
+        </div>
+
+        <!-- Schedule Form -->
+        <div class="col-md-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Schedule Employee</h3>
+                <form method="post" id="notify-shift-form" class="m-0">
+                    <input type="button" class="btn btn-primary" id="notify-shift-btn" value="Notify Schedule" />
+                </form>
+            </div>
+            <form method="post" id="schedule-shift-form">
+                <div class="mb-3">
+                    <label id="shift-date-label" for="shift-date-input" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="shift-date-input" name="shift-date-input" required />
+                </div>
+                <div class="mb-3">
+                    <label id="shift-label" for="shift-select-list" class="form-label">Shift</label>
+                    <select class="form-select" id="shift-select-list" name="shift-select-list" required>
+                        <!--Dynamic-->
+                    </select>
+                </div>
+                <input type="button" class="btn btn-primary" id="schedule-shift-btn" value="Schedule" />
+            </form>
+
+            <!-- Train Employee Form -->
+            <form method="post" id="assign-training-form" class="mt-4">
+                <h3>Train Employee</h3>
+                <div class="mb-3">
+                    <label id="training-label" for="training-select-list" class="form-label">Training</label>
+                    <select class="form-select" id="training-select-list" name="training-select-list" required>
+                        <!--Dynamic-->
+                    </select>
+                </div>
+                <input type="button" class="btn btn-primary" id="assign-training-btn" value="Assign" />
+            </form>
+        </div>
+    </div>
+    <p id="error-text"></p>
+    <p id="loading-text"></p>
+    <p id="success-text"></p>
+</div>

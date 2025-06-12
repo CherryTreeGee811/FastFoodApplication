@@ -1,0 +1,29 @@
+﻿<div class="container mt-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Employees</h1>
+        <a id="hire-btn" href="/employees/hire" class="btn btn-success">Hire New Employee</a>
+    </div>
+
+    <!-- Employee Table -->
+    <table id="employee-list-table" class="table table-bordered">
+        <thead id="employee-list-table-head">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Role</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody id="employee-list-table-body">
+            <!--Dynamic-->
+        </tbody>
+    </table>
+    <form method="post" id="notify-all-employees-of-shifts-form">
+        <input type="button" class="btn btn-primary mt-3" id="notify-all-employees-of-shifts-btn" 
+               value="Notify Staff of Schedule" />
+    </form>
+    <p id="error-text"></p>
+    <p id="success-text"></p>
+    <p id="loading-text"></p>
+</div>

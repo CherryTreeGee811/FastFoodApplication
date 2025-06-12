@@ -16,6 +16,7 @@ namespace FastFoodAPI.Controllers {
             IEmployeeManagerService employeeManagerService
         ) : Controller {
 
+
         /// <summary>
         /// Logs in a user with the provided credentials.
         /// </summary>
@@ -34,6 +35,7 @@ namespace FastFoodAPI.Controllers {
                 return Unauthorized();
             }
         }
+
 
         /// <summary>
         /// Logs out a user by invalidating their JWT token.
@@ -56,6 +58,7 @@ namespace FastFoodAPI.Controllers {
 
             return BadRequest(new { message = "No valid token provided" });
         }
+
 
         /// <summary>
         /// Registers a new user with the provided details.
@@ -88,6 +91,7 @@ namespace FastFoodAPI.Controllers {
 
             return BadRequest(new { errors = Errors });
         }
+
 
         private readonly IAuthService _authservice = authService;
         private readonly IEmployeeManagerService _employeeManagerService = employeeManagerService;

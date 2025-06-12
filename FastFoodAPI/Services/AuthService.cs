@@ -236,6 +236,7 @@ namespace FastFoodAPI.Services {
             }
         }
 
+
         /// <summary>
         /// Checks if a token has been invalidated (blacklisted).
         /// </summary>
@@ -244,6 +245,7 @@ namespace FastFoodAPI.Services {
         public static bool IsTokenInvalidated(string token) {
             return _invalidatedTokens.ContainsKey(token);
         }
+
 
         /// <summary>
         /// Removes expired tokens from the blacklist.
@@ -256,6 +258,7 @@ namespace FastFoodAPI.Services {
                 }
             }
         }
+
 
         private Employee? _employee;
         private readonly FastFoodDbContext _fastFoodDbContext = fastFoodDbContext;

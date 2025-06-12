@@ -12,6 +12,7 @@ namespace FastFoodAPI.Services
         /// <returns>A list of shift assignments for the employee.</returns>
         Task<IEnumerable<ShiftsDTO>> GetEmployeeShiftsAsync(string employeeId);
 
+
         /// <summary>
         /// Assigns an employee to a shift on a specific date.
         /// </summary>
