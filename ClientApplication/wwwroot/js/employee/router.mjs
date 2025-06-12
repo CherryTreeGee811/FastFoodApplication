@@ -25,7 +25,7 @@ export function handleEmployeeRoutes(path, navContentDiv, contentDiv) {
             break;
         case '/employees/list':
             loadTemplate("employee/list.html", contentDiv).then(() => {
-                return loadEmployeeList();
+                return loadEmployeeList(navContentDiv, contentDiv);
             }).catch((error) => {
                 console.error('Error loading radiation measurements for year:', error);
             });

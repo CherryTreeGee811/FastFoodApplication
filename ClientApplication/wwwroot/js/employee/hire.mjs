@@ -26,7 +26,7 @@ export function loadHireForm(navContentDiv, contentDiv) {
             if (error.message.includes("404")) {
                 errorTextElement.textContent = "Endpoint not found";
             } else if (error.message.includes("400")) {
-                errorTextElement.textContent = "Invalid date was passed";
+                errorTextElement.textContent = "Invalid data was passed";
             } else if (error.message.includes("500")) {
                 errorTextElement.textContent = "Internal server error";
             } else {
